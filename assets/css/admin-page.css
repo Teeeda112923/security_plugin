@@ -1,0 +1,167 @@
+/**
+ * WP Security Checker — 専用管理ページのスタイル
+ * dashboard.css（項目・バッジの共通スタイル）に上乗せする。
+ */
+
+.wsc-admin-wrap {
+	max-width: 880px;
+}
+
+.wsc-admin-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.wsc-admin-title .dashicons-shield {
+	color: #2a5298;
+	font-size: 28px;
+	width: 28px;
+	height: 28px;
+}
+
+.wsc-admin-lead {
+	color: #50575e;
+	font-size: 13px;
+	margin: 4px 0 20px;
+}
+
+.wsc-admin-body {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+/* カード共通 */
+.wsc-card {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 20px 24px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* サマリーカード */
+.wsc-summary-card {
+	border-left: 5px solid #d1d5db;
+}
+
+.wsc-summary-card.wsc-all-good {
+	border-left-color: #46b450;
+}
+
+.wsc-summary-card.wsc-has-issues {
+	border-left-color: #f0b849;
+}
+
+.wsc-summary-main {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.wsc-summary-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	font-size: 20px;
+	font-weight: 700;
+	color: #fff;
+	flex-shrink: 0;
+}
+
+.wsc-all-good .wsc-summary-icon {
+	background: #46b450;
+}
+
+.wsc-has-issues .wsc-summary-icon {
+	background: #f0b849;
+}
+
+.wsc-summary-text {
+	font-size: 18px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+/* 重要度チップ */
+.wsc-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: 16px 0 4px;
+}
+
+.wsc-chip {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 12px;
+	border-radius: 999px;
+	font-size: 13px;
+	font-weight: 600;
+	border: 1px solid transparent;
+}
+
+.wsc-chip-recommended {
+	background: #fce8e6;
+	color: #a40000;
+	border-color: #f3c1bd;
+}
+
+.wsc-chip-attention {
+	background: #fef7e0;
+	color: #8a6100;
+	border-color: #f5e2a8;
+}
+
+.wsc-chip-good {
+	background: #e7f6e9;
+	color: #1e6b27;
+	border-color: #bfe3c4;
+}
+
+.wsc-summary-actions {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin-top: 16px;
+	padding-top: 16px;
+	border-top: 1px solid #f0f0f1;
+}
+
+.wsc-summary-actions .wsc-last-run {
+	color: #787c82;
+	font-size: 12px;
+}
+
+/* カテゴリカード */
+.wsc-card-title {
+	margin: 0 0 4px;
+	font-size: 16px;
+	color: #1d2327;
+}
+
+.wsc-card-desc {
+	margin: 0 0 12px;
+	color: #787c82;
+	font-size: 12px;
+}
+
+/* 専用ページでは項目をやや広めに */
+.wsc-admin-body .wsc-item {
+	padding: 12px 4px;
+}
+
+.wsc-admin-body .wsc-item-label {
+	font-size: 14px;
+}
+
+.wsc-admin-note {
+	color: #787c82;
+	font-size: 12px;
+	line-height: 1.7;
+	margin: 4px 4px 24px;
+}

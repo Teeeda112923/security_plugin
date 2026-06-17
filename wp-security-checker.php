@@ -40,12 +40,15 @@ add_action(
 require_once WSC_PLUGIN_DIR . 'includes/class-wsc-category-a.php';
 require_once WSC_PLUGIN_DIR . 'includes/class-wsc-category-b.php';
 require_once WSC_PLUGIN_DIR . 'includes/class-wsc-diagnostics.php';
+require_once WSC_PLUGIN_DIR . 'includes/class-wsc-renderer.php';
 require_once WSC_PLUGIN_DIR . 'includes/class-wsc-dashboard-widget.php';
+require_once WSC_PLUGIN_DIR . 'includes/class-wsc-admin-page.php';
 
-// Bootstrap the dashboard widget.
+// Bootstrap the dashboard widget and the dedicated admin page.
 add_action(
 	'plugins_loaded',
 	function () {
 		new WSC_Dashboard_Widget();
+		new WSC_Admin_Page();
 	}
 );

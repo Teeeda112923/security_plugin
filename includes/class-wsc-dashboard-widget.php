@@ -91,14 +91,14 @@ class WSC_Dashboard_Widget {
 			<div class="wsc-section">
 				<h4 class="wsc-section-title"><?php esc_html_e( 'A. バージョン鮮度', 'wp-security-checker' ); ?></h4>
 				<?php foreach ( $results['a'] as $item ) : ?>
-					<?php $this->render_item( $item, $results ); ?>
+					<?php $this->render_item( $item ); ?>
 				<?php endforeach; ?>
 			</div>
 
 			<div class="wsc-section">
 				<h4 class="wsc-section-title"><?php esc_html_e( 'B. ハードニング設定', 'wp-security-checker' ); ?></h4>
 				<?php foreach ( $results['b'] as $item ) : ?>
-					<?php $this->render_item( $item, $results ); ?>
+					<?php $this->render_item( $item ); ?>
 				<?php endforeach; ?>
 			</div>
 
@@ -142,48 +142,11 @@ class WSC_Dashboard_Widget {
 	}
 
 	/**
-	 * Render a single diagnostic item row.
+	 * Render a single diagnostic item row via the shared renderer.
 	 *
-	 * @param array $item    Check result array.
-	 * @param array $results Full results (for context like plugin names).
+	 * @param array $item Check result array.
 	 */
-	private function render_item( $item, $results ) {
-		$icons = array(
-			'good'        => '<span class="wsc-icon wsc-good">✓</span>',
-			'attention'   => '<span class="wsc-icon wsc-attention">△</span>',
-			'recommended' => '<span class="wsc-icon wsc-recommended">×</span>',
-		);
-		$icon = isset( $icons[ $item['status'] ] ) ? $icons[ $item['status'] ] : '';
-
-		$status_labels = array(
-			'good'        => __( '問題なし', 'wp-security-checker' ),
-			'attention'   => __( '改善推奨', 'wp-security-checker' ),
-			'recommended' => __( '要対応', 'wp-security-checker' ),
-		);
-		$status_label = isset( $status_labels[ $item['status'] ] ) ? $status_labels[ $item['status'] ] : '';
-		?>
-		<div class="wsc-item wsc-status-<?php echo esc_attr( $item['status'] ); ?>">
-			<div class="wsc-item-header">
-				<?php echo wp_kses_post( $icon ); ?>
-				<span class="wsc-item-label"><?php echo esc_html( $item['label'] ); ?></span>
-				<span class="wsc-status-badge wsc-badge-<?php echo esc_attr( $item['status'] ); ?>">
-					<?php echo esc_html( $status_label ); ?>
-				</span>
-			</div>
-			<?php if ( ! empty( $item['detail'] ) ) : ?>
-				<div class="wsc-item-detail"><?php echo esc_html( $item['detail'] ); ?></div>
-			<?php endif; ?>
-			<?php if ( ! empty( $item['message'] ) ) : ?>
-				<div class="wsc-item-message"><?php echo esc_html( $item['message'] ); ?></div>
-			<?php endif; ?>
-			<?php if ( 'a3' === $item['id'] && 'good' !== $item['status'] ) : ?>
-				<div class="wsc-update-link">
-					<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small">
-						<?php esc_html_e( '更新画面を開く', 'wp-security-checker' ); ?>
-					</a>
-				</div>
-			<?php endif; ?>
-		</div>
-		<?php
+	private function render_item( $item ) {
+		WSC_Renderer::render_item( $item );
 	}
 }
