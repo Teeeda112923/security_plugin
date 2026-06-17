@@ -17,6 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WSC_Renderer {
 
+	/** @var bool Whether the guide toggle script has been printed this page load. */
+	private static $guide_script_printed = false;
+
 	/**
 	 * Localized status label keyed by status.
 	 *
@@ -137,6 +140,88 @@ class WSC_Renderer {
 	}
 
 	/**
+	 * Per-item guide content (steps and risk) keyed by check ID.
+	 *
+	 * Values may contain <br> and <code> for formatting.
+	 *
+	 * @return array
+	 */
+	private static function guide_data() {
+		return array(
+			'a1' => array(
+				'steps' => 'WordPress管理画面の「ダッシュボード → 更新」を開き、「今すぐ更新」ボタンをクリックしてください。更新前にサイトのバックアップを取っておくと安心です。',
+				'risk'  => '未適用のセキュリティ修正が残ったままになります。公開済みの脆弱性を悪用した攻撃でサイトを改ざんされたり、マルウェアを埋め込まれたりするリスクがあります。',
+			),
+			'a2' => array(
+				'steps' => 'ご利用のサーバー管理画面（cPanel・さくらコントロールパネル・ConoHaコントロールパネルなど）にログインし、PHPバージョンの切り替えメニューから PHP 8.2 以上を選択してください。変更前にサイトのバックアップを取ることを強くおすすめします。',
+				'risk'  => 'サポートが終了したPHPバージョンには、新たに発見された脆弱性の修正パッチが提供されません。攻撃者に悪用されても修正が受けられず、被害が広がりやすくなります。',
+			),
+			'a3' => array(
+				'steps' => '管理画面の「ダッシュボード → 更新」を開き、未更新のプラグインとテーマにチェックを入れて「プラグインを更新」「テーマを更新」をクリックしてください。更新前にバックアップを取っておくと安心です。',
+				'risk'  => 'プラグイン・テーマの更新にはセキュリティ修正が含まれることがあります。更新しないまま放置すると、既知の脆弱性を利用した攻撃を受けるリスクがあります。',
+				'has_update_link' => true,
+			),
+			'b1' => array(
+				'steps' => 'サーバー上の wp-config.php をテキストエディタで開き、以下の行を探してください。<br><code>define(\'WP_DEBUG\', true);</code><br>これを次のように書き換えて保存します。<br><code>define(\'WP_DEBUG\', false);</code>',
+				'risk'  => 'デバッグ情報が画面に表示されると、PHPエラーメッセージにサーバー内のファイルパスや内部構造が含まれることがあります。攻撃者にサーバー環境の情報を与えることになります。',
+			),
+			'b2' => array(
+				'steps' => 'wp-config.php を開き、以下の1行を追加してください（「/* 編集が必要なのはここまでです */」という行より前の位置に記述します）。<br><code>define(\'DISALLOW_FILE_EDIT\', true);</code>',
+				'risk'  => '管理者アカウントが乗っ取られた場合、テーマ・プラグインのコードエディターからサーバー上のPHPファイルを直接書き換えられてしまいます。バックドアを仕込まれる可能性があります。',
+			),
+			'b3' => array(
+				'steps' => 'まず別の管理者アカウントを作成してそちらでログインし直してください。その後「ユーザー一覧」から「admin」アカウントを削除します。削除時に既存の投稿を新しいアカウントに引き継ぐ選択ができます。',
+				'risk'  => '「admin」はWordPressで最も狙われるユーザー名です。ユーザー名が判明していると、パスワードを総当たりするだけでログインされてしまうリスクが大幅に上がります。',
+			),
+			'b4' => array(
+				'steps' => 'ご利用のサーバー管理画面でSSL証明書を発行します（多くのサーバーでLet\'s Encryptによる無料発行が可能です）。証明書の設定が完了したら、WordPressの「設定 → 一般」でサイトアドレスとWordPressアドレスをどちらも https:// に変更してください。',
+				'risk'  => 'HTTPのままでは通信が暗号化されません。ログイン時のパスワードや問い合わせフォームに入力した個人情報が、通信経路上で盗み見られる（盗聴）リスクがあります。',
+			),
+			'b5' => array(
+				'steps' => 'この変更は既存サイトでは慎重な作業が必要です。必ずバックアップを取ってから行ってください。phpMyAdminなどでデータベースの全テーブル名の「wp_」部分を別の文字列（例：mywp_）に変更し、wp-config.php の <code>$table_prefix</code> の値も同じ文字列に更新します。',
+				'risk'  => 'テーブル名が「wp_」という既知のパターンのままだと、SQLインジェクション攻撃が成功した際にデータベースを操作されやすくなります。',
+			),
+			'b6' => array(
+				'steps' => '「Disable XML-RPC」などの無料プラグインを使うと簡単に無効化できます。または .htaccess に以下を追加することで xmlrpc.php へのアクセスをブロックできます。<br><code>&lt;Files xmlrpc.php&gt;<br>Order Deny,Allow<br>Deny from all<br>&lt;/Files&gt;</code>',
+				'risk'  => 'XML-RPCは古い連携機能で現在のWordPressではほとんど不要です。有効なままにしておくと、1回のリクエストで大量のログイン試行が可能なため、ブルートフォース攻撃に利用されやすくなります。',
+			),
+			'b7' => array(
+				'steps' => 'セキュリティプラグイン（例：Wordfence・SiteGuard WP Plugin）を使う方法が手軽です。または、テーマの functions.php に以下を追加する方法もあります。<br><code>add_filter(\'rest_endpoints\', function($ep) {<br>&nbsp;&nbsp;if (!is_user_logged_in()) {<br>&nbsp;&nbsp;&nbsp;&nbsp;unset($ep[\'/wp/v2/users\']);<br>&nbsp;&nbsp;&nbsp;&nbsp;unset($ep[\'/wp/v2/users/(?P&lt;id&gt;[\\d]+)\']);<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;return $ep;<br>});</code>',
+				'risk'  => 'REST APIのユーザー一覧エンドポイントが公開されていると、誰でもユーザー名を取得できます。ユーザー名が判明するとパスワードの総当たり攻撃がしやすくなります。',
+			),
+		);
+	}
+
+	/**
+	 * Print the guide toggle JS once per page load.
+	 */
+	private static function maybe_print_guide_script() {
+		if ( self::$guide_script_printed ) {
+			return;
+		}
+		self::$guide_script_printed = true;
+		?>
+		<script>
+		function wscToggleGuide(btn) {
+			var guideId = btn.getAttribute('aria-controls');
+			var guide = document.getElementById(guideId);
+			if (!guide) return;
+			var expanded = btn.getAttribute('aria-expanded') === 'true';
+			if (expanded) {
+				guide.style.display = 'none';
+				btn.setAttribute('aria-expanded', 'false');
+				btn.classList.remove('wsc-guide-open');
+			} else {
+				guide.style.display = 'block';
+				btn.setAttribute('aria-expanded', 'true');
+				btn.classList.add('wsc-guide-open');
+			}
+		}
+		</script>
+		<?php
+	}
+
+	/**
 	 * Render one diagnostic item as a modern card row.
 	 *
 	 * @param array $item Check result array.
@@ -153,6 +238,8 @@ class WSC_Renderer {
 		);
 
 		$status = isset( $item['status'] ) ? $item['status'] : 'good';
+		$id     = isset( $item['id'] ) ? $item['id'] : '';
+
 		$classes = array(
 			'wsc-item',
 			'wsc-status-' . sanitize_html_class( $status ),
@@ -160,6 +247,15 @@ class WSC_Renderer {
 		if ( $args['compact'] ) {
 			$classes[] = 'wsc-item-compact';
 		}
+
+		$all_guides = self::guide_data();
+		$guide      = isset( $all_guides[ $id ] ) ? $all_guides[ $id ] : null;
+		$guide_id   = 'wsc-guide-' . esc_attr( $id ) . '-' . wp_rand( 1000, 9999 );
+
+		$allowed_html = array(
+			'br'   => array(),
+			'code' => array(),
+		);
 		?>
 		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 			<div class="wsc-item-icon" aria-hidden="true"><?php echo esc_html( self::status_icon_text( $status ) ); ?></div>
@@ -178,17 +274,51 @@ class WSC_Renderer {
 					<div class="wsc-item-message"><?php echo esc_html( $item['message'] ); ?></div>
 				<?php endif; ?>
 
-				<?php if ( $args['show_action'] && 'a3' === $item['id'] && 'good' !== $status ) : ?>
+				<?php if ( $args['show_action'] && 'a3' === $id && 'good' !== $status ) : ?>
 					<div class="wsc-item-action">
 						<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small wsc-secondary-action">
 							<?php esc_html_e( '更新画面を開く', 'wp-security-checker' ); ?>
 						</a>
 					</div>
 				<?php endif; ?>
+
+				<?php if ( $guide ) : ?>
+					<div class="wsc-item-guide" id="<?php echo esc_attr( $guide_id ); ?>" style="display:none">
+						<div class="wsc-guide-section">
+							<div class="wsc-guide-section-title"><?php esc_html_e( '対応手順', 'wp-security-checker' ); ?></div>
+							<div class="wsc-guide-steps"><?php echo wp_kses( $guide['steps'], $allowed_html ); ?></div>
+						</div>
+						<?php if ( ! empty( $guide['has_update_link'] ) ) : ?>
+							<div class="wsc-guide-action">
+								<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small wsc-secondary-action">
+									<?php esc_html_e( '更新画面を開く', 'wp-security-checker' ); ?>
+								</a>
+							</div>
+						<?php endif; ?>
+						<div class="wsc-guide-section">
+							<div class="wsc-guide-section-title"><?php esc_html_e( '対応しないと…', 'wp-security-checker' ); ?></div>
+							<div class="wsc-guide-risk"><?php echo wp_kses( $guide['risk'], $allowed_html ); ?></div>
+						</div>
+					</div>
+				<?php endif; ?>
 			</div>
 
-			<span class="wsc-item-chevron" aria-hidden="true">›</span>
+			<?php if ( $guide ) : ?>
+				<button
+					class="wsc-item-chevron wsc-guide-toggle"
+					aria-expanded="false"
+					aria-controls="<?php echo esc_attr( $guide_id ); ?>"
+					aria-label="<?php esc_attr_e( '詳細ガイドを表示', 'wp-security-checker' ); ?>"
+					onclick="wscToggleGuide(this)"
+				>›</button>
+			<?php else : ?>
+				<span class="wsc-item-chevron" aria-hidden="true">›</span>
+			<?php endif; ?>
 		</div>
 		<?php
+
+		if ( $guide ) {
+			self::maybe_print_guide_script();
+		}
 	}
 }

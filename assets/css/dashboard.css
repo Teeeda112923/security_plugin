@@ -183,6 +183,91 @@
 	color: #94A3B8;
 }
 
+button.wsc-guide-toggle {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 4px;
+	margin: 0;
+	color: #94A3B8;
+	font-size: 26px;
+	line-height: 1;
+	border-radius: 6px;
+	transition: color .15s ease, transform .2s ease, background .15s ease;
+}
+
+button.wsc-guide-toggle:hover {
+	color: var(--wsc-blue);
+	background: #EFF6FF;
+}
+
+button.wsc-guide-toggle.wsc-guide-open {
+	transform: rotate(90deg);
+	color: var(--wsc-blue);
+}
+
+.wsc-item-guide {
+	margin-top: 14px;
+	padding: 14px 16px;
+	border-radius: 10px;
+	background: #F8FAFC;
+	border: 1px solid var(--wsc-border);
+	font-size: 13px;
+	line-height: 1.8;
+	color: var(--wsc-text);
+}
+
+.wsc-guide-section {
+	margin-bottom: 12px;
+}
+
+.wsc-guide-section:last-child {
+	margin-bottom: 0;
+}
+
+.wsc-guide-section-title {
+	margin-bottom: 5px;
+	font-size: 11px;
+	font-weight: 800;
+	color: var(--wsc-muted);
+	text-transform: uppercase;
+	letter-spacing: .06em;
+}
+
+.wsc-guide-steps {
+	font-size: 13px;
+	line-height: 1.8;
+	color: var(--wsc-text);
+}
+
+.wsc-guide-steps code,
+.wsc-guide-risk code {
+	display: inline-block;
+	margin: 4px 0;
+	padding: 2px 6px;
+	border-radius: 4px;
+	background: #E2E8F0;
+	font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+	font-size: 12px;
+	color: #1E293B;
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.wsc-guide-risk {
+	padding: 10px 12px;
+	border-radius: 8px;
+	background: var(--wsc-recommended-bg);
+	border-left: 3px solid var(--wsc-recommended);
+	font-size: 13px;
+	line-height: 1.75;
+	color: #7F1D1D;
+}
+
+.wsc-guide-action {
+	margin: 10px 0;
+}
+
 .wsc-item-action {
 	margin-top: 10px;
 }
