@@ -188,20 +188,22 @@ class WSC_Admin_Page {
 				</div>
 			</div>
 
-			<div class="wsc-card wsc-category-card">
-				<h2 class="wsc-card-title"><?php esc_html_e( 'A. バージョン鮮度', 'wp-security-checker' ); ?></h2>
-				<p class="wsc-card-desc"><?php esc_html_e( 'WordPress本体・PHP・プラグイン／テーマの更新状況を確認します。', 'wp-security-checker' ); ?></p>
-				<?php foreach ( $results['a'] as $item ) : ?>
-					<?php WSC_Renderer::render_item( $item ); ?>
-				<?php endforeach; ?>
-			</div>
+			<div class="wsc-categories">
+				<div class="wsc-card wsc-category-card">
+					<h2 class="wsc-card-title"><?php esc_html_e( 'A. バージョン鮮度', 'wp-security-checker' ); ?></h2>
+					<p class="wsc-card-desc"><?php esc_html_e( 'WordPress本体・PHP・プラグイン／テーマの更新状況を確認します。', 'wp-security-checker' ); ?></p>
+					<?php foreach ( $results['a'] as $item ) : ?>
+						<?php WSC_Renderer::render_item( $item ); ?>
+					<?php endforeach; ?>
+				</div>
 
-			<div class="wsc-card wsc-category-card">
-				<h2 class="wsc-card-title"><?php esc_html_e( 'B. ハードニング設定', 'wp-security-checker' ); ?></h2>
-				<p class="wsc-card-desc"><?php esc_html_e( 'サイトを攻撃に強くするための基本設定を確認します。', 'wp-security-checker' ); ?></p>
-				<?php foreach ( $results['b'] as $item ) : ?>
-					<?php WSC_Renderer::render_item( $item ); ?>
-				<?php endforeach; ?>
+				<div class="wsc-card wsc-category-card">
+					<h2 class="wsc-card-title"><?php esc_html_e( 'B. ハードニング設定', 'wp-security-checker' ); ?></h2>
+					<p class="wsc-card-desc"><?php esc_html_e( 'サイトを攻撃に強くするための基本設定を確認します。', 'wp-security-checker' ); ?></p>
+					<?php foreach ( $results['b'] as $item ) : ?>
+						<?php WSC_Renderer::render_item( $item ); ?>
+					<?php endforeach; ?>
+				</div>
 			</div>
 
 			<p class="wsc-admin-note">

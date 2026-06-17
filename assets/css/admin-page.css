@@ -1,10 +1,12 @@
 /**
  * WP Security Checker — 専用管理ページのスタイル
  * dashboard.css（項目・バッジの共通スタイル）に上乗せする。
+ * 画面幅を活かし、できるだけスクロールせず一望できるレイアウトにする。
  */
 
 .wsc-admin-wrap {
-	max-width: 880px;
+	max-width: none;
+	margin-right: 20px;
 }
 
 .wsc-admin-title {
@@ -23,13 +25,13 @@
 .wsc-admin-lead {
 	color: #50575e;
 	font-size: 13px;
-	margin: 4px 0 20px;
+	margin: 4px 0 16px;
 }
 
 .wsc-admin-body {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 16px;
 }
 
 /* カード共通 */
@@ -37,12 +39,16 @@
 	background: #fff;
 	border: 1px solid #dcdcde;
 	border-radius: 8px;
-	padding: 20px 24px;
+	padding: 16px 22px;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-/* サマリーカード */
+/* サマリーカード — 横一列にまとめて高さを抑える */
 .wsc-summary-card {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 14px 28px;
 	border-left: 5px solid #d1d5db;
 }
 
@@ -64,10 +70,10 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 36px;
-	height: 36px;
+	width: 34px;
+	height: 34px;
 	border-radius: 50%;
-	font-size: 20px;
+	font-size: 19px;
 	font-weight: 700;
 	color: #fff;
 	flex-shrink: 0;
@@ -82,7 +88,7 @@
 }
 
 .wsc-summary-text {
-	font-size: 18px;
+	font-size: 17px;
 	font-weight: 600;
 	color: #1d2327;
 }
@@ -92,7 +98,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: 10px;
-	margin: 16px 0 4px;
+	margin: 0;
 }
 
 .wsc-chip {
@@ -126,10 +132,10 @@
 .wsc-summary-actions {
 	display: flex;
 	align-items: center;
-	gap: 14px;
-	margin-top: 16px;
-	padding-top: 16px;
-	border-top: 1px solid #f0f0f1;
+	gap: 12px;
+	margin: 0 0 0 auto;
+	padding: 0;
+	border: 0;
 }
 
 .wsc-summary-actions .wsc-last-run {
@@ -137,22 +143,37 @@
 	font-size: 12px;
 }
 
+/* カテゴリを左右2カラムに並べる */
+.wsc-categories {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+	align-items: start;
+}
+
+/* 画面が狭いときは1カラムに戻す */
+@media screen and (max-width: 1100px) {
+	.wsc-categories {
+		grid-template-columns: 1fr;
+	}
+}
+
 /* カテゴリカード */
 .wsc-card-title {
-	margin: 0 0 4px;
+	margin: 0 0 2px;
 	font-size: 16px;
 	color: #1d2327;
 }
 
 .wsc-card-desc {
-	margin: 0 0 12px;
+	margin: 0 0 8px;
 	color: #787c82;
 	font-size: 12px;
 }
 
-/* 専用ページでは項目をやや広めに */
+/* 専用ページでは項目をコンパクトに詰める */
 .wsc-admin-body .wsc-item {
-	padding: 12px 4px;
+	padding: 9px 4px;
 }
 
 .wsc-admin-body .wsc-item-label {
@@ -163,5 +184,5 @@
 	color: #787c82;
 	font-size: 12px;
 	line-height: 1.7;
-	margin: 4px 4px 24px;
+	margin: 0 4px 16px;
 }
