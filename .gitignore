@@ -1,0 +1,7 @@
+# Build artifacts (生成物：リポジトリには含めない)
+*.zip
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
