@@ -3,7 +3,7 @@
  * 専用管理ページ + サブメニュー構成
  *
  * メニュー: ダッシュボード / 診断結果 / バージョン鮮度 / ハードニング設定 /
- *           CVEアラート (Pro) / レポート (Business) / 設定
+ *           脆弱性アラート (Pro) / レポート (Business) / 設定
  * 設計方針: 診断の提示のみ・自動変更なし・外部通信なし。
  *
  * @package WP_Security_Checker
@@ -94,9 +94,9 @@ class WSC_Admin_Page {
 		// Pro/Business 予定機能（クリックするとロック画面）。
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( 'CVEアラート', 'wp-security-checker' ),
+			__( '脆弱性アラート', 'wp-security-checker' ),
 			/* translators: Pro feature badge appended to menu label */
-			__( 'CVEアラート', 'wp-security-checker' ) . ' <span class="wsc-menu-badge">Pro</span>',
+			__( '脆弱性アラート', 'wp-security-checker' ) . ' <span class="wsc-menu-badge">Pro</span>',
 			'manage_options',
 			self::SLUG_CVE,
 			array( $this, 'render_cve_upsell' )
@@ -266,22 +266,22 @@ class WSC_Admin_Page {
 		);
 	}
 
-	/** CVEアラート — Pro予定機能のアップセルページ */
+	/** 脆弱性アラート — Pro予定機能のアップセルページ */
 	public function render_cve_upsell() {
 		$this->page_wrap(
-			__( 'CVEアラート', 'wp-security-checker' ),
+			__( '脆弱性アラート', 'wp-security-checker' ),
 			'',
 			function () {
 				?>
 				<div class="wsc-admin-body">
 					<div class="wsc-card wsc-upsell-card" style="padding:40px 36px;text-align:center;max-width:640px;margin:0 auto">
 						<div class="wsc-upsell-badge">Pro</div>
-						<h2 class="wsc-upsell-title"><?php esc_html_e( 'CVE日本語アラート', 'wp-security-checker' ); ?></h2>
+						<h2 class="wsc-upsell-title"><?php esc_html_e( '脆弱性アラート（日本語）', 'wp-security-checker' ); ?></h2>
 						<p class="wsc-upsell-desc">
 							<?php esc_html_e( '使用中のプラグイン・テーマに既知の脆弱性（CVE）が見つかったとき、「どのプラグインが」「どんな危険で」「今何をすべきか」を平易な日本語で通知します。外部の脆弱性データベースとの突合はPro版でのみ提供予定です。', 'wp-security-checker' ); ?>
 						</p>
 						<div class="wsc-upsell-features">
-							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '使用プラグイン・テーマのCVE検知', 'wp-security-checker' ); ?></div>
+							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '使用プラグイン・テーマの脆弱性検知', 'wp-security-checker' ); ?></div>
 							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '平易な日本語での危険度・対応手順の提示', 'wp-security-checker' ); ?></div>
 							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '管理画面バナー＋メール通知', 'wp-security-checker' ); ?></div>
 							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '定期チェック（毎日/週次）', 'wp-security-checker' ); ?></div>
