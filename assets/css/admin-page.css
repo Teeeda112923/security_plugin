@@ -1,188 +1,511 @@
-/**
- * WP Security Checker — 専用管理ページのスタイル
- * dashboard.css（項目・バッジの共通スタイル）に上乗せする。
- * 画面幅を活かし、できるだけスクロールせず一望できるレイアウトにする。
- */
+body.toplevel_page_wp-security-checker {
+	background: var(--wsc-bg);
+}
 
 .wsc-admin-wrap {
-	max-width: none;
-	margin-right: 20px;
+	max-width: 1500px;
+	margin: 22px 22px 32px 2px;
 }
 
 .wsc-admin-title {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-}
-
-.wsc-admin-title .dashicons-shield {
-	color: #2a5298;
+	gap: 10px;
+	margin: 0 0 6px;
 	font-size: 28px;
-	width: 28px;
-	height: 28px;
+	font-weight: 850;
+	letter-spacing: .01em;
+	color: var(--wsc-navy);
 }
 
-.wsc-admin-lead {
-	color: #50575e;
-	font-size: 13px;
-	margin: 4px 0 16px;
-}
-
-.wsc-admin-body {
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
-}
-
-/* カード共通 */
-.wsc-card {
-	background: #fff;
-	border: 1px solid #dcdcde;
-	border-radius: 8px;
-	padding: 16px 22px;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-/* サマリーカード — 横一列にまとめて高さを抑える */
-.wsc-summary-card {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 14px 28px;
-	border-left: 5px solid #d1d5db;
-}
-
-.wsc-summary-card.wsc-all-good {
-	border-left-color: #46b450;
-}
-
-.wsc-summary-card.wsc-has-issues {
-	border-left-color: #f0b849;
-}
-
-.wsc-summary-main {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-}
-
-.wsc-summary-icon {
+.wsc-admin-title .dashicons {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 34px;
-	height: 34px;
-	border-radius: 50%;
-	font-size: 19px;
-	font-weight: 700;
-	color: #fff;
-	flex-shrink: 0;
+	width: 30px;
+	height: 30px;
+	font-size: 28px;
+	color: var(--wsc-blue);
 }
 
-.wsc-all-good .wsc-summary-icon {
-	background: #46b450;
+.wsc-admin-lead {
+	margin: 0 0 18px;
+	font-size: 13.5px;
+	line-height: 1.7;
+	color: var(--wsc-muted);
 }
 
-.wsc-has-issues .wsc-summary-icon {
-	background: #f0b849;
+.wsc-admin-body {
+	display: block;
 }
 
-.wsc-summary-text {
-	font-size: 17px;
-	font-weight: 600;
-	color: #1d2327;
+.wsc-card {
+	background: var(--wsc-card);
+	border: 1px solid var(--wsc-border);
+	border-radius: 16px;
+	box-shadow: var(--wsc-shadow-soft);
 }
 
-/* 重要度チップ */
-.wsc-chips {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
-	margin: 0;
+.wsc-hero {
+	display: grid;
+	grid-template-columns: 86px minmax(260px, 1fr) auto auto;
+	gap: 22px;
+	align-items: center;
+	padding: 22px 26px;
+	margin-bottom: 18px;
+	box-shadow: var(--wsc-shadow);
 }
 
-.wsc-chip {
+.wsc-hero-ring {
 	display: inline-flex;
 	align-items: center;
-	padding: 4px 12px;
+	justify-content: center;
+	width: 68px;
+	height: 68px;
 	border-radius: 999px;
-	font-size: 13px;
-	font-weight: 600;
-	border: 1px solid transparent;
+	background: conic-gradient(#F59E0B 0 285deg, #FDE68A 285deg 360deg);
+	box-shadow: inset 0 0 0 11px #FFF7ED;
 }
 
-.wsc-chip-recommended {
-	background: #fce8e6;
-	color: #a40000;
-	border-color: #f3c1bd;
+.wsc-hero-good .wsc-hero-ring {
+	background: conic-gradient(#22C55E 0 360deg, #BBF7D0 0 360deg);
+	box-shadow: inset 0 0 0 11px #ECFDF3;
 }
 
-.wsc-chip-attention {
-	background: #fef7e0;
-	color: #8a6100;
-	border-color: #f5e2a8;
+.wsc-hero-recommended .wsc-hero-ring {
+	background: conic-gradient(#EF4444 0 285deg, #FECACA 285deg 360deg);
+	box-shadow: inset 0 0 0 11px #FEF2F2;
 }
 
-.wsc-chip-good {
-	background: #e7f6e9;
-	color: #1e6b27;
-	border-color: #bfe3c4;
-}
-
-.wsc-summary-actions {
-	display: flex;
+.wsc-hero-ring span {
+	display: inline-flex;
 	align-items: center;
-	gap: 12px;
-	margin: 0 0 0 auto;
-	padding: 0;
-	border: 0;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 999px;
+	font-size: 22px;
+	font-weight: 900;
+	color: #fff;
+	background: #D97706;
 }
 
-.wsc-summary-actions .wsc-last-run {
-	color: #787c82;
-	font-size: 12px;
+.wsc-hero-good .wsc-hero-ring span {
+	background: var(--wsc-good);
 }
 
-/* カテゴリを左右2カラムに並べる */
-.wsc-categories {
+.wsc-hero-recommended .wsc-hero-ring span {
+	background: var(--wsc-recommended);
+}
+
+.wsc-hero-copy h2 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: 850;
+	line-height: 1.35;
+	color: var(--wsc-text);
+}
+
+.wsc-hero-copy p {
+	margin: 6px 0 0;
+	font-size: 13px;
+	line-height: 1.7;
+	color: var(--wsc-muted);
+}
+
+.wsc-hero-counts {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 16px;
+	grid-template-columns: repeat(3, minmax(118px, 1fr));
+	gap: 12px;
+}
+
+.wsc-count-card {
+	display: grid;
+	grid-template-columns: 32px auto;
+	grid-template-rows: auto auto;
+	column-gap: 9px;
+	align-items: center;
+	min-width: 116px;
+	padding: 13px 15px;
+	border-radius: 12px;
+	border: 1px solid var(--wsc-border);
+	background: #fff;
+}
+
+.wsc-count-icon {
+	grid-row: span 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 999px;
+	font-weight: 900;
+	font-size: 15px;
+}
+
+.wsc-count-label {
+	font-size: 11px;
+	font-weight: 750;
+	color: var(--wsc-muted);
+}
+
+.wsc-count-card strong {
+	font-size: 18px;
+	font-weight: 850;
+	line-height: 1.2;
+	color: var(--wsc-text);
+}
+
+.wsc-count-recommended {
+	background: var(--wsc-recommended-bg);
+	border-color: var(--wsc-recommended-border);
+}
+
+.wsc-count-recommended .wsc-count-icon {
+	color: var(--wsc-recommended);
+	background: #fff;
+}
+
+.wsc-count-attention {
+	background: var(--wsc-attention-bg);
+	border-color: var(--wsc-attention-border);
+}
+
+.wsc-count-attention .wsc-count-icon {
+	color: var(--wsc-attention);
+	background: #fff;
+}
+
+.wsc-count-good {
+	background: var(--wsc-good-bg);
+	border-color: var(--wsc-good-border);
+}
+
+.wsc-count-good .wsc-count-icon {
+	color: var(--wsc-good);
+	background: #fff;
+}
+
+.wsc-hero-actions {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 10px;
+}
+
+.wsc-admin-wrap .wsc-refresh-btn.button-primary {
+	min-height: 46px;
+	padding: 0 26px;
+	border: 0;
+	border-radius: 10px !important;
+	font-size: 14px;
+	font-weight: 800;
+	background: linear-gradient(135deg, var(--wsc-blue) 0%, #1D4ED8 100%) !important;
+	box-shadow: 0 12px 22px rgba(37, 99, 235, .24) !important;
+}
+
+.wsc-admin-grid {
+	display: grid;
+	grid-template-columns: minmax(420px, 0.96fr) minmax(460px, 1.04fr);
+	gap: 18px;
 	align-items: start;
 }
 
-/* 画面が狭いときは1カラムに戻す */
-@media screen and (max-width: 1100px) {
-	.wsc-categories {
+.wsc-admin-main-column {
+	display: grid;
+	gap: 18px;
+}
+
+.wsc-category-card,
+.wsc-priority-card {
+	padding: 20px;
+}
+
+.wsc-card-heading-row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.wsc-card-title {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0;
+	font-size: 18px;
+	font-weight: 850;
+	line-height: 1.4;
+	color: var(--wsc-navy);
+}
+
+.wsc-card-desc {
+	margin: 4px 0 16px;
+	font-size: 12.5px;
+	line-height: 1.7;
+	color: var(--wsc-muted);
+}
+
+.wsc-section-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 10px;
+	font-size: 16px;
+	font-weight: 900;
+}
+
+.wsc-section-icon-blue {
+	color: var(--wsc-blue);
+	background: #EFF6FF;
+}
+
+.wsc-section-icon-alert {
+	color: #fff;
+	background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%);
+	border-radius: 999px;
+}
+
+.wsc-mini-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 42px;
+	padding: 6px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 800;
+	color: var(--wsc-recommended);
+	background: var(--wsc-recommended-bg);
+	border: 1px solid var(--wsc-recommended-border);
+}
+
+.wsc-priority-list,
+.wsc-item-list {
+	display: grid;
+	gap: 10px;
+}
+
+.wsc-priority-list .wsc-item {
+	border-color: var(--wsc-recommended-border);
+	background: linear-gradient(135deg, #fff 0%, #fff 62%, #FEF2F2 100%);
+}
+
+.wsc-priority-list .wsc-item.wsc-status-attention {
+	border-color: var(--wsc-attention-border);
+	background: linear-gradient(135deg, #fff 0%, #fff 62%, #FFFBEB 100%);
+}
+
+.wsc-empty-state {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 18px;
+	border-radius: 14px;
+	background: var(--wsc-good-bg);
+	border: 1px solid var(--wsc-good-border);
+	color: var(--wsc-good);
+}
+
+.wsc-empty-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 999px;
+	background: #fff;
+	font-weight: 900;
+}
+
+.wsc-empty-state p {
+	margin: 0;
+	font-weight: 750;
+}
+
+.wsc-admin-note {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+	margin: 20px 0 0;
+	font-size: 12px;
+	line-height: 1.7;
+	color: var(--wsc-muted);
+	text-align: center;
+}
+
+.wsc-admin-note .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	color: var(--wsc-muted);
+}
+
+@media (max-width: 1280px) {
+	.wsc-hero {
+		grid-template-columns: 78px minmax(260px, 1fr) auto;
+	}
+	.wsc-hero-actions {
+		grid-column: 1 / -1;
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-end;
+	}
+	.wsc-admin-grid {
 		grid-template-columns: 1fr;
 	}
 }
 
-/* カテゴリカード */
-.wsc-card-title {
-	margin: 0 0 2px;
-	font-size: 16px;
-	color: #1d2327;
+@media (max-width: 960px) {
+	.wsc-admin-wrap {
+		margin-right: 12px;
+	}
+	.wsc-hero {
+		grid-template-columns: 1fr;
+		gap: 16px;
+		padding: 20px;
+	}
+	.wsc-hero-status,
+	.wsc-hero-actions {
+		align-items: flex-start;
+	}
+	.wsc-hero-actions {
+		justify-content: flex-start;
+	}
+	.wsc-hero-counts {
+		grid-template-columns: 1fr;
+	}
 }
 
-.wsc-card-desc {
-	margin: 0 0 8px;
-	color: #787c82;
+@media (max-width: 600px) {
+	.wsc-card-title {
+		font-size: 16px;
+	}
+	.wsc-hero-copy h2 {
+		font-size: 20px;
+	}
+	.wsc-category-card,
+	.wsc-priority-card {
+		padding: 16px;
+	}
+}
+
+/* サブメニューのProバッジ */
+.wsc-menu-badge {
+	display: inline-block;
+	padding: 1px 5px;
+	border-radius: 4px;
+	font-size: 9px;
+	font-weight: 800;
+	vertical-align: middle;
+	background: #2563EB;
+	color: #fff;
+	line-height: 14px;
+	letter-spacing: .04em;
+}
+
+.wsc-menu-badge-biz {
+	background: #7C3AED;
+}
+
+/* カードの「すべて見る」リンク */
+.wsc-card-more {
+	margin-top: 14px;
+	padding-top: 12px;
+	border-top: 1px solid var(--wsc-border);
+	text-align: right;
+}
+
+.wsc-admin-body .wsc-detail-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--wsc-blue) !important;
+	text-decoration: none;
+}
+
+.wsc-admin-body .wsc-detail-link:hover {
+	color: var(--wsc-blue-2) !important;
+}
+
+/* アップセルページ */
+.wsc-upsell-card {
+	margin-top: 20px;
+}
+
+.wsc-upsell-badge {
+	display: inline-block;
+	padding: 4px 14px;
+	border-radius: 999px;
 	font-size: 12px;
+	font-weight: 800;
+	background: linear-gradient(135deg, #2563EB 0%, #0B1F4D 100%);
+	color: #fff;
+	margin-bottom: 16px;
+	letter-spacing: .06em;
 }
 
-/* 専用ページでは項目をコンパクトに詰める */
-.wsc-admin-body .wsc-item {
-	padding: 9px 4px;
+.wsc-upsell-badge-biz {
+	background: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%);
 }
 
-.wsc-admin-body .wsc-item-label {
+.wsc-upsell-title {
+	margin: 0 0 12px;
+	font-size: 22px;
+	font-weight: 850;
+	color: var(--wsc-navy);
+}
+
+.wsc-upsell-desc {
+	margin: 0 0 24px;
 	font-size: 14px;
+	line-height: 1.8;
+	color: var(--wsc-muted);
 }
 
-.wsc-admin-note {
-	color: #787c82;
-	font-size: 12px;
-	line-height: 1.7;
-	margin: 0 4px 16px;
+.wsc-upsell-features {
+	display: grid;
+	gap: 10px;
+	text-align: left;
+	margin: 0 auto 24px;
+	max-width: 420px;
+}
+
+.wsc-upsell-feature {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 14px;
+	color: var(--wsc-text);
+}
+
+.wsc-upsell-feature span {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: 999px;
+	background: var(--wsc-good-bg);
+	color: var(--wsc-good);
+	font-weight: 900;
+	font-size: 13px;
+	flex-shrink: 0;
+}
+
+.wsc-upsell-coming {
+	display: inline-block;
+	padding: 8px 22px;
+	border-radius: 999px;
+	font-size: 13px;
+	font-weight: 700;
+	background: var(--wsc-bg);
+	color: var(--wsc-muted);
+	border: 1px solid var(--wsc-border);
 }
