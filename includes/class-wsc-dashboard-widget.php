@@ -176,7 +176,7 @@ class WSC_Dashboard_Widget {
 			<?php if ( ! empty( $item['message'] ) ) : ?>
 				<div class="wsc-item-message"><?php echo esc_html( $item['message'] ); ?></div>
 			<?php endif; ?>
-			<?php if ( in_array( $item['id'], array( 'a3', 'a4' ), true ) && 'good' !== $item['status'] ) : ?>
+			<?php if ( 'a3' === $item['id'] && 'good' !== $item['status'] ) : ?>
 				<div class="wsc-update-link">
 					<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small">
 						<?php esc_html_e( '更新画面を開く', 'wp-security-checker' ); ?>

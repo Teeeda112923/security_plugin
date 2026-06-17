@@ -1,11 +1,203 @@
-# Japanese translation for WP Security Checker
-# Copyright (C) 2026 Tanabe
+# Translation of WP Security Checker in Japanese
+# This file is distributed under the same license as the WP Security Checker package.
+# Copyright (C) 2024 Tanabe
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Security Checker 1.0.0\n"
-"PO-Revision-Date: 2026-06-17\n"
+"Report-Msgid-Bugs-To: https://example.com/wp-security-checker\n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: Tanabe\n"
+"Language-Team: Japanese\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Manual\n"
+"X-Domain: wp-security-checker\n"
+
+# ─── Widget title ───────────────────────────────────────────────────────────
+msgid "セキュリティ診断"
+msgstr "セキュリティ診断"
+
+# ─── Summary messages ────────────────────────────────────────────────────────
+msgid "すべての項目で問題は見つかりませんでした"
+msgstr "すべての項目で問題は見つかりませんでした"
+
+#. translators: %d: number of issues found
+msgid "%d件の問題が見つかりました"
+msgstr "%d件の問題が見つかりました"
+
+# ─── Category headings ───────────────────────────────────────────────────────
+msgid "A. バージョン鮮度"
+msgstr "A. バージョン鮮度"
+
+msgid "B. ハードニング設定"
+msgstr "B. ハードニング設定"
+
+# ─── Footer ──────────────────────────────────────────────────────────────────
+msgid "再診断"
+msgstr "再診断"
+
+msgid "診断中..."
+msgstr "診断中..."
+
+#. translators: %s: current date and time
+msgid "診断日時: %s"
+msgstr "診断日時: %s"
+
+# ─── Status badge labels ─────────────────────────────────────────────────────
+msgid "問題なし"
+msgstr "問題なし"
+
+msgid "改善推奨"
+msgstr "改善推奨"
+
+msgid "要対応"
+msgstr "要対応"
+
+# ─── Update button ───────────────────────────────────────────────────────────
+msgid "更新画面を開く"
+msgstr "更新画面を開く"
+
+# ─── A-1: PHP version ────────────────────────────────────────────────────────
+msgid "PHPバージョン"
+msgstr "PHPバージョン"
+
+#. translators: %s: current PHP version string
+msgid "PHP 8.4以上へのアップデートを推奨します（現在: %s）"
+msgstr "PHP 8.4以上へのアップデートを推奨します（現在: %s）"
+
+#. translators: %s: current PHP version string
+msgid "PHP 8.2以上へのアップデートが必要です（現在: %s）"
+msgstr "PHP 8.2以上へのアップデートが必要です（現在: %s）"
+
+#. translators: %s: current PHP version string
+msgid "現在のバージョン: %s"
+msgstr "現在のバージョン: %s"
+
+# ─── A-2: WordPress version ──────────────────────────────────────────────────
+msgid "WordPressバージョン"
+msgstr "WordPressバージョン"
+
+#. translators: %s: current WordPress version
+msgid "現在のバージョン: %s（最新）"
+msgstr "現在のバージョン: %s（最新）"
+
+#. translators: 1: current WP version, 2: latest WP version
+msgid "最新バージョンが利用可能です（現在: %1$s, 最新: %2$s）"
+msgstr "最新バージョンが利用可能です（現在: %1$s, 最新: %2$s）"
+
+#. translators: 1: current WP version, 2: latest WP version
+msgid "早急なアップデートを推奨します（現在: %1$s, 最新: %2$s）"
+msgstr "早急なアップデートを推奨します（現在: %1$s, 最新: %2$s）"
+
+#. translators: 1: current WP version, 2: latest WP version
+msgid "現在: %1$s / 最新: %2$s"
+msgstr "現在: %1$s / 最新: %2$s"
+
+# ─── A-3: Plugin updates ─────────────────────────────────────────────────────
+msgid "プラグイン更新数"
+msgstr "プラグイン更新数"
+
+#. translators: %d: number of plugins needing updates
+msgid "%d件のプラグインに更新があります"
+msgstr "%d件のプラグインに更新があります"
+
+#. translators: %d: number of plugins needing updates
+msgid "%d件のプラグインに更新があります。早急に対応してください"
+msgstr "%d件のプラグインに更新があります。早急に対応してください"
+
+#. translators: %s: comma-separated list of plugin names
+msgid "対象: %s"
+msgstr "対象: %s"
+
+# ─── A-4: Theme updates ──────────────────────────────────────────────────────
+msgid "テーマ更新数"
+msgstr "テーマ更新数"
+
+#. translators: %d: number of themes needing updates
+msgid "%d件のテーマに更新があります"
+msgstr "%d件のテーマに更新があります"
+
+#. translators: %d: number of themes needing updates
+msgid "%d件のテーマに更新があります。早急に対応してください"
+msgstr "%d件のテーマに更新があります。早急に対応してください"
+
+# ─── B-1: Debug mode ─────────────────────────────────────────────────────────
+msgid "デバッグモード"
+msgstr "デバッグモード"
+
+msgid "wp-config.phpでWP_DEBUGをfalseに設定してください（現在有効: 情報漏洩リスクあり）"
+msgstr "wp-config.phpでWP_DEBUGをfalseに設定してください（現在有効: 情報漏洩リスクあり）"
+
+msgid "WP_DEBUG: true（本番環境では無効化推奨）"
+msgstr "WP_DEBUG: true（本番環境では無効化推奨）"
+
+msgid "WP_DEBUG: false（正常）"
+msgstr "WP_DEBUG: false（正常）"
+
+# ─── B-2: File editing ───────────────────────────────────────────────────────
+msgid "ファイル編集機能"
+msgstr "ファイル編集機能"
+
+msgid "wp-config.phpに define('DISALLOW_FILE_EDIT', true); を追加してください（テーマ・プラグインの不正編集を防止）"
+msgstr "wp-config.phpに define('DISALLOW_FILE_EDIT', true); を追加してください（テーマ・プラグインの不正編集を防止）"
+
+msgid "DISALLOW_FILE_EDIT: true（管理画面からの編集を無効化済み）"
+msgstr "DISALLOW_FILE_EDIT: true（管理画面からの編集を無効化済み）"
+
+msgid "DISALLOW_FILE_EDIT: 未設定（管理画面からファイル編集が可能）"
+msgstr "DISALLOW_FILE_EDIT: 未設定（管理画面からファイル編集が可能）"
+
+# ─── B-3: HTTPS ──────────────────────────────────────────────────────────────
+msgid "HTTPS設定"
+msgstr "HTTPS設定"
+
+msgid "SSL証明書を導入し、常時HTTPSを設定してください（現在: HTTP運用中）"
+msgstr "SSL証明書を導入し、常時HTTPSを設定してください（現在: HTTP運用中）"
+
+msgid "HTTPS: 有効（SSL証明書が適用されています）"
+msgstr "HTTPS: 有効（SSL証明書が適用されています）"
+
+msgid "HTTPS: 無効（HTTP接続）"
+msgstr "HTTPS: 無効（HTTP接続）"
+
+# ─── B-4: Login URL ──────────────────────────────────────────────────────────
+msgid "ログインURL"
+msgstr "ログインURL"
+
+msgid "ログインURLを変更するプラグイン（例: WPS Hide Login）の導入を検討してください（デフォルトURL: /wp-login.php）"
+msgstr "ログインURLを変更するプラグイン（例: WPS Hide Login）の導入を検討してください（デフォルトURL: /wp-login.php）"
+
+msgid "ログインURL変更プラグインが有効です"
+msgstr "ログインURL変更プラグインが有効です"
+
+msgid "デフォルトのログインURL (/wp-login.php) が使用されています"
+msgstr "デフォルトのログインURL (/wp-login.php) が使用されています"
+
+# ─── B-5: Admin username ─────────────────────────────────────────────────────
+msgid "管理者ユーザー名"
+msgstr "管理者ユーザー名"
+
+msgid "ユーザー名 \"admin\" が存在します。別のユーザー名に変更してください（バックアップ後に実施）"
+msgstr "ユーザー名 \"admin\" が存在します。別のユーザー名に変更してください（バックアップ後に実施）"
+
+msgid "ユーザー名 \"admin\" は存在しません（良好）"
+msgstr "ユーザー名 \"admin\" は存在しません（良好）"
+
+msgid "ユーザー名 \"admin\" が検出されました（ブルートフォース攻撃のリスク）"
+msgstr "ユーザー名 \"admin\" が検出されました（ブルートフォース攻撃のリスク）"
+
+# ─── B-6: Database prefix ────────────────────────────────────────────────────
+msgid "データベース接頭辞"
+msgstr "データベース接頭辞"
+
+msgid "DBテーブル接頭辞が \"wp_\" のままです。新規構築時には変更を推奨します（稼働中サイトでの変更は慎重に）"
+msgstr "DBテーブル接頭辞が \"wp_\" のままです。新規構築時には変更を推奨します（稼働中サイトでの変更は慎重に）"
+
+#. translators: %s: current database table prefix
+msgid "現在の接頭辞: %s"
+msgstr "現在の接頭辞: %s"
