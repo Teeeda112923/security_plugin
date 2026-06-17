@@ -1,0 +1,11 @@
+# Japanese translation for WP Security Checker
+# Copyright (C) 2026 Tanabe
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Security Checker 1.0.0\n"
+"PO-Revision-Date: 2026-06-17\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
