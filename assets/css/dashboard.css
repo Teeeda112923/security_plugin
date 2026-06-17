@@ -265,9 +265,23 @@
 .wsc-refresh-btn {
 	display: inline-flex !important;
 	align-items: center;
+	justify-content: center;
 	gap: 6px;
 	border-radius: 10px !important;
 	font-weight: 750 !important;
+	line-height: 1;
+}
+
+/* ボタン内の dashicons をテキストと中央で揃える */
+.wsc-refresh-btn .dashicons {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	font-size: 18px;
+	line-height: 1;
+	vertical-align: middle;
 }
 
 .wsc-widget .wsc-refresh-btn {
