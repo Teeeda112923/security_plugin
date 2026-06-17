@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <rect width="256" height="256" rx="32" fill="#1e3a5f"/>
+  <!-- Shield outline -->
+  <path d="M128 32 L196 62 L196 130 Q196 178 128 214 Q60 178 60 130 L60 62 Z"
+        fill="none" stroke="#ffffff" stroke-width="10" stroke-linejoin="round"/>
+  <!-- Shield fill -->
+  <path d="M128 44 L186 70 L186 130 Q186 170 128 202 Q70 170 70 130 L70 70 Z"
+        fill="#2a5298"/>
+  <!-- Checkmark -->
+  <polyline points="96,128 116,150 162,104"
+            fill="none" stroke="#4ade80" stroke-width="14"
+            stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
