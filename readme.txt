@@ -1,4 +1,4 @@
-=== WP Security Checker ===
+=== Site Security Checker ===
 Contributors: tanabe
 Tags: security, セキュリティ, hardening, diagnostic, vulnerability
 Requires at least: 5.9

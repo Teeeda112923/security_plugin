@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WP Security Checker
+ * Plugin Name: Site Security Checker
  * Plugin URI: https://wordpress.org/plugins/wp-security-checker/
  * Description: WordPressサイトのセキュリティ設定とバージョン状態を診断し、日本語で改善手順を提示します。外部通信なし・軽量設計。
  * Version: 1.0.0
