@@ -24,7 +24,7 @@ jobs:
       - name: Resolve latest WordPress version
         id: wp
         run: |
-          latest=$(curl -fsSL https://api.wordpress.org/core/stable-check/1.0/ \
+          latest=$(curl -fsSL -A "site-security-checker (WordPress.org compatibility check)" https://api.wordpress.org/core/stable-check/1.0/ \
             | python3 -c "import sys, json; d = json.load(sys.stdin); print(next(k for k, v in d.items() if v == 'latest'))")
           major=$(echo "$latest" | cut -d. -f1,2)
           echo "Latest WordPress: $latest (major.minor: $major)"
