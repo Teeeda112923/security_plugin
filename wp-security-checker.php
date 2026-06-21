@@ -42,13 +42,16 @@ require_once WSC_PLUGIN_DIR . 'includes/class-wsc-category-b.php';
 require_once WSC_PLUGIN_DIR . 'includes/class-wsc-diagnostics.php';
 require_once WSC_PLUGIN_DIR . 'includes/class-wsc-renderer.php';
 require_once WSC_PLUGIN_DIR . 'includes/class-wsc-dashboard-widget.php';
+require_once WSC_PLUGIN_DIR . 'includes/class-wsc-pro-license.php';
+require_once WSC_PLUGIN_DIR . 'includes/class-wsc-pro-scanner.php';
 require_once WSC_PLUGIN_DIR . 'includes/class-wsc-admin-page.php';
 
-// Bootstrap the dashboard widget and the dedicated admin page.
+// Bootstrap the dashboard widget, admin page, and Pro license handler.
 add_action(
 	'plugins_loaded',
 	function () {
 		new WSC_Dashboard_Widget();
 		new WSC_Admin_Page();
+		new WSC_Pro_License();
 	}
 );
