@@ -1,10 +1,10 @@
-# Translation of WP Security Checker in Japanese
-# This file is distributed under the same license as the WP Security Checker package.
+# Translation of Site Security Checker in Japanese
+# This file is distributed under the same license as the Site Security Checker package.
 # Copyright (C) 2024 Tanabe
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Security Checker 1.0.0\n"
+"Project-Id-Version: Site Security Checker 1.0.0\n"
 "Report-Msgid-Bugs-To: https://example.com/wp-security-checker\n"
 "POT-Creation-Date: 2024-01-01 00:00+0000\n"
 "PO-Revision-Date: 2024-01-01 00:00+0000\n"
