@@ -5,3 +5,6 @@
 .DS_Store
 Thumbs.db
 *.swp
+
+# Work scratch files (作業用一時ファイル：生成物なので追跡しない)
+docs/website/_combined-for-chatgpt.md
