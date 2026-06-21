@@ -28,9 +28,9 @@ class WSC_Renderer {
 	 */
 	public static function status_label( $status ) {
 		$labels = array(
-			'good'        => __( '問題なし', 'wp-security-checker' ),
-			'attention'   => __( '改善推奨', 'wp-security-checker' ),
-			'recommended' => __( '要対応', 'wp-security-checker' ),
+			'good'        => __( '問題なし', 'site-security-checker' ),
+			'attention'   => __( '改善推奨', 'site-security-checker' ),
+			'recommended' => __( '要対応', 'site-security-checker' ),
 		);
 		return isset( $labels[ $status ] ) ? $labels[ $status ] : '';
 	}
@@ -341,7 +341,7 @@ class WSC_Renderer {
 				<?php if ( $args['show_action'] && 'a3' === $id && 'good' !== $status ) : ?>
 					<div class="wsc-item-action">
 						<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small wsc-secondary-action">
-							<?php esc_html_e( '更新画面を開く', 'wp-security-checker' ); ?>
+							<?php esc_html_e( '更新画面を開く', 'site-security-checker' ); ?>
 						</a>
 					</div>
 				<?php endif; ?>
@@ -349,23 +349,23 @@ class WSC_Renderer {
 				<?php if ( $guide ) : ?>
 					<div class="wsc-item-guide" id="<?php echo esc_attr( $guide_id ); ?>" style="display:none">
 						<div class="wsc-guide-section">
-							<div class="wsc-guide-section-title"><?php esc_html_e( '対応手順', 'wp-security-checker' ); ?></div>
+							<div class="wsc-guide-section-title"><?php esc_html_e( '対応手順', 'site-security-checker' ); ?></div>
 							<div class="wsc-guide-steps"><?php echo wp_kses( $guide['steps'], $allowed_html ); ?></div>
 						</div>
 						<?php if ( ! empty( $guide['has_update_link'] ) ) : ?>
 							<div class="wsc-guide-action">
 								<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small wsc-secondary-action">
-									<?php esc_html_e( '更新画面を開く', 'wp-security-checker' ); ?>
+									<?php esc_html_e( '更新画面を開く', 'site-security-checker' ); ?>
 								</a>
 							</div>
 						<?php endif; ?>
 						<div class="wsc-guide-section">
-							<div class="wsc-guide-section-title"><?php esc_html_e( '対応しないと…', 'wp-security-checker' ); ?></div>
+							<div class="wsc-guide-section-title"><?php esc_html_e( '対応しないと…', 'site-security-checker' ); ?></div>
 							<div class="wsc-guide-risk"><?php echo wp_kses( $guide['risk'], $allowed_html ); ?></div>
 						</div>
 						<?php if ( ! empty( $guide['links'] ) ) : ?>
 							<div class="wsc-guide-links">
-								<div class="wsc-guide-section-title"><?php esc_html_e( '詳細はこちら', 'wp-security-checker' ); ?></div>
+								<div class="wsc-guide-section-title"><?php esc_html_e( '詳細はこちら', 'site-security-checker' ); ?></div>
 								<?php foreach ( $guide['links'] as $link ) : ?>
 									<a href="<?php echo esc_url( $link['url'] ); ?>" class="wsc-guide-link" target="_blank" rel="noopener noreferrer">
 										<span class="dashicons dashicons-external" aria-hidden="true"></span>
@@ -383,7 +383,7 @@ class WSC_Renderer {
 					class="wsc-item-chevron wsc-guide-toggle"
 					aria-expanded="false"
 					aria-controls="<?php echo esc_attr( $guide_id ); ?>"
-					aria-label="<?php esc_attr_e( '詳細ガイドを表示', 'wp-security-checker' ); ?>"
+					aria-label="<?php esc_attr_e( '詳細ガイドを表示', 'site-security-checker' ); ?>"
 					onclick="wscToggleGuide(this)"
 				>›</button>
 			<?php else : ?>

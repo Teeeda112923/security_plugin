@@ -6,10 +6,10 @@
  * Version: 1.0.0
  * Author: Tanabe
  * Author URI: https://cybernote.click/
- * Text Domain: wp-security-checker
+ * Text Domain: site-security-checker
  * Domain Path: /languages
  * Requires at least: 5.9
- * Tested up to: 6.7
+ * Tested up to: 7.0
  * Requires PHP: 7.4
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -29,7 +29,7 @@ add_action(
 	'plugins_loaded',
 	function () {
 		load_plugin_textdomain(
-			'wp-security-checker',
+			'site-security-checker',
 			false,
 			dirname( plugin_basename( __FILE__ ) ) . '/languages'
 		);
