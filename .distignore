@@ -1,0 +1,19 @@
+# Files and directories excluded from the deployed plugin package.
+# Everything NOT listed here ships to WordPress.org (SVN trunk).
+
+/.git
+/.github
+/.wordpress-org
+/docs
+/node_modules
+
+.gitignore
+.gitattributes
+.distignore
+CLAUDE.md
+
+*.zip
+*.log
+.DS_Store
+Thumbs.db
+*.swp

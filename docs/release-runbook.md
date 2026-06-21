@@ -156,14 +156,78 @@ cd svn-ssc && svn add --force assets && svn commit -m "Update assets"
 
 ---
 
-## 自動化のヒント（任意）
+## 自動化（このリポジトリに設定済み）
 
-毎回手作業でSVNへ反映するのは手間なので、慣れてきたら **GitHub Actions で自動リリース** を組むと便利です。
+`.github/workflows/` に3つのワークフローを用意済みです。手作業のSVN操作はほぼ不要になります。
 
-- [`10up/action-wordpress-plugin-deploy`](https://github.com/10up/action-wordpress-plugin-deploy) … GitHubでタグを打つと自動でSVNへデプロイ
-- [`10up/action-wordpress-plugin-asset-update`](https://github.com/10up/action-wordpress-plugin-asset-update) … readme・assetsだけを自動更新
+### 動作の全体像
 
-導入すると「GitHubで `v1.0.1` タグを打つ → 自動でWordPress.orgに公開」という流れが作れます。必要になったら設定をお手伝いします。
+```
+[毎週月曜] update-tested-up-to.yml
+    └─ 最新WordPressを確認 → Tested up to を更新 → PRを自動作成
+            └─（あなたがPRをマージ）
+                    └─ wordpress-assets.yml が起動 → 掲載ページに反映
+
+[v1.0.1 タグを push] deploy.yml
+    └─ プラグイン本体をSVN trunk + tags/1.0.1 へデプロイ（=新バージョン公開）
+```
+
+| ワークフロー | きっかけ | 役割 |
+|---|---|---|
+| `deploy.yml` | `v*` タグのpush | プラグイン本体を公開（新バージョンリリース） |
+| `wordpress-assets.yml` | `readme.txt`・`.wordpress-org/` の変更 | readmeと画像だけを掲載ページへ反映（バージョンUP不要） |
+| `update-tested-up-to.yml` | 毎週月曜＋手動 | 新WordPress検知→`Tested up to`更新→PR作成 |
+
+### 事前設定（承認後・初回のみ）
+
+#### 1. SVNの認証情報をSecretsに登録
+
+GitHubリポジトリの **Settings → Secrets and variables → Actions** で、以下2つを登録します。値はWordPress.orgアカウントのユーザー名とパスワードです。
+
+| Secret名 | 値 |
+|---|---|
+| `SVN_USERNAME` | WordPress.org のユーザー名 |
+| `SVN_PASSWORD` | WordPress.org のパスワード |
+
+#### 2. Actionsにプルリク作成を許可
+
+**Settings → Actions → General → Workflow permissions** で、
+「Allow GitHub Actions to create and approve pull requests」にチェックを入れます。
+（`update-tested-up-to.yml` がPRを作るために必要です）
+
+### 画像はどこに置く？
+
+WordPress.org掲載用の画像は、プラグイン本体ではなく **`.wordpress-org/`** フォルダに置きます（`.distignore` で配布物から除外済み）。
+
+```
+.wordpress-org/
+├── banner-772x250.png   バナー
+├── icon.svg             アイコン
+├── screenshot-1.png     スクリーンショット1
+└── screenshot-2.png     スクリーンショット2
+```
+
+ここを更新してデフォルトブランチにpushすると、`wordpress-assets.yml` が自動で掲載ページに反映します。
+
+### 新バージョンを出す手順（自動化後）
+
+1. コードを修正し、`Version`（plugin）と `Stable tag`（readme）と `Changelog` を更新
+2. デフォルトブランチにマージ
+3. タグを打ってpushするだけ:
+
+```bash
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+あとは `deploy.yml` がSVNへデプロイし、数分でWordPress.orgに公開されます。
+
+### `Tested up to` の自動更新について
+
+`update-tested-up-to.yml` は毎週WordPressの最新版を確認し、新しければ自動で更新PRを作ります。**PRは自動マージされません** — これは「テストせずに互換性を主張しない」ためのチェックポイントです。
+
+- 理想は、PRを見たら新WordPress環境で一度プラグインを動かして確認 → マージ
+- 完全に手放しにしたい場合は、リポジトリの **auto-merge** を有効化するか、ワークフローをPR作成ではなく直接コミットに変更できます（その場合の変更もお手伝いします）
 
 ---
 

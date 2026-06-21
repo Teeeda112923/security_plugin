@@ -1,0 +1,51 @@
+name: Update Tested up to
+
+# Weekly check of the latest WordPress release. When a newer version exists,
+# bump the "Tested up to" headers and open a pull request for review.
+# Merging the PR triggers wordpress-assets.yml, which pushes the change live.
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # every Monday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Bump Tested up to
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve latest WordPress version
+        id: wp
+        run: |
+          latest=$(curl -fsSL https://api.wordpress.org/core/stable-check/1.0/ \
+            | python3 -c "import sys, json; d = json.load(sys.stdin); print(next(k for k, v in d.items() if v == 'latest'))")
+          major=$(echo "$latest" | cut -d. -f1,2)
+          echo "Latest WordPress: $latest (major.minor: $major)"
+          echo "version=$major" >> "$GITHUB_OUTPUT"
+
+      - name: Update Tested up to headers
+        run: |
+          sed -i "s/^Tested up to: .*/Tested up to: ${{ steps.wp.outputs.version }}/" readme.txt
+          sed -i "s/\(\* Tested up to: \).*/\1${{ steps.wp.outputs.version }}/" wp-security-checker.php
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "Bump Tested up to ${{ steps.wp.outputs.version }}"
+          branch: auto/tested-up-to
+          delete-branch: true
+          title: "Bump Tested up to ${{ steps.wp.outputs.version }}"
+          body: |
+            WordPress ${{ steps.wp.outputs.version }} がリリースされたため、
+            `Tested up to` を自動更新しました。
+
+            **マージ前に、できれば WordPress ${{ steps.wp.outputs.version }} 環境で
+            プラグインを有効化し、診断が正常に動くことを確認してください。**
+
+            マージすると `wordpress-assets.yml` が走り、WordPress.org の掲載ページに反映されます。

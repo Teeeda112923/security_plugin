@@ -1,0 +1,32 @@
+name: Deploy to WordPress.org
+
+# Push a version tag (e.g. v1.0.1) to release that version to WordPress.org.
+#   git tag v1.0.1 && git push origin v1.0.1
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    name: Deploy plugin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to WordPress.org SVN
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: site-security-checker
+          ASSETS_DIR: .wordpress-org
+        with:
+          generate-zip: true
+
+      - name: Upload release ZIP as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-security-checker
+          path: ${{ github.workspace }}/site-security-checker.zip
