@@ -606,7 +606,7 @@ class WSC_Admin_Page {
 		<p class="wsc-admin-note">
 			<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>
 			<?php esc_html_e( 'このプラグインは診断と情報提供に特化しています。設定の変更や更新の実行は行いません。', 'site-security-checker' ); ?>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::MENU_SLUG ) ); ?>"><?php esc_html_e( '使い方ガイドを見る ↗', 'site-security-checker' ); ?></a>
+			<a href="<?php echo esc_url( 'https://www.cybernote.click/wp-security-checker-guide/' ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( '使い方ガイドを見る ↗', 'site-security-checker' ); ?></a>
 		</p>
 		<?php
 	}
