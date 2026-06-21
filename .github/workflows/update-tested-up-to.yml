@@ -1,8 +1,8 @@
 name: Update Tested up to
 
 # Weekly check of the latest WordPress release. When a newer version exists,
-# bump the "Tested up to" headers and open a pull request for review.
-# Merging the PR triggers wordpress-assets.yml, which pushes the change live.
+# bump the "Tested up to" headers and commit directly to the default branch.
+# This triggers wordpress-assets.yml, which pushes the change live immediately.
 on:
   schedule:
     - cron: '0 6 * * 1'   # every Monday 06:00 UTC
@@ -10,7 +10,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   update:
@@ -19,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Resolve latest WordPress version
         id: wp
@@ -29,23 +30,28 @@ jobs:
           echo "Latest WordPress: $latest (major.minor: $major)"
           echo "version=$major" >> "$GITHUB_OUTPUT"
 
-      - name: Update Tested up to headers
+      - name: Check if update is needed
+        id: check
+        run: |
+          current=$(grep "^Tested up to:" readme.txt | awk '{print $NF}')
+          echo "Current: $current / Latest: ${{ steps.wp.outputs.version }}"
+          if [ "$current" = "${{ steps.wp.outputs.version }}" ]; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Bump Tested up to headers
+        if: steps.check.outputs.needed == 'true'
         run: |
           sed -i "s/^Tested up to: .*/Tested up to: ${{ steps.wp.outputs.version }}/" readme.txt
           sed -i "s/\(\* Tested up to: \).*/\1${{ steps.wp.outputs.version }}/" wp-security-checker.php
 
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "Bump Tested up to ${{ steps.wp.outputs.version }}"
-          branch: auto/tested-up-to
-          delete-branch: true
-          title: "Bump Tested up to ${{ steps.wp.outputs.version }}"
-          body: |
-            WordPress ${{ steps.wp.outputs.version }} がリリースされたため、
-            `Tested up to` を自動更新しました。
-
-            **マージ前に、できれば WordPress ${{ steps.wp.outputs.version }} 環境で
-            プラグインを有効化し、診断が正常に動くことを確認してください。**
-
-            マージすると `wordpress-assets.yml` が走り、WordPress.org の掲載ページに反映されます。
+      - name: Commit and push
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add readme.txt wp-security-checker.php
+          git commit -m "Bump Tested up to ${{ steps.wp.outputs.version }} [skip ci]"
+          git push
