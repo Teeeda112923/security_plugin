@@ -1,0 +1,1123 @@
+<style>
+.cn-wsc-guide2 {
+  --cn-navy: #0B1F4D;
+  --cn-blue: #2563EB;
+  --cn-blue-soft: #EFF6FF;
+  --cn-green: #16A34A;
+  --cn-green-soft: #ECFDF5;
+  --cn-orange: #D97706;
+  --cn-orange-soft: #FFFBEB;
+  --cn-red: #DC2626;
+  --cn-red-soft: #FEF2F2;
+  --cn-text: #1F2937;
+  --cn-muted: #5B6475;
+  --cn-border: #E5E7EB;
+  --cn-border-strong: #CBD5E1;
+  --cn-bg: #F8FAFC;
+  --cn-card: #FFFFFF;
+
+  max-width: 1040px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--cn-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  background: var(--cn-bg);
+  padding: 0 16px 48px;
+  box-sizing: border-box;
+}
+
+/* 見出しリセット（Cocoon等テーマ装飾の打ち消し） */
+.cn-wsc-guide2 h1,
+.cn-wsc-guide2 h2,
+.cn-wsc-guide2 h3,
+.cn-wsc-guide2 h4,
+.entry-content .cn-wsc-guide2 h1,
+.entry-content .cn-wsc-guide2 h2,
+.entry-content .cn-wsc-guide2 h3,
+.entry-content .cn-wsc-guide2 h4,
+.article .cn-wsc-guide2 h1,
+.article .cn-wsc-guide2 h2,
+.article .cn-wsc-guide2 h3,
+.article .cn-wsc-guide2 h4 {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.cn-wsc-guide2 h1::before, .cn-wsc-guide2 h1::after,
+.cn-wsc-guide2 h2::before, .cn-wsc-guide2 h2::after,
+.cn-wsc-guide2 h3::before, .cn-wsc-guide2 h3::after,
+.cn-wsc-guide2 h4::before, .cn-wsc-guide2 h4::after,
+.entry-content .cn-wsc-guide2 h1::before, .entry-content .cn-wsc-guide2 h1::after,
+.entry-content .cn-wsc-guide2 h2::before, .entry-content .cn-wsc-guide2 h2::after,
+.entry-content .cn-wsc-guide2 h3::before, .entry-content .cn-wsc-guide2 h3::after,
+.entry-content .cn-wsc-guide2 h4::before, .entry-content .cn-wsc-guide2 h4::after,
+.article .cn-wsc-guide2 h1::before, .article .cn-wsc-guide2 h1::after,
+.article .cn-wsc-guide2 h2::before, .article .cn-wsc-guide2 h2::after,
+.article .cn-wsc-guide2 h3::before, .article .cn-wsc-guide2 h3::after,
+.article .cn-wsc-guide2 h4::before, .article .cn-wsc-guide2 h4::after {
+  content: none !important;
+}
+
+/* リンク */
+.cn-wsc-guide2 a {
+  color: var(--cn-blue);
+  font-weight: bold;
+  text-decoration: none;
+}
+.cn-wsc-guide2 a:hover {
+  text-decoration: underline;
+}
+
+/* ヒーロー */
+.cn-wsc-guide2 .cn-wsc-hero {
+  position: relative;
+  background: var(--cn-card);
+  border-radius: 12px;
+  padding: 40px 40px 40px 52px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+}
+.cn-wsc-guide2 .cn-wsc-hero::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--cn-navy);
+  border-radius: 12px 0 0 12px;
+}
+.cn-wsc-guide2 .cn-wsc-eyebrow {
+  display: inline-block;
+  background: var(--cn-blue);
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 999px;
+  padding: 2px 14px;
+  margin-bottom: 14px;
+  letter-spacing: .04em;
+}
+.cn-wsc-guide2 .cn-wsc-hero h1 {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--cn-navy);
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+.cn-wsc-guide2 .cn-wsc-hero-lead {
+  color: var(--cn-muted);
+  margin: 0 0 24px;
+}
+.cn-wsc-guide2 .cn-wsc-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.cn-wsc-guide2 .cn-wsc-button {
+  display: inline-block;
+  background: var(--cn-blue);
+  color: #fff !important;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  text-decoration: none !important;
+  transition: opacity .15s;
+}
+.cn-wsc-guide2 .cn-wsc-button:hover {
+  opacity: .85;
+  text-decoration: none !important;
+}
+.cn-wsc-guide2 .cn-wsc-button-sub {
+  display: inline-block;
+  background: var(--cn-blue-soft);
+  color: var(--cn-blue) !important;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  text-decoration: none !important;
+  transition: opacity .15s;
+}
+.cn-wsc-guide2 .cn-wsc-button-sub:hover {
+  opacity: .85;
+  text-decoration: none !important;
+}
+
+/* セクション */
+.cn-wsc-guide2 .cn-wsc-section {
+  margin-bottom: 48px;
+}
+.cn-wsc-guide2 .cn-wsc-section h2 {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--cn-navy);
+  border-bottom: 2px solid var(--cn-border-strong);
+  padding-bottom: 10px;
+  margin: 0 0 20px;
+}
+.cn-wsc-guide2 .cn-wsc-section-lead {
+  color: var(--cn-muted);
+  margin: 0 0 24px;
+}
+
+/* グリッド */
+.cn-wsc-guide2 .cn-wsc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.cn-wsc-guide2 .cn-wsc-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+@media (max-width: 860px) {
+  .cn-wsc-guide2 .cn-wsc-grid,
+  .cn-wsc-guide2 .cn-wsc-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* カード */
+.cn-wsc-guide2 .cn-wsc-card {
+  background: var(--cn-card);
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 1px 6px rgba(0,0,0,.07);
+  border: 1px solid var(--cn-border);
+}
+.cn-wsc-guide2 .cn-wsc-card h3 {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--cn-navy);
+  margin: 10px 0 8px;
+}
+.cn-wsc-guide2 .cn-wsc-card p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--cn-muted);
+}
+.cn-wsc-guide2 .cn-wsc-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--cn-navy);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* 手順 */
+.cn-wsc-guide2 .cn-wsc-steps {
+  counter-reset: step-counter;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+.cn-wsc-guide2 .cn-wsc-step {
+  counter-increment: step-counter;
+  position: relative;
+  padding: 0 0 28px 60px;
+  min-height: 48px;
+}
+.cn-wsc-guide2 .cn-wsc-step:last-child {
+  padding-bottom: 0;
+}
+.cn-wsc-guide2 .cn-wsc-step::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 36px;
+  background: var(--cn-navy);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 1;
+}
+.cn-wsc-guide2 .cn-wsc-step::after {
+  content: "";
+  position: absolute;
+  left: 17px;
+  top: 40px;
+  bottom: 0;
+  width: 2px;
+  background: var(--cn-border-strong);
+}
+.cn-wsc-guide2 .cn-wsc-step:last-child::after {
+  display: none;
+}
+.cn-wsc-guide2 .cn-wsc-step h3 {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--cn-navy);
+  margin: 4px 0 8px;
+}
+.cn-wsc-guide2 .cn-wsc-step p,
+.cn-wsc-guide2 .cn-wsc-step ul {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+.cn-wsc-guide2 .cn-wsc-step ul {
+  padding-left: 20px;
+}
+
+/* ステータス */
+.cn-wsc-guide2 .cn-wsc-statuses {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.cn-wsc-guide2 .cn-wsc-status {
+  border-radius: 10px;
+  padding: 18px 24px;
+  border: 1px solid var(--cn-border);
+}
+.cn-wsc-guide2 .cn-wsc-status-recommended {
+  background: var(--cn-red-soft);
+  border-color: var(--cn-red);
+}
+.cn-wsc-guide2 .cn-wsc-status-recommended strong {
+  color: var(--cn-red);
+}
+.cn-wsc-guide2 .cn-wsc-status-attention {
+  background: var(--cn-orange-soft);
+  border-color: var(--cn-orange);
+}
+.cn-wsc-guide2 .cn-wsc-status-attention strong {
+  color: var(--cn-orange);
+}
+.cn-wsc-guide2 .cn-wsc-status-good {
+  background: var(--cn-green-soft);
+  border-color: var(--cn-green);
+}
+.cn-wsc-guide2 .cn-wsc-status-good strong {
+  color: var(--cn-green);
+}
+.cn-wsc-guide2 .cn-wsc-status p {
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+
+/* テーブル */
+.cn-wsc-guide2 .cn-wsc-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 24px;
+  -webkit-overflow-scrolling: touch;
+}
+.cn-wsc-guide2 .cn-wsc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 500px;
+}
+.cn-wsc-guide2 .cn-wsc-table th {
+  background: var(--cn-bg);
+  color: var(--cn-navy);
+  font-weight: bold;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 2px solid var(--cn-border-strong);
+  white-space: nowrap;
+}
+.cn-wsc-guide2 .cn-wsc-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--cn-border);
+  vertical-align: top;
+}
+.cn-wsc-guide2 .cn-wsc-table tr:last-child td {
+  border-bottom: none;
+}
+.cn-wsc-guide2 .cn-wsc-table .cn-wsc-good { color: var(--cn-green); font-weight: bold; }
+.cn-wsc-guide2 .cn-wsc-table .cn-wsc-attention { color: var(--cn-orange); font-weight: bold; }
+.cn-wsc-guide2 .cn-wsc-table .cn-wsc-recommended { color: var(--cn-red); font-weight: bold; }
+
+/* 補足ノート */
+.cn-wsc-guide2 .cn-wsc-note {
+  background: var(--cn-blue-soft);
+  border-left: 4px solid var(--cn-blue);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+.cn-wsc-guide2 .cn-wsc-note p {
+  margin: 0;
+}
+.cn-wsc-guide2 .cn-wsc-note p + p {
+  margin-top: 8px;
+}
+
+/* FAQ アコーディオン */
+.cn-wsc-guide2 .cn-wsc-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.cn-wsc-guide2 .cn-wsc-faq details {
+  background: var(--cn-card);
+  border: 1px solid var(--cn-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.cn-wsc-guide2 .cn-wsc-faq details[open] {
+  border-color: var(--cn-blue);
+}
+.cn-wsc-guide2 .cn-wsc-faq summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  list-style: none;
+  color: var(--cn-navy);
+}
+.cn-wsc-guide2 .cn-wsc-faq summary::-webkit-details-marker { display: none; }
+.cn-wsc-guide2 .cn-wsc-faq summary::before {
+  content: "Q";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--cn-blue);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+.cn-wsc-guide2 .cn-wsc-faq summary::after {
+  content: "›";
+  margin-left: auto;
+  font-size: 20px;
+  color: var(--cn-muted);
+  transition: transform .2s;
+}
+.cn-wsc-guide2 .cn-wsc-faq details[open] summary::after {
+  transform: rotate(90deg);
+}
+.cn-wsc-guide2 .cn-wsc-faq .cn-wsc-faq-body {
+  padding: 0 20px 20px 60px;
+  font-size: 15px;
+}
+.cn-wsc-guide2 .cn-wsc-faq .cn-wsc-faq-body p:first-child {
+  margin-top: 0;
+}
+.cn-wsc-guide2 .cn-wsc-faq .cn-wsc-faq-body ul {
+  padding-left: 20px;
+}
+
+/* コードブロック */
+.cn-wsc-guide2 .cn-wsc-code {
+  background: #1e2433;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+.cn-wsc-guide2 .cn-wsc-code pre {
+  margin: 0;
+  white-space: pre;
+}
+.cn-wsc-guide2 code {
+  background: var(--cn-bg);
+  border: 1px solid var(--cn-border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: .88em;
+  color: var(--cn-navy);
+}
+.cn-wsc-guide2 .cn-wsc-code code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+/* 区切り */
+.cn-wsc-guide2 .cn-wsc-divider {
+  border: none;
+  border-top: 1px solid var(--cn-border);
+  margin: 32px 0;
+}
+
+/* 警告ボックス */
+.cn-wsc-guide2 .cn-wsc-warn {
+  background: var(--cn-orange-soft);
+  border-left: 4px solid var(--cn-orange);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+.cn-wsc-guide2 .cn-wsc-warn p { margin: 0; }
+
+/* サブタイトル */
+.cn-wsc-guide2 .cn-wsc-section h3.cn-wsc-item-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--cn-navy);
+  margin: 32px 0 14px;
+  padding-left: 12px;
+  border-left: 4px solid var(--cn-blue);
+}
+
+@media (max-width: 600px) {
+  .cn-wsc-guide2 .cn-wsc-hero {
+    padding: 28px 20px 28px 32px;
+  }
+  .cn-wsc-guide2 .cn-wsc-hero h1 {
+    font-size: 20px;
+  }
+  .cn-wsc-guide2 .cn-wsc-section h2 {
+    font-size: 19px;
+  }
+}
+</style>
+
+<div class="cn-wsc-guide2">
+
+  <!-- ヒーロー -->
+  <div class="cn-wsc-hero" id="top">
+    <span class="cn-wsc-eyebrow">公式ガイド</span>
+    <h1>Site Security Checkerの使い方（詳細ガイド）</h1>
+    <p class="cn-wsc-hero-lead">WordPressのセキュリティを10項目で診断する無料プラグインです。専門知識ゼロで使え、診断はサイト内だけで完結するため外部へのデータ送信は一切ありません。このガイドではインストールから各項目の対処方法まで、すべてを丁寧に解説します。</p>
+    <div class="cn-wsc-hero-actions">
+      <a href="#install" class="cn-wsc-button">インストール手順を見る</a>
+      <a href="#faq" class="cn-wsc-button-sub">よくある質問を見る</a>
+    </div>
+  </div>
+
+  <!-- インストールから最初の診断まで -->
+  <section class="cn-wsc-section" id="install">
+    <h2>インストールから最初の診断まで</h2>
+    <p class="cn-wsc-section-lead">プラグインを有効化するだけで、すぐに診断が始まります。設定画面での初期設定は不要です。</p>
+
+    <ol class="cn-wsc-steps">
+      <li class="cn-wsc-step">
+        <h3>手順1：プラグインをインストールする</h3>
+        <p><strong>自動インストール（おすすめ）</strong></p>
+        <ul>
+          <li>WordPress管理画面の左メニューから <strong>「プラグイン」→「新規追加」</strong> を開きます</li>
+          <li>右上の検索窓に <strong>「Site Security Checker」</strong> と入力します</li>
+          <li>「今すぐインストール」ボタンをクリックします</li>
+          <li>インストールが完了したら <strong>「有効化」</strong> をクリックします</li>
+        </ul>
+        <p><strong>ZIPからインストールする場合</strong></p>
+        <ul>
+          <li><a href="https://wordpress.org/plugins/site-security-checker/" target="_blank" rel="noopener noreferrer">WordPress.orgのプラグインページ</a> からZIPファイルをダウンロードします</li>
+          <li>管理画面の <strong>「プラグイン」→「新規追加」→「プラグインのアップロード」</strong> を開きます</li>
+          <li>ZIPファイルを選択して「今すぐインストール」をクリックします</li>
+          <li>「有効化」をクリックします</li>
+        </ul>
+      </li>
+      <li class="cn-wsc-step">
+        <h3>手順2：診断結果を確認する</h3>
+        <p>有効化すると、2か所で診断結果を確認できます。</p>
+        <p><strong>ダッシュボードウィジェット（かんたん確認）</strong><br>
+        管理画面のトップ（ダッシュボード）を開くと <strong>「セキュリティ診断」ウィジェット</strong> が表示されます。確認が必要な件数が一目でわかり、「優先対応が必要な項目」がリストアップされます。</p>
+        <p><strong>専用管理画面（詳細確認）</strong><br>
+        左メニューに <strong>「セキュリティ診断」</strong> という項目が追加されます。ここから全10項目の詳細な診断結果を確認できます。</p>
+      </li>
+      <li class="cn-wsc-step">
+        <h3>手順3：再診断する</h3>
+        <p>ダッシュボードウィジェット右上の <strong>「再診断」ボタン</strong>、または専用管理画面の <strong>「再診断する」ボタン</strong> をクリックすると、ページを再読み込みせずに最新の状態を確認できます。設定を変更した後は、再診断ボタンで結果が更新されたことを確認してください。</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- 診断結果の見方 -->
+  <section class="cn-wsc-section" id="how-to-read">
+    <h2>診断結果の見方</h2>
+    <p class="cn-wsc-section-lead">診断結果は3段階のステータスで表示されます。それぞれの意味と優先度の考え方を確認してください。</p>
+
+    <div class="cn-wsc-statuses">
+      <div class="cn-wsc-status cn-wsc-status-recommended">
+        <strong>🔴 要対応 — 今すぐ対応することをお勧めします</strong>
+        <p>放置すると「ログイン情報が盗まれる」「サイトのファイルを書き換えられる」など、実害につながる可能性があります。表示された対処手順に従って、できるだけ早く対応してください。「要対応」と表示される項目は、セキュリティ上の影響が特に大きいもの（HTTPSを使っていない、管理画面からファイルを直接編集できる状態になっているなど）に限定しています。</p>
+      </div>
+      <div class="cn-wsc-status cn-wsc-status-attention">
+        <strong>🟡 改善推奨 — できれば対応を検討してください</strong>
+        <p>すぐに被害が起きるわけではありませんが、攻撃の足がかりになりやすい設定です。他の対応が終わったあと、余裕があるときに確認してください。稼働中のサイトで変更にリスクを伴う項目（データベース接頭辞の変更など）は、この「改善推奨」以上には上げず、むやみに変更を急かしません。</p>
+      </div>
+      <div class="cn-wsc-status cn-wsc-status-good">
+        <strong>✅ 問題なし — この項目は適切に設定されています</strong>
+        <p>現時点では対応は不要です。定期的に再診断して、ステータスが変わっていないか確認することをお勧めします。</p>
+      </div>
+    </div>
+
+    <h3 class="cn-wsc-item-title">診断カードの見方</h3>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>表示</th>
+            <th>内容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>項目名</td><td>何を診断しているか</td></tr>
+          <tr><td>現在の状態</td><td>実際の設定値や検出結果</td></tr>
+          <tr><td>コメント</td><td>なぜ問題か・何をすればよいか</td></tr>
+          <tr><td><code>›</code>（詳細ボタン）</td><td>対応手順・リスク・参考リンクを展開表示</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cn-wsc-note">
+      <p><strong>優先順位の考え方：まず「要対応」をゼロにする → 次に「改善推奨」を減らす</strong></p>
+      <p>「改善推奨」がすべて残っていても、「要対応」がゼロなら基本的なセキュリティレベルは確保できています。焦らず、一つずつ対応していきましょう。</p>
+    </div>
+  </section>
+
+  <!-- カテゴリA -->
+  <section class="cn-wsc-section" id="category-a">
+    <h2>カテゴリA：バージョン鮮度</h2>
+    <p class="cn-wsc-section-lead">WordPressを構成するソフトウェアが「最新の状態に保たれているか」を診断します。古いバージョンには既知の脆弱性（攻撃者が悪用できる弱点）が残ったままになることがあります。バージョンを最新に保つことは、セキュリティ対策の中でも特に効果が高い基本中の基本です。</p>
+
+    <!-- A1 -->
+    <h3 class="cn-wsc-item-title">A1. WordPress本体</h3>
+    <p>あなたのサイトが使っているWordPressのバージョンが最新版かどうかを確認します。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td>最新バージョンを使用中</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-attention">🟡 改善推奨</td>
+            <td>機能更新（新バージョン）が出ているが、セキュリティ修正ではない</td>
+            <td>余裕があるときに更新</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-recommended">🔴 要対応</td>
+            <td>セキュリティ修正を含むメンテナンス版（例: 6.7.1）が未適用</td>
+            <td>できるだけ早く更新する</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cn-wsc-note">
+      <p><strong>「メンテナンス版」とは？</strong><br>
+      WordPressには「機能更新（例: 6.7→6.8）」と「セキュリティ修正（例: 6.7→6.7.1）」の2種類の更新があります。セキュリティ修正のほうが緊急度が高く、このプラグインでは「要対応」として強調表示します。</p>
+    </div>
+    <p><strong>対処方法</strong></p>
+    <ol>
+      <li>WordPress管理画面の <strong>「ダッシュボード」→「更新」</strong> を開きます</li>
+      <li>「WordPressの更新が利用可能です」と表示されていたら、「今すぐ更新」をクリックします</li>
+      <li>更新前にバックアップを取ることをお勧めします（多くのサーバーが自動バックアップ機能を提供しています）</li>
+    </ol>
+    <p>参考：<a href="https://ja.wordpress.org/support/article/updating-wordpress/" target="_blank" rel="noopener noreferrer">WordPress公式：アップデートの方法</a></p>
+
+    <hr class="cn-wsc-divider">
+
+    <!-- A2 -->
+    <h3 class="cn-wsc-item-title">A2. PHPバージョン</h3>
+    <p>WordPressが動作しているサーバーの <strong>PHPバージョン</strong> を確認します。PHPはWordPressを動かすプログラム言語で、古いバージョンはセキュリティの修正を受け取れなくなります。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td>PHP 8.4 以上</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-attention">🟡 改善推奨</td>
+            <td>PHP 8.2 または 8.3（公式サポート中だが最新ではない）</td>
+            <td>タイミングを見て更新</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-recommended">🔴 要対応</td>
+            <td>PHP 8.1 以下（公式サポート終了済みまたは間もなく終了）</td>
+            <td>できるだけ早くバージョンアップ</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cn-wsc-note">
+      <p><strong>「公式サポート終了」とは？</strong><br>
+      PHPの開発チームがバグやセキュリティの修正を提供しなくなった状態です。新しい脆弱性が発見されても修正されないため、使い続けるとリスクが高まります。</p>
+    </div>
+    <p><strong>対処方法</strong>：PHPのバージョンはサーバーの管理画面から変更できます。</p>
+    <div class="cn-wsc-warn">
+      <p><strong>⚠️ 注意：</strong> PHPのバージョンを変えると、一部のプラグインやテーマが動かなくなることがあります。<strong>変更前に必ずバックアップ</strong>を取り、できれば検証環境で確認してから本番に適用してください。</p>
+    </div>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>サーバー</th>
+            <th>変更場所の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>さくらのレンタルサーバ</td><td>サーバーコントロールパネル →「PHP設定」</td></tr>
+          <tr><td>エックスサーバー</td><td>サーバーパネル →「PHP Ver.切替」</td></tr>
+          <tr><td>ConoHa WING</td><td>コントロールパネル →「サイト管理」→「PHP設定」</td></tr>
+          <tr><td>ロリポップ！</td><td>ユーザー管理ツール →「PHP設定」</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>参考：<a href="https://www.php.net/supported-versions.php" target="_blank" rel="noopener noreferrer">PHP公式：サポート中のバージョン一覧（英語）</a>　／　<a href="https://ja.wordpress.org/support/article/php/" target="_blank" rel="noopener noreferrer">WordPress公式：PHPについて</a></p>
+
+    <hr class="cn-wsc-divider">
+
+    <!-- A3 -->
+    <h3 class="cn-wsc-item-title">A3. プラグイン・テーマの更新</h3>
+    <p>インストール済みのプラグインやテーマに <strong>未適用の更新</strong> があるかどうかを確認します。更新を放置すると、既知の脆弱性を抱えたまま運用を続けることになります。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td>更新待ちのプラグイン・テーマが0件</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-attention">🟡 改善推奨</td>
+            <td>1件以上の更新が待機中</td>
+            <td>更新画面から適用する</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cn-wsc-note">
+      <p>WordPressのプラグインやテーマへの攻撃のほとんどは、すでに修正済みの脆弱性を狙ったものです。更新を適用するだけで、これらの攻撃の大半を防ぐことができます。</p>
+    </div>
+    <p><strong>対処方法</strong>：診断カードの <strong>「更新画面を開く」ボタン</strong> をクリックすると、WordPressの更新ページへ直接移動できます。</p>
+    <ol>
+      <li>「更新画面を開く」をクリックします</li>
+      <li>更新したいプラグイン・テーマにチェックを入れます</li>
+      <li>「プラグインを更新」ボタンをクリックします</li>
+    </ol>
+    <div class="cn-wsc-warn">
+      <p><strong>⚠️ 注意：</strong> プラグインの更新で画面が崩れたり機能が変わることがあります。本番サイトへの適用前に、<strong>バックアップを取ること</strong>をお勧めします。このプラグイン自体は更新を自動で実行しません。</p>
+    </div>
+    <p>参考：<a href="https://ja.wordpress.org/support/article/managing-plugins/#updating-plugins" target="_blank" rel="noopener noreferrer">WordPress公式：プラグインの更新方法</a></p>
+  </section>
+
+  <!-- カテゴリB -->
+  <section class="cn-wsc-section" id="category-b">
+    <h2>カテゴリB：ハードニング設定</h2>
+    <p class="cn-wsc-section-lead">「ハードニング（Hardening）」とは、設定を見直してサイトを攻撃に強くすることを指します。カテゴリBではWordPressの7つの設定項目を診断します。バージョンの更新（カテゴリA）と合わせて対応することで、サイトのセキュリティレベルを大きく高めることができます。</p>
+
+    <!-- B1 -->
+    <h3 class="cn-wsc-item-title">B1. デバッグ表示</h3>
+    <p>WordPressの <strong>デバッグ設定</strong> が本番サイトで有効になっていないかを確認します。デバッグとはエラーの内容を表示する開発者向けの機能です。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td><code>WP_DEBUG</code> がオフ</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-attention">🟡 改善推奨</td>
+            <td><code>WP_DEBUG</code> がオンだが、画面表示はオフ（ログファイルのみ）</td>
+            <td>本番では完全にオフにすることが理想</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-recommended">🔴 要対応</td>
+            <td><code>WP_DEBUG</code> がオンで、エラーが画面に表示される状態</td>
+            <td>すぐに無効化する</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>本番サイトでエラーを画面に表示すると、サーバーのフォルダ構成やファイルパスなど、攻撃者にとって有益な情報が漏れることがあります。</p>
+    <p><strong>対処方法</strong>：<code>wp-config.php</code>（WordPressのルートフォルダにある設定ファイル）をテキストエディタで開き、以下の行を探して変更します。</p>
+    <p><strong>変更前（問題のある状態）</strong></p>
+    <div class="cn-wsc-code"><pre><code>define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
+    <p><strong>変更後（安全な状態）</strong></p>
+    <div class="cn-wsc-code"><pre><code>define( 'WP_DEBUG', false );</code></pre></div>
+    <div class="cn-wsc-note">
+      <p><code>wp-config.php</code> はサーバーのFTPやファイルマネージャー経由で編集できます。変更前にファイルのバックアップを取ってください。</p>
+    </div>
+    <p>参考：<a href="https://wordpress.org/documentation/article/debugging-in-wordpress/" target="_blank" rel="noopener noreferrer">WordPress公式：デバッグの設定（英語）</a></p>
+
+    <hr class="cn-wsc-divider">
+
+    <!-- B2 -->
+    <h3 class="cn-wsc-item-title">B2. ファイル編集機能</h3>
+    <p>WordPress管理画面から、プラグインやテーマのファイルを直接編集できる状態になっていないかを確認します。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td><code>DISALLOW_FILE_EDIT</code> が <code>true</code> に設定されている</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-recommended">🔴 要対応</td>
+            <td>設定が未定義、または <code>false</code>（編集可能な状態）</td>
+            <td>すぐに無効化する</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>管理者アカウントが乗っ取られた場合、攻撃者は管理画面のエディターから悪意のあるコード（マルウェア）をテーマやプラグインに直接書き込むことができます。この機能を無効化することで、万が一ログインされても被害を最小限に抑えられます。</p>
+    <p><strong>対処方法</strong>：<code>wp-config.php</code> に以下の1行を追加します。</p>
+    <div class="cn-wsc-code"><pre><code>define( 'DISALLOW_FILE_EDIT', true );</code></pre></div>
+    <div class="cn-wsc-note">
+      <p>追加する場所は <code>/* That's all, stop editing! */</code> という行のすぐ上が一般的です。追加後、管理画面の <strong>「外観」→「テーマファイルエディター」</strong> と <strong>「プラグイン」→「プラグインファイルエディター」</strong> のメニューが消えれば設定完了です。</p>
+    </div>
+    <p>参考：<a href="https://developer.wordpress.org/apis/wp-config-php/" target="_blank" rel="noopener noreferrer">WordPress公式：wp-config.phpについて（英語）</a></p>
+
+    <hr class="cn-wsc-divider">
+
+    <!-- B3 -->
+    <h3 class="cn-wsc-item-title">B3. 管理者ユーザー名</h3>
+    <p><code>admin</code>、<code>administrator</code> などの <strong>推測されやすいユーザー名</strong> を持つ管理者アカウントが存在しないかを確認します。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td>推測されやすいユーザー名を持つ管理者が存在しない</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-attention">🟡 改善推奨</td>
+            <td><code>admin</code>、<code>administrator</code> などのアカウントが存在する</td>
+            <td>余裕があるときに変更を検討</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>パスワードを総当たりで試すブルートフォース攻撃では、ユーザー名に <code>admin</code> が使われることが非常に多いです。ユーザー名を推測しにくい名前にするだけで、攻撃の成功率を下げることができます。</p>
+    <p><strong>対処方法</strong>：WordPressでは作成済みのユーザー名は変更できません。代わりに以下の手順で対処します。</p>
+    <ol>
+      <li>管理画面の <strong>「ユーザー」→「新規ユーザーを追加」</strong> から、新しい任意のユーザー名で管理者アカウントを作成します</li>
+      <li>新しいアカウントでログインし直します</li>
+      <li>古い <code>admin</code> アカウントを削除します（削除時に既存の投稿を新しいアカウントへ引き継ぐよう選択できます）</li>
+    </ol>
+    <div class="cn-wsc-warn">
+      <p><strong>⚠️ 注意：</strong> 誤って自分が使っているアカウントを削除しないよう注意してください。必ず新しいアカウントでログインできることを確認してから古いアカウントを削除してください。</p>
+    </div>
+
+    <hr class="cn-wsc-divider">
+
+    <!-- B4 -->
+    <h3 class="cn-wsc-item-title">B4. 常時HTTPS</h3>
+    <p>サイトが <strong>HTTPS（SSL）</strong> で運営されているかを確認します。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td>サイトのURLが <code>https://</code> で始まっている</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-recommended">🔴 要対応</td>
+            <td>サイトのURLが <code>http://</code> のまま（暗号化されていない）</td>
+            <td>SSL証明書を設定する</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>HTTPのままだと、ログインするときのパスワードや、フォームに入力した内容が <strong>暗号化されずに通信</strong> されます。同じWi-Fiを使っている人に傍受される可能性があります。</p>
+    <p><strong>対処方法</strong>：ほとんどのレンタルサーバーでは、<strong>無料のSSL証明書</strong>を提供しています。</p>
+    <ol>
+      <li>レンタルサーバーの管理画面で「SSL」「HTTPS」のメニューを探します</li>
+      <li>無料SSL（Let's Encrypt など）を有効にします</li>
+      <li>WordPress管理画面の <strong>「設定」→「一般」</strong> を開き、「WordPressアドレス」と「サイトアドレス」のURLを <code>https://</code> に変更します</li>
+    </ol>
+    <div class="cn-wsc-note">
+      <p>すでにSSL証明書が設定されているのに「要対応」と表示される場合は、サイトのURLが <code>http://</code> のままになっている可能性があります。「設定」→「一般」でURLをご確認ください。</p>
+    </div>
+
+    <hr class="cn-wsc-divider">
+
+    <!-- B5 -->
+    <h3 class="cn-wsc-item-title">B5. データベース接頭辞</h3>
+    <p>WordPressが使うデータベースのテーブル名に付く <strong>接頭辞（プレフィックス）</strong> が、デフォルト値の <code>wp_</code> のままになっていないかを確認します。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td>接頭辞が <code>wp_</code> 以外に変更されている</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-attention">🟡 改善推奨</td>
+            <td>接頭辞が <code>wp_</code>（デフォルト値のまま）</td>
+            <td>新規構築時は変更推奨。稼働中は無理に変更しない</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p><code>wp_</code> のままだと、SQLインジェクション攻撃などの際にテーブル名を推測されやすくなります。ただし、それだけで直接攻撃が成立するわけではなく、影響度は限定的です。</p>
+    <div class="cn-wsc-warn">
+      <p><strong>⚠️ 稼働中のサイトでの変更は推奨しません。</strong><br>
+      データベース接頭辞の変更は、設定ファイルとデータベースの両方を正確に書き換える必要があり、手順を誤るとサイトが完全に壊れる可能性があります。<strong>新しくサイトを構築する場合</strong>のみ、インストール時に <code>wp_</code> 以外の接頭辞（例: <code>mysite_</code>）を指定してください。稼働中のサイトの場合は、他の項目を優先してください。</p>
+    </div>
+
+    <hr class="cn-wsc-divider">
+
+    <!-- B6 -->
+    <h3 class="cn-wsc-item-title">B6. XML-RPC</h3>
+    <p>WordPressの <strong>XML-RPC</strong> 機能が有効になっているかを確認します。XML-RPCは外部アプリからWordPressを操作するための古い仕組みです。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td>XML-RPCが無効化されている</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-attention">🟡 改善推奨</td>
+            <td>XML-RPCが有効（<code>xmlrpc.php</code> が利用可能）</td>
+            <td>使っていなければ無効化を検討</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>XML-RPCはブルートフォース攻撃の入り口として悪用されることがあります。ただし、<strong>Jetpackプラグイン・WordPressスマートフォンアプリ・外部からWordPressを操作するツール</strong>を使っている場合は無効化すると動かなくなります。使っていない場合に限り、無効化を検討してください。</p>
+    <p><strong>方法1：プラグインで無効化する（かんたん）</strong><br>
+    「Disable XML-RPC」などのプラグインをインストールして有効化するだけで無効化できます。</p>
+    <p><strong>方法2：<code>.htaccess</code> に追記する（上級者向け）</strong><br>
+    WordPressのルートにある <code>.htaccess</code> ファイルに以下を追加します。</p>
+    <div class="cn-wsc-code"><pre><code>&lt;Files xmlrpc.php&gt;
+  Order deny,allow
+  Deny from all
+&lt;/Files&gt;</code></pre></div>
+    <p>参考：<a href="https://developer.wordpress.org/apis/xml-rpc/" target="_blank" rel="noopener noreferrer">WordPress公式：XML-RPCについて（英語）</a></p>
+
+    <hr class="cn-wsc-divider">
+
+    <!-- B7 -->
+    <h3 class="cn-wsc-item-title">B7. REST APIユーザー名列挙</h3>
+    <p>WordPressのREST APIを通じて、<strong>ログインユーザー名が外部から取得できる状態</strong>になっていないかを確認します。具体的には <code>/wp-json/wp/v2/users</code> というURLに、ログインなしでアクセスしたときにユーザー情報が返ってくるかを診断します。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td>匿名アクセスでユーザー情報が取得できない</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-attention">🟡 改善推奨</td>
+            <td>匿名で <code>/wp/v2/users</code> からユーザー情報が取得できる</td>
+            <td>functions.phpにコードを追加して制限する</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>ログインに使うユーザー名が外部から丸見えになっていると、あとはパスワードを総当たりするだけになります（B3の問題と組み合わさると特に危険です）。</p>
+    <p><strong>対処方法</strong>：<code>functions.php</code>（使用中のテーマフォルダにある設定ファイル）または子テーマの <code>functions.php</code> に以下を追加します。</p>
+    <div class="cn-wsc-code"><pre><code>add_filter( 'rest_endpoints', function( $endpoints ) {
+    if ( isset( $endpoints['/wp/v2/users'] ) ) {
+        foreach ( $endpoints['/wp/v2/users'] as $key =&gt; $endpoint ) {
+            if ( empty( $endpoint['permission_callback'] ) ) {
+                $endpoints['/wp/v2/users'][ $key ]['permission_callback'] = function() {
+                    return current_user_can( 'list_users' );
+                };
+            }
+        }
+    }
+    return $endpoints;
+} );</code></pre></div>
+    <div class="cn-wsc-note">
+      <p>テーマの <code>functions.php</code> を直接編集するのが不安な場合は、「Code Snippets」などのプラグインを使ってコードを追加する方法もあります。</p>
+    </div>
+    <p>参考：<a href="https://developer.wordpress.org/rest-api/reference/users/" target="_blank" rel="noopener noreferrer">WordPress公式：REST API ユーザーエンドポイント（英語）</a></p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="cn-wsc-section" id="faq">
+    <h2>よくある質問</h2>
+
+    <div class="cn-wsc-faq">
+      <details>
+        <summary>無料で使えますか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>はい、無料でお使いいただけます。現在公開している全10項目の診断機能はすべて無料です。将来的にプラグインやテーマの脆弱性（CVE）を日本語でお知らせするPro版を予定していますが、現在の診断機能は無料のまま提供し続けます。</p>
+        </div>
+      </details>
+      <details>
+        <summary>WordPressのバージョンはいくつから使えますか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>WordPress 5.9 以上、PHP 7.4 以上が必要です。WordPress 6.x 系をお使いの方は問題なくご利用いただけます。</p>
+        </div>
+      </details>
+      <details>
+        <summary>有効化したらすぐに使えますか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>はい。有効化した直後から、管理画面のダッシュボードに診断ウィジェットが表示されます。設定画面で何かを入力したり、初期設定をしたりする必要はありません。</p>
+        </div>
+      </details>
+      <details>
+        <summary>マルチサイト環境でも使えますか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>現時点では単一サイト向けの設計です。マルチサイト環境での動作は確認していません。</p>
+        </div>
+      </details>
+      <details>
+        <summary>診断はいつ実行されますか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>管理画面のダッシュボードまたは専用管理画面を開いたときに実行されます。常時バックグラウンドで動き続ける処理はありません。「再診断」ボタンを押すと、その場で最新の状態を確認できます。</p>
+        </div>
+      </details>
+      <details>
+        <summary>設定を変更したのに結果が変わりません</summary>
+        <div class="cn-wsc-faq-body">
+          <p>「再診断」ボタンを押してください。診断は自動では更新されません。設定を変更したあとは「再診断する」ボタン（専用管理画面の右上）または「再診断」ボタン（ダッシュボードウィジェット右上）をクリックしてください。</p>
+        </div>
+      </details>
+      <details>
+        <summary>「改善推奨」の項目を全部直さないといけませんか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>いいえ、必須ではありません。まず「要対応」をゼロにすることを優先してください。「改善推奨」はリスクを下げるための推奨事項ですが、すぐに被害につながるわけではありません。「要対応」がゼロの状態を保ちながら、余裕があるときに「改善推奨」に取り組んでいただければ十分です。</p>
+        </div>
+      </details>
+      <details>
+        <summary>XML-RPCを無効化すると何かが壊れますか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>Jetpackや一部のスマートフォンアプリを使っている場合は動かなくなります。以下のサービス・機能を使っている場合、無効化しないでください。</p>
+          <ul>
+            <li>Jetpackプラグイン</li>
+            <li>WordPressの公式スマートフォンアプリ（iOS / Android）</li>
+            <li>外部のブログ投稿ツール（Windows Live Writer など）</li>
+          </ul>
+          <p>これらを使っていない場合は、無効化しても問題ありません。</p>
+        </div>
+      </details>
+      <details>
+        <summary>REST APIのユーザー列挙を無効化すると何か影響がありますか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>一部のプラグインが著者アーカイブページや投稿者情報を取得できなくなる場合があります。ほとんどの一般的なWordPressサイトでは問題ありません。無効化後に問題が発生した場合は、追加したコードを削除して元に戻してください。</p>
+        </div>
+      </details>
+      <details>
+        <summary>外部のサーバーにデータを送っていますか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>一切送っていません。すべての診断はあなたのサーバー内だけで完結します。プラグインが外部のサーバーへ通信することはありません（APIキーも不要です）。</p>
+        </div>
+      </details>
+      <details>
+        <summary>このプラグインはサイトの設定を自動で変更しますか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>しません。Site Security Checker は診断と情報提供に特化しています。設定の変更や更新の実行は、すべて利用者ご自身に委ねています。</p>
+        </div>
+      </details>
+      <details>
+        <summary>プラグインを削除するとサイトに何か残りますか？</summary>
+        <div class="cn-wsc-faq-body">
+          <p>プラグインを削除（アンインストール）すると、<code>wp_options</code> テーブルに保存されていたキャッシュデータは自動的に削除されます。</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- 末尾注意書き -->
+  <div class="cn-wsc-note">
+    <p><strong>このプラグインについて</strong></p>
+    <p>Site Security Checker は <strong>診断と案内に特化した</strong> プラグインです。サイトの設定やファイルを自動で書き換えることは一切ありません。診断結果をもとに、変更するかどうかの判断はすべて利用者ご自身に委ねています。安心してお使いください。</p>
+  </div>
+
+</div>
