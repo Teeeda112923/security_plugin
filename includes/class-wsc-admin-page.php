@@ -40,8 +40,8 @@ class WSC_Admin_Page {
 	 */
 	public function register_menu() {
 		$hook = add_menu_page(
-			__( 'Site Security Checker', 'site-security-checker' ),
-			__( 'セキュリティ診断', 'site-security-checker' ),
+			__( 'Site Security Checker', 'cybernote-security-checker' ),
+			__( 'セキュリティ診断', 'cybernote-security-checker' ),
 			'manage_options',
 			self::MENU_SLUG,
 			array( $this, 'render_dashboard' ),
@@ -53,8 +53,8 @@ class WSC_Admin_Page {
 		// ダッシュボード（トップと同一URLだが表示名を上書き）。
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( 'ダッシュボード', 'site-security-checker' ),
-			__( 'ダッシュボード', 'site-security-checker' ),
+			__( 'ダッシュボード', 'cybernote-security-checker' ),
+			__( 'ダッシュボード', 'cybernote-security-checker' ),
 			'manage_options',
 			self::MENU_SLUG,
 			array( $this, 'render_dashboard' )
@@ -63,8 +63,8 @@ class WSC_Admin_Page {
 
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( '診断結果', 'site-security-checker' ),
-			__( '診断結果', 'site-security-checker' ),
+			__( '診断結果', 'cybernote-security-checker' ),
+			__( '診断結果', 'cybernote-security-checker' ),
 			'manage_options',
 			self::SLUG_RESULTS,
 			array( $this, 'render_results' )
@@ -73,8 +73,8 @@ class WSC_Admin_Page {
 
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( 'バージョン鮮度', 'site-security-checker' ),
-			__( 'バージョン鮮度', 'site-security-checker' ),
+			__( 'バージョン鮮度', 'cybernote-security-checker' ),
+			__( 'バージョン鮮度', 'cybernote-security-checker' ),
 			'manage_options',
 			self::SLUG_VERSION,
 			array( $this, 'render_version' )
@@ -83,8 +83,8 @@ class WSC_Admin_Page {
 
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( 'ハードニング設定', 'site-security-checker' ),
-			__( 'ハードニング設定', 'site-security-checker' ),
+			__( 'ハードニング設定', 'cybernote-security-checker' ),
+			__( 'ハードニング設定', 'cybernote-security-checker' ),
 			'manage_options',
 			self::SLUG_HARDENING,
 			array( $this, 'render_hardening' )
@@ -94,9 +94,9 @@ class WSC_Admin_Page {
 		// Pro版有効時はアラートページ、無効時はアップセル画面。
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( '脆弱性アラート', 'site-security-checker' ),
+			__( '脆弱性アラート', 'cybernote-security-checker' ),
 			/* translators: Pro feature badge appended to menu label */
-			__( '脆弱性アラート', 'site-security-checker' ) . ' <span class="wsc-menu-badge">Pro</span>',
+			__( '脆弱性アラート', 'cybernote-security-checker' ) . ' <span class="wsc-menu-badge">Pro</span>',
 			'manage_options',
 			self::SLUG_CVE,
 			array( $this, 'render_cve' )
@@ -105,8 +105,8 @@ class WSC_Admin_Page {
 
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( 'レポート', 'site-security-checker' ),
-			__( 'レポート', 'site-security-checker' ) . ' <span class="wsc-menu-badge wsc-menu-badge-biz">Business</span>',
+			__( 'レポート', 'cybernote-security-checker' ),
+			__( 'レポート', 'cybernote-security-checker' ) . ' <span class="wsc-menu-badge wsc-menu-badge-biz">Business</span>',
 			'manage_options',
 			self::SLUG_REPORT,
 			array( $this, 'render_report_upsell' )
@@ -115,8 +115,8 @@ class WSC_Admin_Page {
 
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( '設定', 'site-security-checker' ),
-			__( '設定', 'site-security-checker' ),
+			__( '設定', 'cybernote-security-checker' ),
+			__( '設定', 'cybernote-security-checker' ),
 			'manage_options',
 			self::SLUG_SETTINGS,
 			array( $this, 'render_settings' )
@@ -145,6 +145,28 @@ class WSC_Admin_Page {
 			array( 'wsc-dashboard' ),
 			WSC_VERSION
 		);
+		wp_enqueue_script(
+			'wsc-guide',
+			WSC_PLUGIN_URL . 'assets/js/wsc-guide.js',
+			array(),
+			WSC_VERSION,
+			true
+		);
+		wp_enqueue_script(
+			'wsc-admin',
+			WSC_PLUGIN_URL . 'assets/js/wsc-admin.js',
+			array( 'wsc-guide' ),
+			WSC_VERSION,
+			true
+		);
+		wp_localize_script(
+			'wsc-admin',
+			'wscAdminData',
+			array(
+				'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+				'refreshingText' => __( '診断中...', 'cybernote-security-checker' ),
+			)
+		);
 	}
 
 	/**
@@ -171,8 +193,8 @@ class WSC_Admin_Page {
 		}
 		$results = ( new WSC_Diagnostics() )->run();
 		$this->page_wrap(
-			__( 'ダッシュボード', 'site-security-checker' ),
-			__( 'サイト内の設定とバージョン状態を診断します。外部への通信は行わず、設定の自動変更もしません。', 'site-security-checker' ),
+			__( 'ダッシュボード', 'cybernote-security-checker' ),
+			__( 'サイト内の設定とバージョン状態を診断します。外部への通信は行わず、設定の自動変更もしません。', 'cybernote-security-checker' ),
 			function () use ( $results ) {
 				$this->render_body( $results );
 			}
@@ -186,21 +208,21 @@ class WSC_Admin_Page {
 		}
 		$results = ( new WSC_Diagnostics() )->run();
 		$this->page_wrap(
-			__( '診断結果', 'site-security-checker' ),
-			__( '全診断項目の結果をまとめて表示します。', 'site-security-checker' ),
+			__( '診断結果', 'cybernote-security-checker' ),
+			__( '全診断項目の結果をまとめて表示します。', 'cybernote-security-checker' ),
 			function () use ( $results ) {
 				$counts = WSC_Renderer::severity_counts( $results );
 				?>
 				<div class="wsc-admin-body">
 					<?php $this->render_summary_bar( $results, $counts ); ?>
 					<div class="wsc-card wsc-category-card" style="padding:20px">
-						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'A. バージョン鮮度', 'site-security-checker' ); ?></h2>
+						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'A. バージョン鮮度', 'cybernote-security-checker' ); ?></h2>
 						<div class="wsc-item-list" style="margin-bottom:24px">
 							<?php foreach ( $results['a'] as $item ) : ?>
 								<?php WSC_Renderer::render_item( $item ); ?>
 							<?php endforeach; ?>
 						</div>
-						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'B. ハードニング設定', 'site-security-checker' ); ?></h2>
+						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'B. ハードニング設定', 'cybernote-security-checker' ); ?></h2>
 						<div class="wsc-item-list">
 							<?php foreach ( $results['b'] as $item ) : ?>
 								<?php WSC_Renderer::render_item( $item ); ?>
@@ -221,8 +243,8 @@ class WSC_Admin_Page {
 		}
 		$results = ( new WSC_Diagnostics() )->run();
 		$this->page_wrap(
-			__( 'バージョン鮮度', 'site-security-checker' ),
-			__( 'WordPress本体・PHP・プラグイン／テーマの更新状況を確認します。', 'site-security-checker' ),
+			__( 'バージョン鮮度', 'cybernote-security-checker' ),
+			__( 'WordPress本体・PHP・プラグイン／テーマの更新状況を確認します。', 'cybernote-security-checker' ),
 			function () use ( $results ) {
 				?>
 				<div class="wsc-admin-body">
@@ -247,8 +269,8 @@ class WSC_Admin_Page {
 		}
 		$results = ( new WSC_Diagnostics() )->run();
 		$this->page_wrap(
-			__( 'ハードニング設定', 'site-security-checker' ),
-			__( 'サイトを攻撃に強くするための基本設定を確認します。', 'site-security-checker' ),
+			__( 'ハードニング設定', 'cybernote-security-checker' ),
+			__( 'サイトを攻撃に強くするための基本設定を確認します。', 'cybernote-security-checker' ),
 			function () use ( $results ) {
 				?>
 				<div class="wsc-admin-body">
@@ -270,13 +292,13 @@ class WSC_Admin_Page {
 	public function render_cve() {
 		if ( WSC_Pro_License::is_active() ) {
 			$this->page_wrap(
-				__( '脆弱性アラート', 'site-security-checker' ),
-				__( '使用中のプラグイン・テーマに既知の脆弱性がないかスキャンします。', 'site-security-checker' ),
+				__( '脆弱性アラート', 'cybernote-security-checker' ),
+				__( '使用中のプラグイン・テーマに既知の脆弱性がないかスキャンします。', 'cybernote-security-checker' ),
 				array( $this, 'render_cve_pro_body' )
 			);
 		} else {
 			$this->page_wrap(
-				__( '脆弱性アラート', 'site-security-checker' ),
+				__( '脆弱性アラート', 'cybernote-security-checker' ),
 				'',
 				array( $this, 'render_cve_upsell_body' )
 			);
@@ -293,8 +315,8 @@ class WSC_Admin_Page {
 			<?php if ( ! empty( $results['is_mock'] ) ) : ?>
 			<div class="notice notice-warning inline" style="margin-bottom:16px">
 				<p>
-					<strong><?php esc_html_e( '⚠ これはデモデータです。', 'site-security-checker' ); ?></strong>
-					<?php esc_html_e( 'Phase 2でAPIと連携すると、実際のサイト環境に基づくスキャン結果が表示されます。', 'site-security-checker' ); ?>
+					<strong><?php esc_html_e( '⚠ これはデモデータです。', 'cybernote-security-checker' ); ?></strong>
+					<?php esc_html_e( 'Phase 2でAPIと連携すると、実際のサイト環境に基づくスキャン結果が表示されます。', 'cybernote-security-checker' ); ?>
 				</p>
 			</div>
 			<?php endif; ?>
@@ -305,11 +327,11 @@ class WSC_Admin_Page {
 					<h2>
 						<?php
 						if ( 0 === $count ) {
-							esc_html_e( '脆弱性は検出されませんでした', 'site-security-checker' );
+							esc_html_e( '脆弱性は検出されませんでした', 'cybernote-security-checker' );
 						} else {
 							printf(
 								/* translators: %d: number of vulnerabilities found */
-								esc_html__( '%d件の脆弱性が検出されました', 'site-security-checker' ),
+								esc_html__( '%d件の脆弱性が検出されました', 'cybernote-security-checker' ),
 								$count
 							);
 						}
@@ -319,7 +341,7 @@ class WSC_Admin_Page {
 						<?php
 						printf(
 							/* translators: %s: scan date/time */
-							esc_html__( '最終スキャン: %s', 'site-security-checker' ),
+							esc_html__( '最終スキャン: %s', 'cybernote-security-checker' ),
 							esc_html( wp_date( 'Y-m-d H:i', strtotime( $results['scanned_at'] ) ) )
 						);
 						?>
@@ -328,7 +350,7 @@ class WSC_Admin_Page {
 				<div class="wsc-hero-actions">
 					<button type="button" class="button button-primary wsc-refresh-btn" disabled>
 						<span class="dashicons dashicons-update" aria-hidden="true"></span>
-						<?php esc_html_e( '今すぐスキャン（Phase 2で有効化）', 'site-security-checker' ); ?>
+						<?php esc_html_e( '今すぐスキャン（Phase 2で有効化）', 'cybernote-security-checker' ); ?>
 					</button>
 				</div>
 			</section>
@@ -338,7 +360,7 @@ class WSC_Admin_Page {
 				<?php if ( empty( $vulns ) ) : ?>
 					<div class="wsc-empty-state">
 						<span class="wsc-empty-icon" aria-hidden="true">✓</span>
-						<p><?php esc_html_e( '検出された脆弱性はありません。', 'site-security-checker' ); ?></p>
+						<p><?php esc_html_e( '検出された脆弱性はありません。', 'cybernote-security-checker' ); ?></p>
 					</div>
 				<?php else : ?>
 					<div class="wsc-item-list">
@@ -360,20 +382,20 @@ class WSC_Admin_Page {
 		<div class="wsc-admin-body">
 			<div class="wsc-card wsc-upsell-card" style="padding:40px 36px;text-align:center;max-width:640px;margin:0 auto">
 				<div class="wsc-upsell-badge">Pro</div>
-				<h2 class="wsc-upsell-title"><?php esc_html_e( '脆弱性アラート（日本語）', 'site-security-checker' ); ?></h2>
+				<h2 class="wsc-upsell-title"><?php esc_html_e( '脆弱性アラート（日本語）', 'cybernote-security-checker' ); ?></h2>
 				<p class="wsc-upsell-desc">
-					<?php esc_html_e( '使用中のプラグイン・テーマに既知の脆弱性（CVE）が見つかったとき、「どのプラグインが」「どんな危険で」「今何をすべきか」を平易な日本語で通知します。外部の脆弱性データベースとの突合はPro版でのみ提供予定です。', 'site-security-checker' ); ?>
+					<?php esc_html_e( '使用中のプラグイン・テーマに既知の脆弱性（CVE）が見つかったとき、「どのプラグインが」「どんな危険で」「今何をすべきか」を平易な日本語で通知します。外部の脆弱性データベースとの突合はPro版でのみ提供予定です。', 'cybernote-security-checker' ); ?>
 				</p>
 				<div class="wsc-upsell-features">
-					<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '使用プラグイン・テーマの脆弱性検知', 'site-security-checker' ); ?></div>
-					<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '平易な日本語での危険度・対応手順の提示', 'site-security-checker' ); ?></div>
-					<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '管理画面バナー＋メール通知', 'site-security-checker' ); ?></div>
-					<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '定期チェック（毎日/週次）', 'site-security-checker' ); ?></div>
+					<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '使用プラグイン・テーマの脆弱性検知', 'cybernote-security-checker' ); ?></div>
+					<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '平易な日本語での危険度・対応手順の提示', 'cybernote-security-checker' ); ?></div>
+					<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '管理画面バナー＋メール通知', 'cybernote-security-checker' ); ?></div>
+					<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '定期チェック（毎日/週次）', 'cybernote-security-checker' ); ?></div>
 				</div>
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::SLUG_SETTINGS ) ); ?>" class="button button-primary" style="margin-top:20px">
-					<?php esc_html_e( 'ライセンスキーを入力して有効化する', 'site-security-checker' ); ?>
+					<?php esc_html_e( 'ライセンスキーを入力して有効化する', 'cybernote-security-checker' ); ?>
 				</a>
-				<p class="wsc-upsell-coming"><?php esc_html_e( '近日公開予定', 'site-security-checker' ); ?></p>
+				<p class="wsc-upsell-coming"><?php esc_html_e( '近日公開予定', 'cybernote-security-checker' ); ?></p>
 			</div>
 		</div>
 		<?php
@@ -402,7 +424,7 @@ class WSC_Admin_Page {
 					<?php
 					printf(
 						/* translators: 1: installed version, 2: fixed version */
-						esc_html__( 'v%1$s → v%2$s に更新が必要', 'site-security-checker' ),
+						esc_html__( 'v%1$s → v%2$s に更新が必要', 'cybernote-security-checker' ),
 						esc_html( $vuln['installed_version'] ),
 						esc_html( $vuln['fixed_version'] )
 					);
@@ -418,21 +440,21 @@ class WSC_Admin_Page {
 				<!-- アコーディオン展開パネル -->
 				<div class="wsc-item-guide" id="<?php echo esc_attr( $guide_id ); ?>" style="display:none">
 					<div class="wsc-guide-section">
-						<div class="wsc-guide-section-title"><?php esc_html_e( '概要', 'site-security-checker' ); ?></div>
+						<div class="wsc-guide-section-title"><?php esc_html_e( '概要', 'cybernote-security-checker' ); ?></div>
 						<div class="wsc-guide-steps"><?php echo esc_html( $vuln['description_ja'] ); ?></div>
 					</div>
 					<div class="wsc-guide-section">
-						<div class="wsc-guide-section-title"><?php esc_html_e( '対応手順', 'site-security-checker' ); ?></div>
+						<div class="wsc-guide-section-title"><?php esc_html_e( '対応手順', 'cybernote-security-checker' ); ?></div>
 						<div class="wsc-guide-steps"><?php echo esc_html( $vuln['action_ja'] ); ?></div>
 					</div>
 					<div class="wsc-guide-action">
 						<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small wsc-secondary-action">
-							<?php esc_html_e( '更新画面を開く', 'site-security-checker' ); ?>
+							<?php esc_html_e( '更新画面を開く', 'cybernote-security-checker' ); ?>
 						</a>
 					</div>
 					<?php if ( ! empty( $vuln['references'] ) ) : ?>
 					<div class="wsc-guide-links">
-						<div class="wsc-guide-section-title"><?php esc_html_e( '詳細はこちら', 'site-security-checker' ); ?></div>
+						<div class="wsc-guide-section-title"><?php esc_html_e( '詳細はこちら', 'cybernote-security-checker' ); ?></div>
 						<?php foreach ( $vuln['references'] as $ref ) : ?>
 							<a href="<?php echo esc_url( $ref['url'] ); ?>" class="wsc-guide-link" target="_blank" rel="noopener noreferrer">
 								<span class="dashicons dashicons-external" aria-hidden="true"></span>
@@ -448,7 +470,7 @@ class WSC_Admin_Page {
 				class="wsc-item-chevron wsc-guide-toggle"
 				aria-expanded="false"
 				aria-controls="<?php echo esc_attr( $guide_id ); ?>"
-				aria-label="<?php esc_attr_e( '詳細ガイドを表示', 'site-security-checker' ); ?>"
+				aria-label="<?php esc_attr_e( '詳細ガイドを表示', 'cybernote-security-checker' ); ?>"
 				onclick="wscToggleGuide(this)"
 			>›</button>
 		</div>
@@ -458,23 +480,23 @@ class WSC_Admin_Page {
 	/** レポート — Business予定機能のアップセルページ */
 	public function render_report_upsell() {
 		$this->page_wrap(
-			__( 'レポート', 'site-security-checker' ),
+			__( 'レポート', 'cybernote-security-checker' ),
 			'',
 			function () {
 				?>
 				<div class="wsc-admin-body">
 					<div class="wsc-card wsc-upsell-card" style="padding:40px 36px;text-align:center;max-width:640px;margin:0 auto">
 						<div class="wsc-upsell-badge wsc-upsell-badge-biz">Business</div>
-						<h2 class="wsc-upsell-title"><?php esc_html_e( '月次セキュリティレポート', 'site-security-checker' ); ?></h2>
+						<h2 class="wsc-upsell-title"><?php esc_html_e( '月次セキュリティレポート', 'cybernote-security-checker' ); ?></h2>
 						<p class="wsc-upsell-desc">
-							<?php esc_html_e( '診断結果をPDF形式でまとめて出力し、クライアントや経営者への報告資料として活用できます。複数サイトをまとめて管理する制作会社・フリーランス向けの機能です。', 'site-security-checker' ); ?>
+							<?php esc_html_e( '診断結果をPDF形式でまとめて出力し、クライアントや経営者への報告資料として活用できます。複数サイトをまとめて管理する制作会社・フリーランス向けの機能です。', 'cybernote-security-checker' ); ?>
 						</p>
 						<div class="wsc-upsell-features">
-							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '診断結果のPDFレポート出力', 'site-security-checker' ); ?></div>
-							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '複数サイトの一括管理', 'site-security-checker' ); ?></div>
-							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '月次サマリーメール', 'site-security-checker' ); ?></div>
+							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '診断結果のPDFレポート出力', 'cybernote-security-checker' ); ?></div>
+							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '複数サイトの一括管理', 'cybernote-security-checker' ); ?></div>
+							<div class="wsc-upsell-feature"><span>✓</span><?php esc_html_e( '月次サマリーメール', 'cybernote-security-checker' ); ?></div>
 						</div>
-						<p class="wsc-upsell-coming"><?php esc_html_e( '近日公開予定', 'site-security-checker' ); ?></p>
+						<p class="wsc-upsell-coming"><?php esc_html_e( '近日公開予定', 'cybernote-security-checker' ); ?></p>
 					</div>
 				</div>
 				<?php
@@ -485,8 +507,8 @@ class WSC_Admin_Page {
 	/** 設定 */
 	public function render_settings() {
 		$this->page_wrap(
-			__( '設定', 'site-security-checker' ),
-			__( 'ライセンスキーの入力・Pro版の有効化ができます。', 'site-security-checker' ),
+			__( '設定', 'cybernote-security-checker' ),
+			__( 'ライセンスキーの入力・Pro版の有効化ができます。', 'cybernote-security-checker' ),
 			array( $this, 'render_settings_body' )
 		);
 	}
@@ -500,18 +522,18 @@ class WSC_Admin_Page {
 		?>
 		<?php if ( 'activated' === $msg ) : ?>
 			<div class="notice notice-success is-dismissible" style="margin-top:16px">
-				<p><?php esc_html_e( '✓ ライセンスが有効になりました。Pro機能をご利用いただけます。', 'site-security-checker' ); ?></p>
+				<p><?php esc_html_e( '✓ ライセンスが有効になりました。Pro機能をご利用いただけます。', 'cybernote-security-checker' ); ?></p>
 			</div>
 		<?php elseif ( 'deactivated' === $msg ) : ?>
 			<div class="notice notice-info is-dismissible" style="margin-top:16px">
-				<p><?php esc_html_e( 'ライセンスを解除しました。', 'site-security-checker' ); ?></p>
+				<p><?php esc_html_e( 'ライセンスを解除しました。', 'cybernote-security-checker' ); ?></p>
 			</div>
 		<?php elseif ( 'invalid_format' === $msg ) : ?>
 			<div class="notice notice-error is-dismissible" style="margin-top:16px">
 				<p>
-					<?php esc_html_e( 'ライセンスキーの形式が正しくありません。', 'site-security-checker' ); ?>
+					<?php esc_html_e( 'ライセンスキーの形式が正しくありません。', 'cybernote-security-checker' ); ?>
 					<code>WSC-XXXX-XXXX-XXXX-XXXX</code>
-					<?php esc_html_e( 'の形式で入力してください（英数字大文字）。', 'site-security-checker' ); ?>
+					<?php esc_html_e( 'の形式で入力してください（英数字大文字）。', 'cybernote-security-checker' ); ?>
 				</p>
 			</div>
 		<?php endif; ?>
@@ -522,7 +544,7 @@ class WSC_Admin_Page {
 			<div class="wsc-card wsc-category-card" style="padding:28px;margin-bottom:20px">
 				<h2 class="wsc-card-title" style="margin-bottom:16px">
 					<span class="wsc-section-icon wsc-section-icon-blue" aria-hidden="true">🔑</span>
-					<?php esc_html_e( 'Pro ライセンス', 'site-security-checker' ); ?>
+					<?php esc_html_e( 'Pro ライセンス', 'cybernote-security-checker' ); ?>
 				</h2>
 
 				<?php if ( $is_active ) : ?>
@@ -530,13 +552,13 @@ class WSC_Admin_Page {
 					<div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--wsc-good-bg);border:1px solid var(--wsc-good-border);border-radius:8px;margin-bottom:20px">
 						<span style="color:var(--wsc-good);font-size:20px" aria-hidden="true">✓</span>
 						<div>
-							<strong style="color:var(--wsc-good)"><?php esc_html_e( '有効', 'site-security-checker' ); ?></strong>
+							<strong style="color:var(--wsc-good)"><?php esc_html_e( '有効', 'cybernote-security-checker' ); ?></strong>
 							<?php if ( ! empty( $status['expires_at'] ) ) : ?>
 								<span style="color:var(--wsc-muted);font-size:13px;margin-left:8px">
 									<?php
 									printf(
 										/* translators: %s: expiry date */
-										esc_html__( '%s まで', 'site-security-checker' ),
+										esc_html__( '%s まで', 'cybernote-security-checker' ),
 										esc_html( $status['expires_at'] )
 									);
 									?>
@@ -545,23 +567,23 @@ class WSC_Admin_Page {
 						</div>
 					</div>
 					<p style="font-size:13px;color:var(--wsc-muted);margin-bottom:16px">
-						<?php esc_html_e( '登録済みキー：', 'site-security-checker' ); ?>
+						<?php esc_html_e( '登録済みキー：', 'cybernote-security-checker' ); ?>
 						<code><?php echo esc_html( $key ); ?></code>
 					</p>
 					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
-						onsubmit="return confirm('<?php esc_attr_e( 'ライセンスを解除するとPro機能が無効になります。よろしいですか？', 'site-security-checker' ); ?>')">
+						onsubmit="return confirm('<?php esc_attr_e( 'ライセンスを解除するとPro機能が無効になります。よろしいですか？', 'cybernote-security-checker' ); ?>')">
 						<input type="hidden" name="action" value="wsc_save_license">
 						<input type="hidden" name="wsc_license_action" value="deactivate">
 						<?php wp_nonce_field( 'wsc_license_save' ); ?>
 						<button type="submit" class="button">
-							<?php esc_html_e( 'ライセンスを解除する', 'site-security-checker' ); ?>
+							<?php esc_html_e( 'ライセンスを解除する', 'cybernote-security-checker' ); ?>
 						</button>
 					</form>
 
 				<?php else : ?>
 					<!-- 未設定状態 -->
 					<p style="color:var(--wsc-muted);margin-bottom:16px">
-						<?php esc_html_e( 'ライセンスキーを入力するとPro版の脆弱性アラート機能が有効になります。', 'site-security-checker' ); ?>
+						<?php esc_html_e( 'ライセンスキーを入力するとPro版の脆弱性アラート機能が有効になります。', 'cybernote-security-checker' ); ?>
 					</p>
 					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 						<input type="hidden" name="action" value="wsc_save_license">
@@ -579,7 +601,7 @@ class WSC_Admin_Page {
 								spellcheck="false"
 							>
 							<button type="submit" class="button button-primary">
-								<?php esc_html_e( '有効化する', 'site-security-checker' ); ?>
+								<?php esc_html_e( '有効化する', 'cybernote-security-checker' ); ?>
 							</button>
 						</div>
 					</form>
@@ -589,22 +611,22 @@ class WSC_Admin_Page {
 			<!-- 自動スキャン（Phase 3 予定） -->
 			<div class="wsc-card wsc-category-card" style="padding:28px;margin-bottom:20px;opacity:.6">
 				<h2 class="wsc-card-title" style="margin-bottom:8px">
-					<?php esc_html_e( '自動スキャンの頻度', 'site-security-checker' ); ?>
+					<?php esc_html_e( '自動スキャンの頻度', 'cybernote-security-checker' ); ?>
 					<span class="wsc-menu-badge" style="margin-left:8px;vertical-align:middle">Phase 3</span>
 				</h2>
 				<p style="color:var(--wsc-muted);font-size:13px;margin:0">
-					<?php esc_html_e( '毎日または週1回のスキャンスケジュールを設定できます。WP-Cronによる自動診断はPhase 3で実装予定です。', 'site-security-checker' ); ?>
+					<?php esc_html_e( '毎日または週1回のスキャンスケジュールを設定できます。WP-Cronによる自動診断はPhase 3で実装予定です。', 'cybernote-security-checker' ); ?>
 				</p>
 			</div>
 
 			<!-- メール通知（Phase 3 予定） -->
 			<div class="wsc-card wsc-category-card" style="padding:28px;opacity:.6">
 				<h2 class="wsc-card-title" style="margin-bottom:8px">
-					<?php esc_html_e( 'メール通知', 'site-security-checker' ); ?>
+					<?php esc_html_e( 'メール通知', 'cybernote-security-checker' ); ?>
 					<span class="wsc-menu-badge" style="margin-left:8px;vertical-align:middle">Phase 3</span>
 				</h2>
 				<p style="color:var(--wsc-muted);font-size:13px;margin:0">
-					<?php esc_html_e( '新しい脆弱性が検知されたときにメールで通知します。通知先アドレスの設定はPhase 3で実装予定です。', 'site-security-checker' ); ?>
+					<?php esc_html_e( '新しい脆弱性が検知されたときにメールで通知します。通知先アドレスの設定はPhase 3で実装予定です。', 'cybernote-security-checker' ); ?>
 				</p>
 			</div>
 
@@ -638,21 +660,6 @@ class WSC_Admin_Page {
 			<?php endif; ?>
 			<?php $content(); ?>
 		</div>
-		<script>
-		function wscAdminRefresh(btn) {
-			var body = document.getElementById('wsc-admin-body');
-			if ( ! body ) { return; }
-			btn.disabled = true;
-			btn.textContent = '<?php echo esc_js( __( '診断中...', 'site-security-checker' ) ); ?>';
-			var xhr = new XMLHttpRequest();
-			xhr.open('POST', '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>');
-			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			xhr.onload = function() {
-				if (xhr.status === 200) { body.outerHTML = xhr.responseText; }
-			};
-			xhr.send('action=wsc_admin_refresh&nonce=' + btn.dataset.nonce);
-		}
-		</script>
 		<?php
 	}
 
@@ -692,11 +699,11 @@ class WSC_Admin_Page {
 					<h2>
 						<?php
 						if ( 0 === $issues ) {
-							esc_html_e( 'すべての項目で問題は見つかりませんでした', 'site-security-checker' );
+							esc_html_e( 'すべての項目で問題は見つかりませんでした', 'cybernote-security-checker' );
 						} else {
 							printf(
 								/* translators: 1: number of issue items, 2: total items */
-								esc_html__( '%1$d / %2$d 項目で確認が必要です', 'site-security-checker' ),
+								esc_html__( '%1$d / %2$d 項目で確認が必要です', 'cybernote-security-checker' ),
 								$issues,
 								$total
 							);
@@ -706,29 +713,29 @@ class WSC_Admin_Page {
 					<p>
 						<?php
 						if ( 0 === $issues ) {
-							esc_html_e( '現在の基本設定は良好です。定期的に再診断してください。', 'site-security-checker' );
+							esc_html_e( '現在の基本設定は良好です。定期的に再診断してください。', 'cybernote-security-checker' );
 						} else {
-							esc_html_e( 'まずは「要対応」の項目から確認し、対応していきましょう。', 'site-security-checker' );
+							esc_html_e( 'まずは「要対応」の項目から確認し、対応していきましょう。', 'cybernote-security-checker' );
 						}
 						?>
 					</p>
 				</div>
 
-				<div class="wsc-hero-counts" aria-label="<?php esc_attr_e( '診断結果の内訳', 'site-security-checker' ); ?>">
+				<div class="wsc-hero-counts" aria-label="<?php esc_attr_e( '診断結果の内訳', 'cybernote-security-checker' ); ?>">
 					<div class="wsc-count-card wsc-count-recommended">
 						<span class="wsc-count-icon">!</span>
-						<span class="wsc-count-label"><?php esc_html_e( '要対応', 'site-security-checker' ); ?></span>
-						<strong><?php echo esc_html( $counts['recommended'] ); ?><?php esc_html_e( '件', 'site-security-checker' ); ?></strong>
+						<span class="wsc-count-label"><?php esc_html_e( '要対応', 'cybernote-security-checker' ); ?></span>
+						<strong><?php echo esc_html( $counts['recommended'] ); ?><?php esc_html_e( '件', 'cybernote-security-checker' ); ?></strong>
 					</div>
 					<div class="wsc-count-card wsc-count-attention">
 						<span class="wsc-count-icon">△</span>
-						<span class="wsc-count-label"><?php esc_html_e( '改善推奨', 'site-security-checker' ); ?></span>
-						<strong><?php echo esc_html( $counts['attention'] ); ?><?php esc_html_e( '件', 'site-security-checker' ); ?></strong>
+						<span class="wsc-count-label"><?php esc_html_e( '改善推奨', 'cybernote-security-checker' ); ?></span>
+						<strong><?php echo esc_html( $counts['attention'] ); ?><?php esc_html_e( '件', 'cybernote-security-checker' ); ?></strong>
 					</div>
 					<div class="wsc-count-card wsc-count-good">
 						<span class="wsc-count-icon">✓</span>
-						<span class="wsc-count-label"><?php esc_html_e( '問題なし', 'site-security-checker' ); ?></span>
-						<strong><?php echo esc_html( $counts['good'] ); ?><?php esc_html_e( '件', 'site-security-checker' ); ?></strong>
+						<span class="wsc-count-label"><?php esc_html_e( '問題なし', 'cybernote-security-checker' ); ?></span>
+						<strong><?php echo esc_html( $counts['good'] ); ?><?php esc_html_e( '件', 'cybernote-security-checker' ); ?></strong>
 					</div>
 				</div>
 
@@ -740,13 +747,13 @@ class WSC_Admin_Page {
 						data-nonce="<?php echo esc_attr( wp_create_nonce( 'wsc_admin_refresh_nonce' ) ); ?>"
 					>
 						<span class="dashicons dashicons-update" aria-hidden="true"></span>
-						<?php esc_html_e( '再診断する', 'site-security-checker' ); ?>
+						<?php esc_html_e( '再診断する', 'cybernote-security-checker' ); ?>
 					</button>
 					<span class="wsc-last-run">
 						<?php
 						printf(
 							/* translators: %s: current date and time */
-							esc_html__( '最終診断: %s', 'site-security-checker' ),
+							esc_html__( '最終診断: %s', 'cybernote-security-checker' ),
 							esc_html( current_time( 'Y-m-d H:i' ) )
 						);
 						?>
@@ -764,19 +771,19 @@ class WSC_Admin_Page {
 							<div>
 								<h2 class="wsc-card-title">
 									<span class="wsc-section-icon wsc-section-icon-alert" aria-hidden="true">!</span>
-									<?php esc_html_e( '優先対応が必要な項目', 'site-security-checker' ); ?>
+									<?php esc_html_e( '優先対応が必要な項目', 'cybernote-security-checker' ); ?>
 								</h2>
-								<p class="wsc-card-desc"><?php esc_html_e( '放置するとリスクが高まります。できるだけ早く対応してください。', 'site-security-checker' ); ?></p>
+								<p class="wsc-card-desc"><?php esc_html_e( '放置するとリスクが高まります。できるだけ早く対応してください。', 'cybernote-security-checker' ); ?></p>
 							</div>
 							<?php if ( $issues > 0 ) : ?>
-								<span class="wsc-mini-count"><?php echo esc_html( $issues ); ?><?php esc_html_e( '件', 'site-security-checker' ); ?></span>
+								<span class="wsc-mini-count"><?php echo esc_html( $issues ); ?><?php esc_html_e( '件', 'cybernote-security-checker' ); ?></span>
 							<?php endif; ?>
 						</div>
 
 						<?php if ( empty( $priority_items ) ) : ?>
 							<div class="wsc-empty-state">
 								<span class="wsc-empty-icon" aria-hidden="true">✓</span>
-								<p><?php esc_html_e( '優先対応が必要な項目はありません。', 'site-security-checker' ); ?></p>
+								<p><?php esc_html_e( '優先対応が必要な項目はありません。', 'cybernote-security-checker' ); ?></p>
 							</div>
 						<?php else : ?>
 							<div class="wsc-priority-list">
@@ -791,10 +798,10 @@ class WSC_Admin_Page {
 					<section class="wsc-card wsc-category-card">
 						<h2 class="wsc-card-title">
 							<span class="wsc-section-icon wsc-section-icon-blue" aria-hidden="true">A</span>
-							<?php esc_html_e( 'A. バージョン鮮度', 'site-security-checker' ); ?>
+							<?php esc_html_e( 'A. バージョン鮮度', 'cybernote-security-checker' ); ?>
 						</h2>
 						<p class="wsc-card-desc">
-							<?php esc_html_e( 'WordPress本体・PHP・プラグイン／テーマの更新状況を確認します。', 'site-security-checker' ); ?>
+							<?php esc_html_e( 'WordPress本体・PHP・プラグイン／テーマの更新状況を確認します。', 'cybernote-security-checker' ); ?>
 						</p>
 						<div class="wsc-item-list">
 							<?php foreach ( $results['a'] as $item ) : ?>
@@ -803,7 +810,7 @@ class WSC_Admin_Page {
 						</div>
 						<div class="wsc-card-more">
 							<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::SLUG_VERSION ) ); ?>" class="wsc-detail-link">
-								<?php esc_html_e( 'すべての項目を確認する', 'site-security-checker' ); ?> →
+								<?php esc_html_e( 'すべての項目を確認する', 'cybernote-security-checker' ); ?> →
 							</a>
 						</div>
 					</section>
@@ -813,10 +820,10 @@ class WSC_Admin_Page {
 				<section class="wsc-card wsc-category-card">
 					<h2 class="wsc-card-title">
 						<span class="wsc-section-icon wsc-section-icon-blue" aria-hidden="true">B</span>
-						<?php esc_html_e( 'B. ハードニング設定', 'site-security-checker' ); ?>
+						<?php esc_html_e( 'B. ハードニング設定', 'cybernote-security-checker' ); ?>
 					</h2>
 					<p class="wsc-card-desc">
-						<?php esc_html_e( '不正アクセスや情報漏えいを防ぐ設定の診断', 'site-security-checker' ); ?>
+						<?php esc_html_e( '不正アクセスや情報漏えいを防ぐ設定の診断', 'cybernote-security-checker' ); ?>
 					</p>
 					<div class="wsc-item-list">
 						<?php foreach ( $results['b'] as $item ) : ?>
@@ -825,7 +832,7 @@ class WSC_Admin_Page {
 					</div>
 					<div class="wsc-card-more">
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::SLUG_HARDENING ) ); ?>" class="wsc-detail-link">
-							<?php esc_html_e( 'すべての項目を確認する', 'site-security-checker' ); ?> →
+							<?php esc_html_e( 'すべての項目を確認する', 'cybernote-security-checker' ); ?> →
 						</a>
 					</div>
 				</section>
@@ -849,24 +856,24 @@ class WSC_Admin_Page {
 			<strong style="font-size:15px;color:var(--wsc-navy)">
 				<?php
 				if ( 0 === $issues ) {
-					esc_html_e( '全項目で問題なし', 'site-security-checker' );
+					esc_html_e( '全項目で問題なし', 'cybernote-security-checker' );
 				} else {
 					printf(
 						/* translators: %d: number of issue items */
-						esc_html__( '確認が必要: %d件', 'site-security-checker' ),
+						esc_html__( '確認が必要: %d件', 'cybernote-security-checker' ),
 						$issues
 					);
 				}
 				?>
 			</strong>
 			<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--wsc-recommended);background:var(--wsc-recommended-bg);border:1px solid var(--wsc-recommended-border)">
-				<?php printf( esc_html__( '要対応 %d件', 'site-security-checker' ), (int) $counts['recommended'] ); ?>
+				<?php printf( esc_html__( '要対応 %d件', 'cybernote-security-checker' ), (int) $counts['recommended'] ); ?>
 			</span>
 			<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--wsc-attention);background:var(--wsc-attention-bg);border:1px solid var(--wsc-attention-border)">
-				<?php printf( esc_html__( '改善推奨 %d件', 'site-security-checker' ), (int) $counts['attention'] ); ?>
+				<?php printf( esc_html__( '改善推奨 %d件', 'cybernote-security-checker' ), (int) $counts['attention'] ); ?>
 			</span>
 			<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--wsc-good);background:var(--wsc-good-bg);border:1px solid var(--wsc-good-border)">
-				<?php printf( esc_html__( '問題なし %d件', 'site-security-checker' ), (int) $counts['good'] ); ?>
+				<?php printf( esc_html__( '問題なし %d件', 'cybernote-security-checker' ), (int) $counts['good'] ); ?>
 			</span>
 		</div>
 		<?php
@@ -877,8 +884,8 @@ class WSC_Admin_Page {
 		?>
 		<p class="wsc-admin-note">
 			<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>
-			<?php esc_html_e( 'このプラグインは診断と情報提供に特化しています。設定の変更や更新の実行は行いません。', 'site-security-checker' ); ?>
-			<a href="<?php echo esc_url( 'https://www.cybernote.click/wp-security-checker-guide/' ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( '使い方ガイドを見る ↗', 'site-security-checker' ); ?></a>
+			<?php esc_html_e( 'このプラグインは診断と情報提供に特化しています。設定の変更や更新の実行は行いません。', 'cybernote-security-checker' ); ?>
+			<a href="<?php echo esc_url( 'https://www.cybernote.click/wp-security-checker-guide/' ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( '使い方ガイドを見る ↗', 'cybernote-security-checker' ); ?></a>
 		</p>
 		<?php
 	}

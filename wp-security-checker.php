@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name: Site Security Checker
- * Plugin URI: https://wordpress.org/plugins/wp-security-checker/
- * Description: WordPressサイトのセキュリティ設定とバージョン状態を診断し、日本語で改善手順を提示します。外部通信なし・軽量設計。
+ * Plugin Name: CyberNote Security Checker
+ * Plugin URI: https://cybernote.click/
+ * Description: Diagnoses WordPress security settings and version status, presenting improvement steps in plain Japanese. No external requests. Lightweight design.
  * Version: 1.0.0
- * Author: Tanabe
+ * Author: teeeda1129
  * Author URI: https://cybernote.click/
- * Text Domain: site-security-checker
+ * Text Domain: cybernote-security-checker
  * Domain Path: /languages
  * Requires at least: 5.9
- * Tested up to: 7.0
+ * Tested up to: 6.8
  * Requires PHP: 7.4
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -23,18 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'WSC_VERSION', '1.0.0' );
 define( 'WSC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WSC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-
-// Load text domain.
-add_action(
-	'plugins_loaded',
-	function () {
-		load_plugin_textdomain(
-			'site-security-checker',
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages'
-		);
-	}
-);
 
 // Include class files.
 require_once WSC_PLUGIN_DIR . 'includes/class-wsc-category-a.php';

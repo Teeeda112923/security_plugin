@@ -49,25 +49,25 @@ class WSC_Category_B {
 		if ( ! $debug_on ) {
 			$status  = 'good';
 			$message = '';
-			$detail  = __( 'WP_DEBUG: 無効（本番環境として正常）', 'site-security-checker' );
+			$detail  = __( 'WP_DEBUG: 無効（本番環境として正常）', 'cybernote-security-checker' );
 		} else {
 			// WP_DEBUG_DISPLAY は未定義のとき既定で true（画面表示あり）。
 			$display_on = ! defined( 'WP_DEBUG_DISPLAY' ) || WP_DEBUG_DISPLAY;
 
 			if ( $display_on ) {
 				$status  = 'recommended';
-				$message = __( '本番でエラーが画面に表示される設定です。サーバーの構成やファイルの場所が攻撃者の手がかりになります。wp-config.phpでデバッグの画面表示をオフにしてください', 'site-security-checker' );
-				$detail  = __( 'WP_DEBUG: 有効／画面表示: あり', 'site-security-checker' );
+				$message = __( '本番でエラーが画面に表示される設定です。サーバーの構成やファイルの場所が攻撃者の手がかりになります。wp-config.phpでデバッグの画面表示をオフにしてください', 'cybernote-security-checker' );
+				$detail  = __( 'WP_DEBUG: 有効／画面表示: あり', 'cybernote-security-checker' );
 			} else {
 				$status  = 'attention';
-				$message = __( 'デバッグは有効ですが画面表示は抑止されています（ログのみ）。本番では不要ならWP_DEBUG自体の無効化を検討してください', 'site-security-checker' );
-				$detail  = __( 'WP_DEBUG: 有効／画面表示: なし（ログのみ）', 'site-security-checker' );
+				$message = __( 'デバッグは有効ですが画面表示は抑止されています（ログのみ）。本番では不要ならWP_DEBUG自体の無効化を検討してください', 'cybernote-security-checker' );
+				$detail  = __( 'WP_DEBUG: 有効／画面表示: なし（ログのみ）', 'cybernote-security-checker' );
 			}
 		}
 
 		return array(
 			'id'      => 'b1',
-			'label'   => __( 'デバッグ表示', 'site-security-checker' ),
+			'label'   => __( 'デバッグ表示', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
 			'detail'  => $detail,
@@ -88,16 +88,16 @@ class WSC_Category_B {
 		if ( $editing_disabled ) {
 			$status  = 'good';
 			$message = '';
-			$detail  = __( 'DISALLOW_FILE_EDIT: 有効（管理画面からの編集を無効化済み）', 'site-security-checker' );
+			$detail  = __( 'DISALLOW_FILE_EDIT: 有効（管理画面からの編集を無効化済み）', 'cybernote-security-checker' );
 		} else {
 			$status  = 'recommended';
-			$message = __( "管理者アカウントが乗っ取られるとコードをその場で書き換えられます。wp-config.phpに define('DISALLOW_FILE_EDIT', true); を追加してください", 'site-security-checker' );
-			$detail  = __( 'DISALLOW_FILE_EDIT: 未設定（管理画面からファイル編集が可能）', 'site-security-checker' );
+			$message = __( "管理者アカウントが乗っ取られるとコードをその場で書き換えられます。wp-config.phpに define('DISALLOW_FILE_EDIT', true); を追加してください", 'cybernote-security-checker' );
+			$detail  = __( 'DISALLOW_FILE_EDIT: 未設定（管理画面からファイル編集が可能）', 'cybernote-security-checker' );
 		}
 
 		return array(
 			'id'      => 'b2',
-			'label'   => __( 'ファイル編集機能', 'site-security-checker' ),
+			'label'   => __( 'ファイル編集機能', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
 			'detail'  => $detail,
@@ -125,17 +125,17 @@ class WSC_Category_B {
 		if ( empty( $found ) ) {
 			$status  = 'good';
 			$message = '';
-			$detail  = __( '推測されやすい既定名の管理者は存在しません（良好）', 'site-security-checker' );
+			$detail  = __( '推測されやすい既定名の管理者は存在しません（良好）', 'cybernote-security-checker' );
 		} else {
 			$status  = 'attention';
-			$message = __( '攻撃者が最初に試すのが既定の名前で、パスワード総当たりの標的になりやすいです。新しい名前の管理者を作って権限を移し、既定名のアカウントを削除してください（バックアップ後に実施）', 'site-security-checker' );
+			$message = __( '攻撃者が最初に試すのが既定の名前で、パスワード総当たりの標的になりやすいです。新しい名前の管理者を作って権限を移し、既定名のアカウントを削除してください（バックアップ後に実施）', 'cybernote-security-checker' );
 			/* translators: %s: comma-separated list of default user names found */
-			$detail  = sprintf( __( '既定名のユーザーが存在: %s', 'site-security-checker' ), esc_html( implode( '、', $found ) ) );
+			$detail  = sprintf( __( '既定名のユーザーが存在: %s', 'cybernote-security-checker' ), esc_html( implode( '、', $found ) ) );
 		}
 
 		return array(
 			'id'      => 'b3',
-			'label'   => __( '管理者ユーザー名', 'site-security-checker' ),
+			'label'   => __( '管理者ユーザー名', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
 			'detail'  => $detail,
@@ -156,16 +156,16 @@ class WSC_Category_B {
 		if ( $is_https ) {
 			$status  = 'good';
 			$message = '';
-			$detail  = __( 'HTTPS: 有効（SSL証明書が適用されています）', 'site-security-checker' );
+			$detail  = __( 'HTTPS: 有効（SSL証明書が適用されています）', 'cybernote-security-checker' );
 		} else {
 			$status  = 'recommended';
-			$message = __( '通信が暗号化されず、ログイン情報などが途中で盗み見られる恐れがあります。SSL証明書を導入しhttpsに切り替えてください。多くのレンタルサーバーで無料の証明書が使えます', 'site-security-checker' );
-			$detail  = __( 'HTTPS: 無効（HTTP接続）', 'site-security-checker' );
+			$message = __( '通信が暗号化されず、ログイン情報などが途中で盗み見られる恐れがあります。SSL証明書を導入しhttpsに切り替えてください。多くのレンタルサーバーで無料の証明書が使えます', 'cybernote-security-checker' );
+			$detail  = __( 'HTTPS: 無効（HTTP接続）', 'cybernote-security-checker' );
 		}
 
 		return array(
 			'id'      => 'b4',
-			'label'   => __( '常時HTTPS', 'site-security-checker' ),
+			'label'   => __( '常時HTTPS', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
 			'detail'  => $detail,
@@ -186,7 +186,7 @@ class WSC_Category_B {
 
 		if ( 'wp_' === $prefix ) {
 			$status  = 'attention';
-			$message = __( '既定値のままだと一部の自動化された攻撃で狙いを定められやすくなります。新しくサイトを作る際は別の接頭辞にしてください。稼働中サイトは変更にリスクがあるため無理に変えないでください', 'site-security-checker' );
+			$message = __( '既定値のままだと一部の自動化された攻撃で狙いを定められやすくなります。新しくサイトを作る際は別の接頭辞にしてください。稼働中サイトは変更にリスクがあるため無理に変えないでください', 'cybernote-security-checker' );
 		} else {
 			$status  = 'good';
 			$message = '';
@@ -194,11 +194,11 @@ class WSC_Category_B {
 
 		return array(
 			'id'      => 'b5',
-			'label'   => __( 'データベース接頭辞', 'site-security-checker' ),
+			'label'   => __( 'データベース接頭辞', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
 			/* translators: %s: current database table prefix */
-			'detail'  => sprintf( __( '現在の接頭辞: %s', 'site-security-checker' ), esc_html( $prefix ) ),
+			'detail'  => sprintf( __( '現在の接頭辞: %s', 'cybernote-security-checker' ), esc_html( $prefix ) ),
 		);
 	}
 
@@ -217,16 +217,16 @@ class WSC_Category_B {
 		if ( ! $xmlrpc_enabled ) {
 			$status  = 'good';
 			$message = '';
-			$detail  = __( 'XML-RPC: 無効化されています', 'site-security-checker' );
+			$detail  = __( 'XML-RPC: 無効化されています', 'cybernote-security-checker' );
 		} else {
 			$status  = 'attention';
-			$message = __( '使っていない場合、総当たり攻撃や踏み台攻撃の入り口になることがあります。外部連携アプリ（Jetpack等）や一部機能で使っていなければ無効化を検討してください。使っている場合はそのままで問題ありません', 'site-security-checker' );
-			$detail  = __( 'XML-RPC: 有効（xmlrpc.php が利用可能）', 'site-security-checker' );
+			$message = __( '使っていない場合、総当たり攻撃や踏み台攻撃の入り口になることがあります。外部連携アプリ（Jetpack等）や一部機能で使っていなければ無効化を検討してください。使っている場合はそのままで問題ありません', 'cybernote-security-checker' );
+			$detail  = __( 'XML-RPC: 有効（xmlrpc.php が利用可能）', 'cybernote-security-checker' );
 		}
 
 		return array(
 			'id'      => 'b6',
-			'label'   => __( 'XML-RPC', 'site-security-checker' ),
+			'label'   => __( 'XML-RPC', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
 			'detail'  => $detail,
@@ -269,16 +269,16 @@ class WSC_Category_B {
 		if ( ! $enumerable ) {
 			$status  = 'good';
 			$message = '';
-			$detail  = __( '匿名でのユーザー名の列挙は抑止されています', 'site-security-checker' );
+			$detail  = __( '匿名でのユーザー名の列挙は抑止されています', 'cybernote-security-checker' );
 		} else {
 			$status  = 'attention';
-			$message = __( 'ログインに使う名前が外部から集められ、総当たり攻撃の準備に使われます。ユーザー名の列挙を無効化する設定の追加を検討してください', 'site-security-checker' );
-			$detail  = __( '認証なしで /wp/v2/users からユーザー情報を取得できます', 'site-security-checker' );
+			$message = __( 'ログインに使う名前が外部から集められ、総当たり攻撃の準備に使われます。ユーザー名の列挙を無効化する設定の追加を検討してください', 'cybernote-security-checker' );
+			$detail  = __( '認証なしで /wp/v2/users からユーザー情報を取得できます', 'cybernote-security-checker' );
 		}
 
 		return array(
 			'id'      => 'b7',
-			'label'   => __( 'REST APIユーザー名列挙', 'site-security-checker' ),
+			'label'   => __( 'REST APIユーザー名列挙', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
 			'detail'  => $detail,

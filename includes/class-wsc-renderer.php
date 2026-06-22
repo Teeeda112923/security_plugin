@@ -17,9 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WSC_Renderer {
 
-	/** @var bool Whether the guide toggle script has been printed this page load. */
-	private static $guide_script_printed = false;
-
 	/**
 	 * Localized status label keyed by status.
 	 *
@@ -28,9 +25,9 @@ class WSC_Renderer {
 	 */
 	public static function status_label( $status ) {
 		$labels = array(
-			'good'        => __( '問題なし', 'site-security-checker' ),
-			'attention'   => __( '改善推奨', 'site-security-checker' ),
-			'recommended' => __( '要対応', 'site-security-checker' ),
+			'good'        => __( '問題なし', 'cybernote-security-checker' ),
+			'attention'   => __( '改善推奨', 'cybernote-security-checker' ),
+			'recommended' => __( '要対応', 'cybernote-security-checker' ),
 		);
 		return isset( $labels[ $status ] ) ? $labels[ $status ] : '';
 	}
@@ -257,35 +254,6 @@ class WSC_Renderer {
 	}
 
 	/**
-	 * Print the guide toggle JS once per page load.
-	 */
-	private static function maybe_print_guide_script() {
-		if ( self::$guide_script_printed ) {
-			return;
-		}
-		self::$guide_script_printed = true;
-		?>
-		<script>
-		function wscToggleGuide(btn) {
-			var guideId = btn.getAttribute('aria-controls');
-			var guide = document.getElementById(guideId);
-			if (!guide) return;
-			var expanded = btn.getAttribute('aria-expanded') === 'true';
-			if (expanded) {
-				guide.style.display = 'none';
-				btn.setAttribute('aria-expanded', 'false');
-				btn.classList.remove('wsc-guide-open');
-			} else {
-				guide.style.display = 'block';
-				btn.setAttribute('aria-expanded', 'true');
-				btn.classList.add('wsc-guide-open');
-			}
-		}
-		</script>
-		<?php
-	}
-
-	/**
 	 * Render one diagnostic item as a modern card row.
 	 *
 	 * @param array $item Check result array.
@@ -341,7 +309,7 @@ class WSC_Renderer {
 				<?php if ( $args['show_action'] && 'a3' === $id && 'good' !== $status ) : ?>
 					<div class="wsc-item-action">
 						<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small wsc-secondary-action">
-							<?php esc_html_e( '更新画面を開く', 'site-security-checker' ); ?>
+							<?php esc_html_e( '更新画面を開く', 'cybernote-security-checker' ); ?>
 						</a>
 					</div>
 				<?php endif; ?>
@@ -349,23 +317,23 @@ class WSC_Renderer {
 				<?php if ( $guide ) : ?>
 					<div class="wsc-item-guide" id="<?php echo esc_attr( $guide_id ); ?>" style="display:none">
 						<div class="wsc-guide-section">
-							<div class="wsc-guide-section-title"><?php esc_html_e( '対応手順', 'site-security-checker' ); ?></div>
+							<div class="wsc-guide-section-title"><?php esc_html_e( '対応手順', 'cybernote-security-checker' ); ?></div>
 							<div class="wsc-guide-steps"><?php echo wp_kses( $guide['steps'], $allowed_html ); ?></div>
 						</div>
 						<?php if ( ! empty( $guide['has_update_link'] ) ) : ?>
 							<div class="wsc-guide-action">
 								<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small wsc-secondary-action">
-									<?php esc_html_e( '更新画面を開く', 'site-security-checker' ); ?>
+									<?php esc_html_e( '更新画面を開く', 'cybernote-security-checker' ); ?>
 								</a>
 							</div>
 						<?php endif; ?>
 						<div class="wsc-guide-section">
-							<div class="wsc-guide-section-title"><?php esc_html_e( '対応しないと…', 'site-security-checker' ); ?></div>
+							<div class="wsc-guide-section-title"><?php esc_html_e( '対応しないと…', 'cybernote-security-checker' ); ?></div>
 							<div class="wsc-guide-risk"><?php echo wp_kses( $guide['risk'], $allowed_html ); ?></div>
 						</div>
 						<?php if ( ! empty( $guide['links'] ) ) : ?>
 							<div class="wsc-guide-links">
-								<div class="wsc-guide-section-title"><?php esc_html_e( '詳細はこちら', 'site-security-checker' ); ?></div>
+								<div class="wsc-guide-section-title"><?php esc_html_e( '詳細はこちら', 'cybernote-security-checker' ); ?></div>
 								<?php foreach ( $guide['links'] as $link ) : ?>
 									<a href="<?php echo esc_url( $link['url'] ); ?>" class="wsc-guide-link" target="_blank" rel="noopener noreferrer">
 										<span class="dashicons dashicons-external" aria-hidden="true"></span>
@@ -383,7 +351,7 @@ class WSC_Renderer {
 					class="wsc-item-chevron wsc-guide-toggle"
 					aria-expanded="false"
 					aria-controls="<?php echo esc_attr( $guide_id ); ?>"
-					aria-label="<?php esc_attr_e( '詳細ガイドを表示', 'site-security-checker' ); ?>"
+					aria-label="<?php esc_attr_e( '詳細ガイドを表示', 'cybernote-security-checker' ); ?>"
 					onclick="wscToggleGuide(this)"
 				>›</button>
 			<?php else : ?>
@@ -392,8 +360,5 @@ class WSC_Renderer {
 		</div>
 		<?php
 
-		if ( $guide ) {
-			self::maybe_print_guide_script();
-		}
 	}
 }

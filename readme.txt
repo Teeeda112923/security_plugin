@@ -1,108 +1,109 @@
-=== Site Security Checker ===
-Contributors: tanabe
-Tags: security, セキュリティ, hardening, diagnostic, vulnerability
+=== CyberNote Security Checker ===
+Contributors: teeeda1129
+Tags: security, hardening, diagnostic, audit, maintenance
 Requires at least: 5.9
-Tested up to: 7.0
+Tested up to: 6.8
 Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WordPressサイトのセキュリティ設定とバージョン状態を診断し、平易な日本語で改善手順を提示します。外部通信なし・軽量設計。
+Diagnoses WordPress security settings and version status, presenting plain-language improvement steps in Japanese. No external requests. Lightweight.
 
 == Description ==
 
-Site Security Checker は、WordPressサイトのセキュリティ状態を「外部通信なし・軽量」で診断するプラグインです。
+CyberNote Security Checker is a lightweight plugin that audits your WordPress site's security posture without sending any data to external servers.
 
-大手のセキュリティプラグインは高機能ですが、英語・専門的・サーバー負荷が重いという壁があります。Site Security Checker は逆を行き、日本の個人ブロガー・小規模事業者が「結局なにをすればいいか」を即座に理解できる状態を、軽量に提供することを目指しています。
+Many security plugins are powerful but heavy, English-only, and full of technical jargon. CyberNote Security Checker takes the opposite approach: it targets Japanese individual bloggers and small business owners who need to understand exactly what to do — delivered quickly and without specialist knowledge.
 
-**診断は10項目、すべて外部通信なし**
+**10 diagnostic checks. Zero external requests.**
 
-管理画面のダッシュボードに診断ウィジェットを表示。good（問題なし）/ attention（改善推奨）/ recommended（早めの対処を推奨）の3段階で、各項目の状態と平易な日本語の改善手順を提示します。
+A widget appears on the WordPress dashboard showing results in three levels: good (no action needed) / attention (improvement recommended) / recommended (priority action required). Each item includes a plain-Japanese explanation of the risk and step-by-step remediation guidance.
 
-= カテゴリA：バージョンの鮮度（3項目） =
+= Category A: Version Freshness (3 checks) =
 
-* **WordPress本体** — メンテナンス版（セキュリティ修正）が未適用かどうかを判定。機能更新と分けて、緊急性に応じた表示をします。
-* **PHPバージョン** — 公式サポート状況に基づいて判定。サポート終了済みは「要対応」、セキュリティ修正のみの系列は「改善推奨」。
-* **プラグイン・テーマの更新** — 更新待ちの件数と名前を表示。「更新画面を開く」ボタンでWordPress標準の更新画面へ直接案内します。
+* **WordPress core** — Detects whether security-only maintenance releases are unapplied. Distinguishes urgency between security patches and feature updates.
+* **PHP version** — Evaluated against official PHP support status. End-of-life versions flagged as "priority action"; security-only branches as "attention".
+* **Plugin and theme updates** — Displays the count and names of pending updates. A direct link opens the standard WordPress update screen; the plugin never performs updates itself.
 
-= カテゴリB：ハードニング設定（7項目） =
+= Category B: Hardening Settings (7 checks) =
 
-* **デバッグ表示** — 本番でエラーが画面表示される設定は「要対応」。ログのみは「改善推奨」。
-* **ファイル編集機能** — 管理画面からテーマ・プラグインを直接編集できる状態は「要対応」。
-* **管理者ユーザー名** — admin / administrator などの推測されやすい名前が存在すると「改善推奨」。
-* **常時HTTPS** — HTTPのまま運用中は「要対応」。
-* **データベース接頭辞** — wp_ のままは「改善推奨」（稼働中の変更リスクを考慮し、煽らない）。
-* **XML-RPC** — 有効状態を「改善推奨」として用途確認を促す（一律に危険とはしない）。
-* **REST APIユーザー名列挙** — 匿名で /wp/v2/users からユーザー情報を取得できる状態は「改善推奨」。
+* **Debug display** — WP_DEBUG with screen output on a production site is flagged as "priority action"; log-only mode as "attention".
+* **File editing** — If the theme and plugin code editor is enabled in the admin panel, flagged as "priority action".
+* **Admin username** — If a user named admin or administrator exists, flagged as "attention" (changing it carries migration risk, so no urgent push).
+* **HTTPS** — Sites running on plain HTTP are flagged as "priority action".
+* **Database table prefix** — Default wp_ prefix flagged as "attention" (live-site changes carry risk, so no urgent push).
+* **XML-RPC** — Enabled XML-RPC is flagged as "attention"; use-case guidance included before recommending disablement.
+* **REST API user enumeration** — If anonymous requests to /wp/v2/users return user data, flagged as "attention".
 
-= 設計方針 =
+= Design Principles =
 
-* **自動変更なし** — 診断結果を提示するだけで、プラグインがサイトを自動で変更することはありません。
-* **外部通信なし** — すべての診断はWordPress組み込みのAPIとサイト内の設定を読み取るだけで完結します。
-* **軽量** — 重いリアルタイムスキャンや独自WAFを持たず、サイト速度に影響を与えません。
-* **平易な日本語** — 専門用語を避け、「なぜ問題か」「どうすればよいか」を一文ずつ添えます。
+* **Read-only** — The plugin only presents diagnostic results. It never automatically changes site settings or files.
+* **No external requests** — Every check reads WordPress built-in APIs and site configuration only. Nothing leaves your server.
+* **Lightweight** — No real-time file scanning, no custom WAF, no resident processes. Diagnostics run once when the admin page loads.
+* **Plain language** — Technical terms are avoided. Each check explains why it matters and what to do in everyday language.
 
-= Pro版（開発予定） =
+= Pro Plan (coming soon) =
 
-現在の無料版は「更新が来ているか」まで提供します。「その更新が既知の脆弱性修正かどうか・どれだけ危険か」はPro版のCVE日本語アラートとして提供予定です。
+The free plan covers whether updates are available. The Pro plan will add CVE vulnerability alerts in Japanese — matching installed plugins and themes against external vulnerability databases, with daily/weekly automated scans and email notifications.
 
 == Installation ==
 
-= 自動インストール =
+= Automatic installation =
 
-1. 管理画面 → プラグイン → 新規追加 を開く
-2. 検索窓に「Site Security Checker」と入力
-3. 「今すぐインストール」→「有効化」をクリック
+1. Go to Dashboard > Plugins > Add New
+2. Search for "CyberNote Security Checker"
+3. Click Install Now, then Activate
 
-= 手動インストール =
+= Manual installation =
 
-1. このページからZIPファイルをダウンロード
-2. 管理画面 → プラグイン → 新規追加 → ZIPからインストール
-3. 有効化後、管理画面のダッシュボードに診断ウィジェットが表示されます
+1. Download the ZIP file from this page
+2. Go to Dashboard > Plugins > Add New > Upload Plugin
+3. Select the ZIP file and click Install Now, then Activate
+4. After activation, the diagnostic widget appears on your WordPress dashboard
 
 == Frequently Asked Questions ==
 
-= 外部のサーバーにデータを送りますか？ =
+= Does this plugin send any data to external servers? =
 
-いいえ。すべての診断はサイト内で完結し、外部への通信は一切行いません。
+No. All diagnostics run entirely within your WordPress installation. No data is sent anywhere.
 
-= 診断を実行するとサイトが重くなりますか？ =
+= Will running the diagnostics slow down my site? =
 
-なりません。ダッシュボードを開いたときにのみ診断を実行し、重いスキャン処理は持っていません。
+No. Diagnostics only run when you open the plugin's admin page or dashboard widget, and there is no continuous background scanning.
 
-= 「更新画面を開く」ボタンを押すと自動で更新されますか？ =
+= Does clicking "Open update screen" automatically update my plugins? =
 
-されません。WordPress標準の更新画面へ移動するだけです。更新の実行はWordPressと利用者に委ねています。
+No. It navigates to the standard WordPress update screen. The decision to update is yours.
 
-= 診断結果をすぐに反映したい場合は？ =
+= How do I get the latest results without reloading the page? =
 
-ウィジェット内の「再診断」ボタンをクリックすると、ページ再読み込みなしで最新の状態に更新できます。
+Click the "Re-diagnose" button inside the widget or admin page to refresh results via AJAX without a full page reload.
 
-= PHP 8.1を使っています。すぐにアップグレードしないといけませんか？ =
+= PHP 8.1 is detected. Do I need to upgrade immediately? =
 
-PHP 8.1は2025年末に公式サポートが終了しており、「要対応」として表示します。ただし、バージョンアップにより一部のプラグインやテーマが動かなくなる場合があります。バックアップを取り、できれば検証環境で確認した上で実施してください。
+PHP 8.1 reached end-of-life in late 2025, so the plugin flags it as "priority action". However, upgrading PHP can break some plugins or themes. Take a backup, test in a staging environment if possible, then upgrade.
 
-= XML-RPCを有効のままにしておいて問題ありますか？ =
+= Is it safe to leave XML-RPC enabled? =
 
-Jetpackや一部のスマートフォンアプリ連携など、使っている機能があれば有効のままで問題ありません。使っていない場合は無効化を検討してください。
+If you use Jetpack or a mobile app that relies on XML-RPC, leaving it enabled is fine. If you have no services depending on it, consider disabling it.
 
 == Screenshots ==
 
-1. 専用管理画面 — 診断結果を一覧表示。優先対応項目とハードニング設定を2カラムで確認できます。
-2. ダッシュボードウィジェット — WordPress標準のダッシュボードに表示。要確認件数と優先項目をコンパクトに一覧表示。
+1. Dedicated admin page — all 10 diagnostic results in one view. Priority items and hardening settings displayed in a two-column layout.
+2. Dashboard widget — compact summary on the standard WordPress dashboard showing issue count and top-priority items.
 
 == Changelog ==
 
 = 1.0.0 =
-* 初回リリース
-* カテゴリA（バージョン鮮度）3項目の診断を実装
-* カテゴリB（ハードニング設定）7項目の診断を実装
-* 管理画面ダッシュボードウィジェット
-* 「再診断」AJAXリフレッシュ
-* 日本語ネイティブ対応
+* Initial release
+* Category A (version freshness): 3 diagnostic checks
+* Category B (hardening settings): 7 diagnostic checks
+* WordPress dashboard widget with AJAX refresh
+* Dedicated admin panel with 7 sub-pages
+* Full Japanese language support
 
 == Upgrade Notice ==
 
 = 1.0.0 =
-初回リリースです。
+Initial release.
