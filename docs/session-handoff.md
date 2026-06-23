@@ -295,3 +295,23 @@ includes/
 **D. cybernote.click バックエンドの構築（Pro版 Phase 2）**
 - FastAPI/Laravel等でスキャンAPIを構築
 - WPScan API連携・キャッシュ実装
+
+---
+
+## 11. 将来アイデアメモ（未設計・検討候補）
+
+### OSINT機能
+
+外部情報との突合によるセキュリティ診断。設計はまだ不要、思いつきメモ。
+
+**無料でできるもの（サイト内完結）**
+- `readme.html` / `license.txt` の公開によるWPバージョン漏洩チェック
+- `robots.txt` への内部パス記載チェック
+- `wp-login.php` / `xmlrpc.php` の公開状態チェック（b6・b7の延長）
+
+**Pro向け（外部API必要）**
+- **HaveIBeenPwned** — 管理者メールアドレスが流出DBに含まれているか（最優先候補）
+- **Google Safe Browsing API** — サイトがフィッシング・マルウェアとして報告されているか
+- Shodan / Censys — サーバーの公開情報の過剰露出チェック
+
+> 実装するなら HaveIBeenPwned 一本から。非エンジニアにも伝わりやすく、無料API枠あり。Pro Phase 2〜3 のタイミングで検討。
