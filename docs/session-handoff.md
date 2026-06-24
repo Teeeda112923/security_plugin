@@ -315,3 +315,31 @@ includes/
 - Shodan / Censys — サーバーの公開情報の過剰露出チェック
 
 > 実装するなら HaveIBeenPwned 一本から。非エンジニアにも伝わりやすく、無料API枠あり。Pro Phase 2〜3 のタイミングで検討。
+
+---
+
+## 12. SOC Agent的アプローチの応用（Pro Phase 2〜3 設計メモ）
+
+参考: [ZOZOテックブログ「Claude CodeがSOC業務を全自動でやってくれるってさ」](https://techblog.zozo.com/entry/soc-claude-agent)
+
+ZOZOはClaude Codeを使ってSplunk・OpenCTIと連携したSOCアラート自動トリアージを構築。
+この発想をこのプラグインのスケール（個人ブロガー・中小規模）に落とし込むと以下の対応になる。
+
+| ZOZOの要素 | このプラグインの対応 |
+|-----------|-----------------|
+| /loop 1h の定期実行 | WordPress Cron（Pro Phase 3） |
+| Splunk MCPでログ取得 | cybernote.click APIで脆弱性取得 |
+| Slackへのレポート投稿 | メール通知（Pro Phase 3） |
+| 優先度判定・日本語説明生成 | Claude APIで重大度を日本語化（バックエンド側） |
+| SubAgentの並列調査 | 複数プラグイン・テーマを一括スキャン |
+
+**設計方針：**
+- Claude APIはcybernote.clickのバックエンド側で呼ぶ（プラグインは結果を受け取るだけ）
+- プラグインが直接Claude APIを叩くとAPIキー管理・コスト・レートリミットが問題になる
+- cybernote.click側で「スキャン → Claude APIで日本語分析 → 結果をキャッシュ → プラグインに返す」が正しいアーキテクチャ
+- WordPressのCron（wp-cron）で定期スキャンをトリガーし、結果をメール通知する（Phase 3）
+
+**ZOZOの実装で参考にできる点：**
+- Hooksで破壊的操作を禁止する設計思想（Read権限のみで完結）→ 診断のみ・自動変更なしの設計原則と一致
+- memoryで過去の調査履歴を活用 → 「前回スキャンから新たに追加された脆弱性のみ通知」に応用可能
+- SubAgentの並列起動 → cybernote.click側でプラグインごとに並列スキャンする構成に応用可能
