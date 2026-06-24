@@ -1,14 +1,14 @@
-# Translation of Site Security Checker in Japanese
-# This file is distributed under the same license as the Site Security Checker package.
-# Copyright (C) 2024 Tanabe
+# Translation of CyberNote Security Checker in Japanese
+# This file is distributed under the same license as the CyberNote Security Checker package.
+# Copyright (C) 2024 teeeda1129
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Site Security Checker 1.0.0\n"
-"Report-Msgid-Bugs-To: https://example.com/wp-security-checker\n"
+"Project-Id-Version: CyberNote Security Checker 1.0.0\n"
+"Report-Msgid-Bugs-To: https://cybernote.click/\n"
 "POT-Creation-Date: 2024-01-01 00:00+0000\n"
 "PO-Revision-Date: 2024-01-01 00:00+0000\n"
-"Last-Translator: Tanabe\n"
+"Last-Translator: teeeda1129\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Manual\n"
-"X-Domain: site-security-checker\n"
+"X-Domain: cybernote-security-checker\n"
 
 # ─── Widget title ───────────────────────────────────────────────────────────
 msgid "セキュリティ診断"
