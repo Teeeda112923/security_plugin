@@ -1,7 +1,6 @@
 <?php
 /**
  * Plugin Name: CyberNote Security Checker
- * Plugin URI: https://cybernote.click/
  * Description: Diagnoses WordPress security settings and version status, presenting improvement steps in plain Japanese. No external requests. Lightweight design.
  * Version: 1.0.0
  * Author: teeeda1129
