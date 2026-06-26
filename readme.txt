@@ -43,9 +43,9 @@ A widget appears on the WordPress dashboard showing results in three levels: goo
 * **Lightweight** — No real-time file scanning, no custom WAF, no resident processes. Diagnostics run once when the admin page loads.
 * **Plain language** — Technical terms are avoided. Each check explains why it matters and what to do in everyday language.
 
-= Pro Plan (coming soon) =
+= Vulnerability alerts (separate external service) =
 
-The free plan covers whether updates are available. The Pro plan will add CVE vulnerability alerts in Japanese — matching installed plugins and themes against external vulnerability databases, with daily/weekly automated scans and email notifications.
+This plugin is free and fully functional on its own. Matching your installed plugins and themes against external vulnerability databases (CVE) requires server-side processing that cannot be done locally, so it is offered separately as an external service called CyberNote, not bundled in this plugin. See https://cybernote.click/ for details.
 
 == Installation ==
 
@@ -100,7 +100,7 @@ If you use Jetpack or a mobile app that relies on XML-RPC, leaving it enabled is
 * Category A (version freshness): 3 diagnostic checks
 * Category B (hardening settings): 7 diagnostic checks
 * WordPress dashboard widget with AJAX refresh
-* Dedicated admin panel with 7 sub-pages
+* Dedicated admin panel with diagnostic sub-pages
 * Full Japanese language support
 
 == Upgrade Notice ==

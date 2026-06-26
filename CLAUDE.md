@@ -11,10 +11,11 @@ WordPress向けの軽量セキュリティプラグイン。コンセプトは�
 ## リポジトリ規約
 
 - リポジトリ: teeeda112923/security_plugin
-- メインファイル: wp-security-checker.php
-- 接頭辞: `WSC_`（クラス・定数）/ `wsc-`（スラッグ・CSSクラス・ファイル名）/ `wsc_`（関数・wp_options・AJAX）
-- Text Domain: wp-security-checker
-- 配布フォルダ名: wp-security-checker/（GitHubのブランチ名が混ざらないよう注意）
+- メインファイル: cybernote-security-checker.php
+- 接頭辞: `CNSC_`（クラス・定数）/ `cnsc-`（PHPファイル名・JSファイル名・enqueueハンドル）/ `cnsc_`（関数・wp_options・AJAX・nonce）。CSSクラスとCSS変数は既存の `wsc-` / `--wsc-` を維持（PHPレベルの衝突対象外のため）。
+- Text Domain: cybernote-security-checker
+- 配布フォルダ名: cybernote-security-checker/（GitHubのブランチ名が混ざらないよう注意）
+- WordPress.org規約上、Pro（ライセンス・脆弱性スキャン）コードは配布版に同梱しない。Proは外部サービス cybernote.click 側で提供し、無料版は案内ページからリンクするのみ。
 
 ## 設計方針（必ず守る）
 
@@ -56,13 +57,14 @@ recommended（強い警告）は「漏れる・壊される・盗まれる」に
 
 ## 実装構造（既存コードに合わせる）
 
-- `WSC_Diagnostics::run()` が全チェックを実行し、`['a'=>[...], 'b'=>[...], 'summary'=>['total'=>10,'issues'=>N]]` を返す。
-- `WSC_Renderer::render_item($item, $args)` が1件をカードHTMLとして描画。`$args` は compact / show_message / show_action。
+- `CNSC_Diagnostics::run()` が全チェックを実行し、`['a'=>[...], 'b'=>[...], 'summary'=>['total'=>10,'issues'=>N]]` を返す。
+- `CNSC_Renderer::render_item($item, $args)` が1件をカードHTMLとして描画。`$args` は compact / show_message / show_action。
 - アコーディオン（`›`）は `guide_data()` の内容を展開: `steps`（対応手順）/ `risk`（対応しないリスク）/ `links`（参考リンク url・label）/ `has_update_link`（a3のみ更新画面ボタン）。
 - ステータス表示: recommended=赤・×・最優先 / attention=橙・△ / good=緑・✓。
-- 管理画面は `WSC_Admin_Page`（7サブメニュー）、ダッシュボードは `WSC_Dashboard_Widget`。
-- AJAX: `wsc_refresh`（ウィジェット）/ `wsc_admin_refresh`（管理画面）。nonceは各 `wsc_refresh_nonce` / `wsc_admin_refresh_nonce`。
-- CSSデザイントークンは dashboard.css の `--wsc-*`（navy/blue/good/attention/recommended 等）。
+- 管理画面は `CNSC_Admin_Page`（5サブメニュー: ダッシュボード/診断結果/バージョン鮮度/ハードニング設定/脆弱性アラート案内）、ダッシュボードは `CNSC_Dashboard_Widget`。
+- AJAX: `cnsc_refresh`（ウィジェット）/ `cnsc_admin_refresh`（管理画面）。nonceは各 `cnsc_refresh_nonce` / `cnsc_admin_refresh_nonce`。
+- JSグローバル: `cnscToggleGuide` / `cnscRefresh` / `cnscAdminRefresh`、localizeオブジェクトは `cnscWidgetData` / `cnscAdminData`。
+- CSSデザイントークンは dashboard.css の `--wsc-*`（navy/blue/good/attention/recommended 等）。CSSクラス・変数は `wsc-` のまま維持。
 
 ## Pro版（概要）
 
@@ -84,6 +86,7 @@ recommended（強い警告）は「漏れる・壊される・盗まれる」に
 
 ## 現在の実装状況
 
-- 無料版は全10項目の診断・SaaS風UI・7サブメニュー・ダッシュボードウィジェット・アコーディオンまで実装済み。WordPress.org申請が可能な状態。
-- Pro版は設計済み（docs/pro-design.md）。未実装。
-- 次の候補: Pro版 Phase 1（ライセンスUI・設定ページ有効化・脆弱性アラートをモックデータ表示）/ 無料版の項目追加 / WordPress.org申請 / cybernote.click バックエンド構築。
+- 無料版は全10項目の診断・SaaS風UI・5サブメニュー・ダッシュボードウィジェット・アコーディオンまで実装済み。WordPress.org審査対応中（接頭辞CNSC化・Proコード非同梱・英語readme済み）。
+- Pro版は設計済み（docs/pro-design.md）。配布版には同梱しない（WP.org規約のトライアルウェア禁止）。Proは外部サービス cybernote.click で提供予定で、無料版は案内ページからリンクのみ。
+- 旧セッションで一時的に同梱していたライセンスUI・モックスキャナー（class-wsc-pro-*.php）はWP.orgレビュー指摘により削除済み。Pro実装は cybernote.click バックエンド側で行う。
+- 次の候補: 無料版の項目追加 / WordPress.org審査の継続対応 / cybernote.click バックエンド構築。

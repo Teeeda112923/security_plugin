@@ -5,7 +5,7 @@
  * recommendedに置くのは「漏れる・壊される・盗まれる」の三つに絞り、残りはattention。
  * 既存サイトで変更にリスクがある項目（ユーザー名・DB接頭辞）は煽らずattention止まり。
  *
- * @package WP_Security_Checker
+ * @package CyberNote_Security_Checker
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles all hardening diagnostic checks (B-1 through B-7).
  */
-class WSC_Category_B {
+class CNSC_Category_B {
 
 	/**
 	 * Run all Category B checks.

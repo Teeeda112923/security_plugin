@@ -5,7 +5,7 @@
  * ダッシュボードウィジェットと専用管理ページの両方から利用し、
  * 1項目の表示マークアップを一箇所に集約する（表示の食い違いを防ぐ）。
  *
- * @package WP_Security_Checker
+ * @package CyberNote_Security_Checker
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Shared rendering helpers for diagnostic results.
  */
-class WSC_Renderer {
+class CNSC_Renderer {
 
 	/**
 	 * Localized status label keyed by status.
@@ -50,7 +50,7 @@ class WSC_Renderer {
 	/**
 	 * Count results by severity.
 	 *
-	 * @param array $results Diagnostic results from WSC_Diagnostics::run().
+	 * @param array $results Diagnostic results from CNSC_Diagnostics::run().
 	 * @return array Counts keyed by good|attention|recommended.
 	 */
 	public static function severity_counts( $results ) {
@@ -71,7 +71,7 @@ class WSC_Renderer {
 	/**
 	 * Flatten category results.
 	 *
-	 * @param array $results Diagnostic results from WSC_Diagnostics::run().
+	 * @param array $results Diagnostic results from CNSC_Diagnostics::run().
 	 * @return array
 	 */
 	public static function flatten_results( $results ) {
@@ -83,7 +83,7 @@ class WSC_Renderer {
 	/**
 	 * Return issue items ordered by urgency.
 	 *
-	 * @param array $results Diagnostic results from WSC_Diagnostics::run().
+	 * @param array $results Diagnostic results from CNSC_Diagnostics::run().
 	 * @param int   $limit Maximum number of items to return. 0 means unlimited.
 	 * @return array
 	 */
@@ -352,7 +352,7 @@ class WSC_Renderer {
 					aria-expanded="false"
 					aria-controls="<?php echo esc_attr( $guide_id ); ?>"
 					aria-label="<?php esc_attr_e( '詳細ガイドを表示', 'cybernote-security-checker' ); ?>"
-					onclick="wscToggleGuide(this)"
+					onclick="cnscToggleGuide(this)"
 				>›</button>
 			<?php else : ?>
 				<span class="wsc-item-chevron" aria-hidden="true">›</span>

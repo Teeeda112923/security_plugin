@@ -321,14 +321,14 @@ button.wsc-guide-toggle.wsc-guide-open {
 }
 
 /* Dashboard widget */
-#wsc_security_checker.postbox .inside {
+#cnsc_security_checker.postbox .inside {
 	padding: 0;
 	margin: 0;
 	background: var(--wsc-bg);
 }
 
-#wsc_security_checker.postbox .hndle,
-#wsc_security_checker.postbox .handlediv {
+#cnsc_security_checker.postbox .hndle,
+#cnsc_security_checker.postbox .handlediv {
 	display: none;
 }
 

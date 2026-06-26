@@ -2,7 +2,7 @@
 /**
  * 診断オーケストレーター
  *
- * @package WP_Security_Checker
+ * @package CyberNote_Security_Checker
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Runs all diagnostic categories and returns combined results.
  */
-class WSC_Diagnostics {
+class CNSC_Diagnostics {
 
 	/**
 	 * Run all checks and return results grouped by category.
@@ -20,8 +20,8 @@ class WSC_Diagnostics {
 	 * @return array
 	 */
 	public function run() {
-		$cat_a  = ( new WSC_Category_A() )->run();
-		$cat_b  = ( new WSC_Category_B() )->run();
+		$cat_a  = ( new CNSC_Category_A() )->run();
+		$cat_b  = ( new CNSC_Category_B() )->run();
 		$all    = array_merge( $cat_a, $cat_b );
 		$issues = count(
 			array_filter(

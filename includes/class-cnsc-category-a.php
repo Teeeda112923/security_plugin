@@ -5,7 +5,7 @@
  * 判定はサイト内の状態とWordPress組み込みの更新情報の読み取りで完結し、
  * 外部の脆弱性データベースとは突合しない（突合はProの脆弱性アラート）。
  *
- * @package WP_Security_Checker
+ * @package CyberNote_Security_Checker
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles all version-freshness diagnostic checks (A-1 through A-3).
  */
-class WSC_Category_A {
+class CNSC_Category_A {
 
 	/**
 	 * Run all Category A checks.
