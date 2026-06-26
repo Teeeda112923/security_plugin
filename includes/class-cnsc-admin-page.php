@@ -283,7 +283,7 @@ class CNSC_Admin_Page {
 				<p class="wsc-upsell-desc">
 					<?php esc_html_e( '使用中のプラグイン・テーマに既知の脆弱性（CVE）が見つかったとき、危険度と対応手順を平易な日本語で通知する機能は、別サービス「CyberNote」で提供しています。外部の脆弱性データベースとの突合が必要なため、この無料プラグインには含まれていません。', 'cybernote-security-checker' ); ?>
 				</p>
-				<a href="<?php echo esc_url( 'https://cybernote.click/' ); ?>" class="button button-primary" target="_blank" rel="noopener noreferrer" style="margin-top:20px">
+				<a href="<?php echo esc_url( 'https://www.cybernote.click/wp-security-checker-guide/' ); ?>" class="button button-primary" target="_blank" rel="noopener noreferrer" style="margin-top:20px">
 					<?php esc_html_e( 'CyberNote について詳しく見る ↗', 'cybernote-security-checker' ); ?>
 				</a>
 			</div>
@@ -542,7 +542,7 @@ class CNSC_Admin_Page {
 		<p class="wsc-admin-note">
 			<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>
 			<?php esc_html_e( 'このプラグインは診断と情報提供に特化しています。設定の変更や更新の実行は行いません。', 'cybernote-security-checker' ); ?>
-			<a href="<?php echo esc_url( 'https://cybernote.click/' ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( '使い方ガイドを見る ↗', 'cybernote-security-checker' ); ?></a>
+			<a href="<?php echo esc_url( 'https://www.cybernote.click/wp-security-checker-guide/' ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( '使い方ガイドを見る ↗', 'cybernote-security-checker' ); ?></a>
 		</p>
 		<?php
 	}

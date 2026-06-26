@@ -4,7 +4,7 @@
  * Description: Diagnoses WordPress security settings and version status, presenting improvement steps in plain Japanese. No external requests. Lightweight design.
  * Version: 1.0.0
  * Author: teeeda1129
- * Author URI: https://cybernote.click/
+ * Author URI: https://www.cybernote.click/wp-security-checker-guide/
  * Text Domain: cybernote-security-checker
  * Domain Path: /languages
  * Requires at least: 5.9

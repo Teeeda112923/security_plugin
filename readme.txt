@@ -45,7 +45,7 @@ A widget appears on the WordPress dashboard showing results in three levels: goo
 
 = Vulnerability alerts (separate external service) =
 
-This plugin is free and fully functional on its own. Matching your installed plugins and themes against external vulnerability databases (CVE) requires server-side processing that cannot be done locally, so it is offered separately as an external service called CyberNote, not bundled in this plugin. See https://cybernote.click/ for details.
+This plugin is free and fully functional on its own. Matching your installed plugins and themes against external vulnerability databases (CVE) requires server-side processing that cannot be done locally, so it is offered separately as an external service called CyberNote, not bundled in this plugin. See https://www.cybernote.click/wp-security-checker-guide/ for details.
 
 == Installation ==
 
