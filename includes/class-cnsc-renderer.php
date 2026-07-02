@@ -250,6 +250,34 @@ class CNSC_Renderer {
 					),
 				),
 			),
+			'b8' => array(
+				'steps' => 'WordPress公式の「秘密鍵サービス」（下記リンク）を開くと、8行のコードが自動生成されます。wp-config.php を開き、「AUTH_KEY」から「NONCE_SALT」までの8行を、生成された内容にまるごと置き換えて保存してください。置き換えると、現在ログイン中の人は一度ログアウトされます（再ログインすれば問題ありません）。',
+				'risk'  => 'この秘密の文字列は、ログイン状態を保存するcookieの暗号化に使われます。初期値や空のままだと、cookieを偽装されてログインを乗っ取られる（なりすまし）恐れがあります。',
+				'links' => array(
+					array(
+						'label' => 'WordPress 公式：秘密鍵（認証ユニークキー）生成サービス',
+						'url'   => 'https://api.wordpress.org/secret-key/1.1/salt/',
+					),
+					array(
+						'label' => 'WordPress 公式：WordPressのセキュリティ強化',
+						'url'   => 'https://wordpress.org/documentation/article/hardening-wordpress/',
+					),
+				),
+			),
+			'b9' => array(
+				'steps' => 'プラグインは「プラグイン一覧」で停止中のものの「削除」を実行します。テーマは「外観 → テーマ」で使っていないテーマを選び「テーマの詳細 → 削除」を実行します。削除前に、本当に使っていないかを確認してください。切り替え用にテーマを1つ残しておくのは問題ありません。',
+				'risk'  => '使っていないプラグイン・テーマでも、古いバージョンに脆弱性があると、有効・無効に関わらずファイルが直接狙われて侵入経路になることがあります。',
+				'links' => array(
+					array(
+						'label' => 'WordPress 公式：プラグインの管理',
+						'url'   => 'https://wordpress.org/documentation/article/manage-plugins/',
+					),
+					array(
+						'label' => 'WordPress 公式：テーマの使い方',
+						'url'   => 'https://wordpress.org/documentation/article/work-with-themes/',
+					),
+				),
+			),
 		);
 	}
 

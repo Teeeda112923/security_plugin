@@ -16,7 +16,7 @@ CyberNote Security Checker is a lightweight plugin that audits your WordPress si
 
 Many security plugins are powerful but heavy, English-only, and full of technical jargon. CyberNote Security Checker takes the opposite approach: it targets Japanese individual bloggers and small business owners who need to understand exactly what to do — delivered quickly and without specialist knowledge.
 
-**10 diagnostic checks. Zero external requests.**
+**12 diagnostic checks. Zero external requests.**
 
 A widget appears on the WordPress dashboard showing results in three levels: good (no action needed) / attention (improvement recommended) / recommended (priority action required). Each item includes a plain-Japanese explanation of the risk and step-by-step remediation guidance.
 
@@ -26,7 +26,7 @@ A widget appears on the WordPress dashboard showing results in three levels: goo
 * **PHP version** — Evaluated against official PHP support status. End-of-life versions flagged as "priority action"; security-only branches as "attention".
 * **Plugin and theme updates** — Displays the count and names of pending updates. A direct link opens the standard WordPress update screen; the plugin never performs updates itself.
 
-= Category B: Hardening Settings (7 checks) =
+= Category B: Hardening Settings (9 checks) =
 
 * **Debug display** — WP_DEBUG with screen output on a production site is flagged as "priority action"; log-only mode as "attention".
 * **File editing** — If the theme and plugin code editor is enabled in the admin panel, flagged as "priority action".
@@ -35,6 +35,8 @@ A widget appears on the WordPress dashboard showing results in three levels: goo
 * **Database table prefix** — Default wp_ prefix flagged as "attention" (live-site changes carry risk, so no urgent push).
 * **XML-RPC** — Enabled XML-RPC is flagged as "attention"; use-case guidance included before recommending disablement.
 * **REST API user enumeration** — If anonymous requests to /wp/v2/users return user data, flagged as "attention".
+* **Security keys (salts)** — Checks whether the wp-config.php authentication unique keys and salts are set and not left at the default placeholder. Missing or default keys are flagged as "priority action" (login cookies could be forged). Key values are never read out or displayed.
+* **Unused plugins and themes** — Inactive plugins and unused themes still ship files on the server that can be exploited if vulnerable. Their presence is flagged as "attention" with removal guidance (keeping one fallback theme is fine).
 
 = Design Principles =
 
@@ -98,7 +100,7 @@ If you use Jetpack or a mobile app that relies on XML-RPC, leaving it enabled is
 = 1.0.0 =
 * Initial release
 * Category A (version freshness): 3 diagnostic checks
-* Category B (hardening settings): 7 diagnostic checks
+* Category B (hardening settings): 9 diagnostic checks
 * WordPress dashboard widget with AJAX refresh
 * Dedicated admin panel with diagnostic sub-pages
 * Full Japanese language support
