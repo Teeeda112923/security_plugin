@@ -3,7 +3,7 @@ Contributors: teeeda1129
 Tags: security, hardening, diagnostic, audit, maintenance
 Requires at least: 5.9
 Tested up to: 7.0
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -97,6 +97,12 @@ If you use Jetpack or a mobile app that relies on XML-RPC, leaving it enabled is
 
 == Changelog ==
 
+= 1.1.0 =
+* Refreshed the admin UI with a cleaner, SaaS-style dashboard (summary gauge, priority card, category cards)
+* Reorganized the results display into three categories: A. Version freshness / B. Hardening / C. Hygiene (diagnostic logic unchanged)
+* Added a "Hygiene" sub-page and redesigned the vulnerability-alert page as a clearer external-service (CyberNote) information page — still no bundled scanning or license code
+* Japanese-only status labels throughout (要対応 / 改善推奨 / 問題なし)
+
 = 1.0.0 =
 * Initial release
 * Category A (version freshness): 3 diagnostic checks
@@ -106,6 +112,9 @@ If you use Jetpack or a mobile app that relies on XML-RPC, leaving it enabled is
 * Full Japanese language support
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+UI refresh and clearer category organization. No change to what is diagnosed.
 
 = 1.0.0 =
 Initial release.

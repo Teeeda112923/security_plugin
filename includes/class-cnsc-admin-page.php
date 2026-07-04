@@ -3,8 +3,9 @@
  * 専用管理ページ + サブメニュー構成
  *
  * メニュー: ダッシュボード / 診断結果 / バージョン鮮度 / ハードニング設定 /
- *           脆弱性アラート（外部サービスの案内）
+ *           衛生状態 / 脆弱性アラート Pro（外部サービスの案内）
  * 設計方針: 診断の提示のみ・自動変更なし・外部通信なし。
+ * 表示カテゴリはA/B/Cの3分類（Cはb8・b9を衛生状態として再編。診断ロジックは不変）。
  *
  * @package CyberNote_Security_Checker
  */
@@ -22,7 +23,11 @@ class CNSC_Admin_Page {
 	const SLUG_RESULTS     = 'cybernote-security-checker-results';
 	const SLUG_VERSION     = 'cybernote-security-checker-version';
 	const SLUG_HARDENING   = 'cybernote-security-checker-hardening';
+	const SLUG_HYGIENE     = 'cybernote-security-checker-hygiene';
 	const SLUG_CVE         = 'cybernote-security-checker-cve';
+
+	/** Category B check IDs that are displayed under Category C (衛生状態). */
+	const HYGIENE_IDS = array( 'b8', 'b9' );
 
 	/** Plugin pages that should enqueue the admin CSS. */
 	private static $plugin_hooks = array();
@@ -89,16 +94,48 @@ class CNSC_Admin_Page {
 		);
 		self::$plugin_hooks[] = $h;
 
+		$h = add_submenu_page(
+			self::MENU_SLUG,
+			__( '衛生状態', 'cybernote-security-checker' ),
+			__( '衛生状態', 'cybernote-security-checker' ),
+			'manage_options',
+			self::SLUG_HYGIENE,
+			array( $this, 'render_hygiene' )
+		);
+		self::$plugin_hooks[] = $h;
+
 		// 脆弱性アラートは外部サービス（CyberNote）で提供する機能の案内ページ。
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( '脆弱性アラート', 'cybernote-security-checker' ),
-			__( '脆弱性アラート', 'cybernote-security-checker' ),
+			__( '脆弱性アラート Pro', 'cybernote-security-checker' ),
+			__( '脆弱性アラート Pro', 'cybernote-security-checker' ),
 			'manage_options',
 			self::SLUG_CVE,
 			array( $this, 'render_cve' )
 		);
 		self::$plugin_hooks[] = $h;
+	}
+
+	/**
+	 * Split Category B results into hardening (B) and hygiene (C) groups for display.
+	 * Diagnostic logic is unchanged; this only regroups items by ID for presentation.
+	 *
+	 * @param array $results Diagnostic results from CNSC_Diagnostics::run().
+	 * @return array{0:array,1:array} [ hardening items, hygiene items ]
+	 */
+	private function split_hardening_hygiene( $results ) {
+		$hardening = array();
+		$hygiene   = array();
+		$b_items   = isset( $results['b'] ) && is_array( $results['b'] ) ? $results['b'] : array();
+		foreach ( $b_items as $item ) {
+			$id = isset( $item['id'] ) ? $item['id'] : '';
+			if ( in_array( $id, self::HYGIENE_IDS, true ) ) {
+				$hygiene[] = $item;
+			} else {
+				$hardening[] = $item;
+			}
+		}
+		return array( $hardening, $hygiene );
 	}
 
 	/**
@@ -178,16 +215,17 @@ class CNSC_Admin_Page {
 		);
 	}
 
-	/** 診断結果 — 全10項目を1ページに */
+	/** 診断結果 — 全12項目をA/B/Cにまとめて1ページに */
 	public function render_results() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 		$results = ( new CNSC_Diagnostics() )->run();
+		list( $hardening, $hygiene ) = $this->split_hardening_hygiene( $results );
 		$this->page_wrap(
 			__( '診断結果', 'cybernote-security-checker' ),
 			__( '全診断項目の結果をまとめて表示します。', 'cybernote-security-checker' ),
-			function () use ( $results ) {
+			function () use ( $results, $hardening, $hygiene ) {
 				$counts = CNSC_Renderer::severity_counts( $results );
 				?>
 				<div class="wsc-admin-body">
@@ -200,8 +238,14 @@ class CNSC_Admin_Page {
 							<?php endforeach; ?>
 						</div>
 						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'B. ハードニング設定', 'cybernote-security-checker' ); ?></h2>
+						<div class="wsc-item-list" style="margin-bottom:24px">
+							<?php foreach ( $hardening as $item ) : ?>
+								<?php CNSC_Renderer::render_item( $item ); ?>
+							<?php endforeach; ?>
+						</div>
+						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'C. 衛生状態', 'cybernote-security-checker' ); ?></h2>
 						<div class="wsc-item-list">
-							<?php foreach ( $results['b'] as $item ) : ?>
+							<?php foreach ( $hygiene as $item ) : ?>
 								<?php CNSC_Renderer::render_item( $item ); ?>
 							<?php endforeach; ?>
 						</div>
@@ -239,21 +283,22 @@ class CNSC_Admin_Page {
 		);
 	}
 
-	/** ハードニング設定 — カテゴリBのみ */
+	/** ハードニング設定 — カテゴリB（b1〜b7） */
 	public function render_hardening() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 		$results = ( new CNSC_Diagnostics() )->run();
+		list( $hardening ) = $this->split_hardening_hygiene( $results );
 		$this->page_wrap(
 			__( 'ハードニング設定', 'cybernote-security-checker' ),
 			__( 'サイトを攻撃に強くするための基本設定を確認します。', 'cybernote-security-checker' ),
-			function () use ( $results ) {
+			function () use ( $hardening ) {
 				?>
 				<div class="wsc-admin-body">
 					<div class="wsc-card wsc-category-card" style="padding:20px">
 						<div class="wsc-item-list">
-							<?php foreach ( $results['b'] as $item ) : ?>
+							<?php foreach ( $hardening as $item ) : ?>
 								<?php CNSC_Renderer::render_item( $item ); ?>
 							<?php endforeach; ?>
 						</div>
@@ -265,26 +310,99 @@ class CNSC_Admin_Page {
 		);
 	}
 
-	/** 脆弱性アラート — 外部サービス CyberNote の案内ページ */
+	/** 衛生状態 — カテゴリC（未使用のプラグイン・テーマ / セキュリティキー） */
+	public function render_hygiene() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		$results = ( new CNSC_Diagnostics() )->run();
+		list( , $hygiene ) = $this->split_hardening_hygiene( $results );
+		$this->page_wrap(
+			__( '衛生状態', 'cybernote-security-checker' ),
+			__( '使っていないプラグイン・テーマや、認証まわりの基本設定を確認します。', 'cybernote-security-checker' ),
+			function () use ( $hygiene ) {
+				?>
+				<div class="wsc-admin-body">
+					<div class="wsc-card wsc-category-card" style="padding:20px">
+						<div class="wsc-item-list">
+							<?php foreach ( $hygiene as $item ) : ?>
+								<?php CNSC_Renderer::render_item( $item ); ?>
+							<?php endforeach; ?>
+						</div>
+					</div>
+					<?php $this->render_footer_note(); ?>
+				</div>
+				<?php
+			}
+		);
+	}
+
+	/** 脆弱性アラート Pro — 外部サービス CyberNote の案内ページ（ロック解除ではない） */
 	public function render_cve() {
 		$this->page_wrap(
-			__( '脆弱性アラート', 'cybernote-security-checker' ),
-			'',
+			__( '脆弱性アラート Pro', 'cybernote-security-checker' ),
+			__( '使用中のプラグイン・テーマを既知の脆弱性情報と照合する機能の案内です。', 'cybernote-security-checker' ),
 			array( $this, 'render_cve_info_body' )
 		);
 	}
 
-	/** 脆弱性アラートの案内本体（このプラグインには含まれない外部サービスの紹介） */
+	/**
+	 * 脆弱性アラートの案内本体。
+	 *
+	 * 外部サービス（CyberNote）の紹介ページ。CVE照合・ライセンス判定・ロック解除の
+	 * 処理は一切含まない。プレビューは実在名を使わない静的な表示例のみ。
+	 */
 	public function render_cve_info_body() {
+		// 静的な表示例（架空名）。実データではない。
+		$samples = array(
+			array(
+				'name'  => __( 'フォームプラグインA', 'cybernote-security-checker' ),
+				'level' => 'high',
+				'sev'   => __( '深刻度：高', 'cybernote-security-checker' ),
+				'hint'  => __( '対応目安：早めの更新を推奨', 'cybernote-security-checker' ),
+			),
+			array(
+				'name'  => __( 'SEO補助プラグインB', 'cybernote-security-checker' ),
+				'level' => 'mid',
+				'sev'   => __( '深刻度：中', 'cybernote-security-checker' ),
+				'hint'  => __( '対応目安：更新内容を確認', 'cybernote-security-checker' ),
+			),
+			array(
+				'name'  => __( '予約管理プラグインC', 'cybernote-security-checker' ),
+				'level' => 'low',
+				'sev'   => __( '深刻度：低', 'cybernote-security-checker' ),
+				'hint'  => __( '対応目安：次回メンテナンス時に確認', 'cybernote-security-checker' ),
+			),
+		);
 		?>
-		<div class="wsc-admin-body">
-			<div class="wsc-card wsc-upsell-card" style="padding:40px 36px;text-align:center;max-width:640px;margin:0 auto">
-				<h2 class="wsc-upsell-title"><?php esc_html_e( '脆弱性アラート（外部サービス）', 'cybernote-security-checker' ); ?></h2>
-				<p class="wsc-upsell-desc">
-					<?php esc_html_e( '使用中のプラグイン・テーマに既知の脆弱性（CVE）が見つかったとき、危険度と対応手順を平易な日本語で通知する機能は、別サービス「CyberNote」で提供しています。外部の脆弱性データベースとの突合が必要なため、この無料プラグインには含まれていません。', 'cybernote-security-checker' ); ?>
+		<div class="wsc-admin-body wsc-pro-body">
+
+			<!-- 静的なプレビュー（表示例・ぼかし） -->
+			<div class="wsc-cve-preview-wrap">
+				<div class="wsc-cve-preview" aria-hidden="true">
+					<?php foreach ( $samples as $s ) : ?>
+						<div class="wsc-cve-row">
+							<span class="wsc-cve-name"><?php echo esc_html( $s['name'] ); ?></span>
+							<span class="wsc-cve-sev wsc-cve-sev-<?php echo esc_attr( $s['level'] ); ?>"><?php echo esc_html( $s['sev'] ); ?></span>
+							<span class="wsc-cve-hint"><?php echo esc_html( $s['hint'] ); ?></span>
+						</div>
+					<?php endforeach; ?>
+				</div>
+				<p class="wsc-cve-note"><?php esc_html_e( '※これは表示例です。実際の診断結果ではありません。', 'cybernote-security-checker' ); ?></p>
+			</div>
+
+			<!-- 外部サービスの案内カード -->
+			<div class="wsc-card wsc-pro-card">
+				<div class="wsc-pro-badge"><?php esc_html_e( 'CyberNote Pro', 'cybernote-security-checker' ); ?></div>
+				<h2 class="wsc-pro-title"><?php esc_html_e( '更新の「緊急度」まで知りたい方へ', 'cybernote-security-checker' ); ?></h2>
+				<p class="wsc-pro-desc">
+					<?php esc_html_e( '無料版では、WordPress・PHP・プラグインの状態を診断できます。Proではさらに、使用中のプラグイン・テーマを既知の脆弱性情報と照合し、どれを優先して対応すべきかを日本語で確認できます。', 'cybernote-security-checker' ); ?>
 				</p>
-				<a href="<?php echo esc_url( 'https://www.cybernote.click/wp-security-checker-guide/' ); ?>" class="button button-primary" target="_blank" rel="noopener noreferrer" style="margin-top:20px">
-					<?php esc_html_e( 'CyberNote について詳しく見る ↗', 'cybernote-security-checker' ); ?>
+				<p class="wsc-pro-sub">
+					<?php esc_html_e( 'この機能は外部サービスとして提供されます。無料版のプラグイン内には、CVE照合機能やライセンス解除機能は含まれていません。', 'cybernote-security-checker' ); ?>
+				</p>
+				<a href="<?php echo esc_url( 'https://www.cybernote.click/wp-security-checker-guide/' ); ?>" class="button button-primary wsc-pro-cta" target="_blank" rel="noopener noreferrer">
+					<?php esc_html_e( 'CVEアラートを見る', 'cybernote-security-checker' ); ?> ↗
 				</a>
 			</div>
 		</div>
@@ -332,7 +450,10 @@ class CNSC_Admin_Page {
 		$priority_items = CNSC_Renderer::priority_items( $results, 5 );
 		$primary_status = $counts['recommended'] > 0 ? 'recommended' : ( $counts['attention'] > 0 ? 'attention' : 'good' );
 
-		// conic-gradient の角度を問題件数の割合から計算（全10項目）。
+		// 表示だけA/B/Cに再編（診断ロジックは不変）。
+		list( $hardening, $hygiene ) = $this->split_hardening_hygiene( $results );
+
+		// conic-gradient の角度を問題件数の割合から計算（全12項目）。
 		$safe_pct  = $total > 0 ? ( $counts['good'] / $total ) : 1;
 		$safe_deg  = round( $safe_pct * 360 );
 		$issue_deg = 360 - $safe_deg;
@@ -483,7 +604,7 @@ class CNSC_Admin_Page {
 						<?php esc_html_e( '不正アクセスや情報漏えいを防ぐ設定の診断', 'cybernote-security-checker' ); ?>
 					</p>
 					<div class="wsc-item-list">
-						<?php foreach ( $results['b'] as $item ) : ?>
+						<?php foreach ( $hardening as $item ) : ?>
 							<?php CNSC_Renderer::render_item( $item ); ?>
 						<?php endforeach; ?>
 					</div>
@@ -494,6 +615,27 @@ class CNSC_Admin_Page {
 					</div>
 				</section>
 			</div>
+
+			<!-- カテゴリC（衛生状態）— 下段に全幅で配置 -->
+			<section class="wsc-card wsc-category-card wsc-category-card-wide">
+				<h2 class="wsc-card-title">
+					<span class="wsc-section-icon wsc-section-icon-blue" aria-hidden="true">C</span>
+					<?php esc_html_e( 'C. 衛生状態', 'cybernote-security-checker' ); ?>
+				</h2>
+				<p class="wsc-card-desc">
+					<?php esc_html_e( '使っていないプラグイン・テーマや、認証まわりの基本設定を確認します。', 'cybernote-security-checker' ); ?>
+				</p>
+				<div class="wsc-item-list">
+					<?php foreach ( $hygiene as $item ) : ?>
+						<?php CNSC_Renderer::render_item( $item ); ?>
+					<?php endforeach; ?>
+				</div>
+				<div class="wsc-card-more">
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::SLUG_HYGIENE ) ); ?>" class="wsc-detail-link">
+						<?php esc_html_e( 'すべての項目を確認する', 'cybernote-security-checker' ); ?> →
+					</a>
+				</div>
+			</section>
 
 			<?php $this->render_footer_note(); ?>
 		</div>

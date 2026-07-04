@@ -63,7 +63,9 @@ recommended（強い警告）は「漏れる・壊される・盗まれる」に
 - `CNSC_Renderer::render_item($item, $args)` が1件をカードHTMLとして描画。`$args` は compact / show_message / show_action。
 - アコーディオン（`›`）は `guide_data()` の内容を展開: `steps`（対応手順）/ `risk`（対応しないリスク）/ `links`（参考リンク url・label）/ `has_update_link`（a3のみ更新画面ボタン）。
 - ステータス表示: recommended=赤・×・最優先 / attention=橙・△ / good=緑・✓。
-- 管理画面は `CNSC_Admin_Page`（5サブメニュー: ダッシュボード/診断結果/バージョン鮮度/ハードニング設定/脆弱性アラート案内）、ダッシュボードは `CNSC_Dashboard_Widget`。
+- 管理画面は `CNSC_Admin_Page`（6サブメニュー: ダッシュボード/診断結果/バージョン鮮度/ハードニング設定/衛生状態/脆弱性アラート Pro案内）、ダッシュボードは `CNSC_Dashboard_Widget`。
+- 表示カテゴリはA/B/Cの3分類。A=a1〜a3、B=b1〜b7、C=b8〜b9（衛生状態）。分類は表示のみで診断ロジック（Category_A/B・run()）は不変。`split_hardening_hygiene()` がb8/b9をCへ振り分ける。
+- 脆弱性アラート Pro画面は外部サービスCyberNoteの案内（架空名の静的プレビュー＋CTA「CVEアラートを見る」→cybernote.click）。CVE照合・ライセンス判定・ロック解除コードは一切含めない。
 - AJAX: `cnsc_refresh`（ウィジェット）/ `cnsc_admin_refresh`（管理画面）。nonceは各 `cnsc_refresh_nonce` / `cnsc_admin_refresh_nonce`。
 - JSグローバル: `cnscToggleGuide` / `cnscRefresh` / `cnscAdminRefresh`、localizeオブジェクトは `cnscWidgetData` / `cnscAdminData`。
 - CSSデザイントークンは dashboard.css の `--wsc-*`（navy/blue/good/attention/recommended 等）。CSSクラス・変数は `wsc-` のまま維持。

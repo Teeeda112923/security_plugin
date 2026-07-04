@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CyberNote Security Checker
  * Description: Diagnoses WordPress security settings and version status, presenting improvement steps in plain Japanese. No external requests. Lightweight design.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: teeeda1129
  * Author URI: https://www.cybernote.click/wp-security-checker-guide/
  * Text Domain: cybernote-security-checker
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-define( 'CNSC_VERSION', '1.0.0' );
+define( 'CNSC_VERSION', '1.1.0' );
 define( 'CNSC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CNSC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 

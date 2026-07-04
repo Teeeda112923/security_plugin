@@ -509,3 +509,141 @@ body.toplevel_page_wp-security-checker {
 	color: var(--wsc-muted);
 	border: 1px solid var(--wsc-border);
 }
+
+/* ------------------------------------------------------------------ */
+/*  カテゴリC（衛生状態）— ダッシュボード下段の全幅カード                 */
+/* ------------------------------------------------------------------ */
+.wsc-category-card-wide {
+	margin-top: 18px;
+}
+
+/* ------------------------------------------------------------------ */
+/*  脆弱性アラート Pro（外部サービスの案内・ロック解除ではない）           */
+/* ------------------------------------------------------------------ */
+.wsc-pro-body {
+	max-width: 720px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+}
+
+/* 静的プレビュー（表示例・ぼかし） */
+.wsc-cve-preview-wrap {
+	text-align: center;
+}
+.wsc-cve-preview {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 18px;
+	background: var(--wsc-card);
+	border: 1px solid var(--wsc-border);
+	border-radius: 14px;
+	box-shadow: var(--wsc-shadow-soft);
+	filter: blur(2.5px);
+	opacity: .62;
+	user-select: none;
+	pointer-events: none;
+}
+.wsc-cve-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+	padding: 12px 14px;
+	border: 1px solid var(--wsc-border);
+	border-left-width: 4px;
+	border-radius: 10px;
+	background: var(--wsc-bg);
+}
+.wsc-cve-name {
+	font-weight: 800;
+	color: var(--wsc-navy);
+	font-size: 14px;
+}
+.wsc-cve-hint {
+	color: var(--wsc-muted);
+	font-size: 12.5px;
+	margin-left: auto;
+}
+.wsc-cve-sev {
+	font-size: 11.5px;
+	font-weight: 800;
+	padding: 3px 9px;
+	border-radius: 999px;
+}
+.wsc-cve-sev-high {
+	color: var(--wsc-recommended);
+	background: var(--wsc-recommended-bg);
+	border: 1px solid var(--wsc-recommended-border);
+}
+.wsc-cve-sev-mid {
+	color: var(--wsc-attention);
+	background: var(--wsc-attention-bg);
+	border: 1px solid var(--wsc-attention-border);
+}
+.wsc-cve-sev-low {
+	color: var(--wsc-muted);
+	background: var(--wsc-bg);
+	border: 1px solid var(--wsc-border-strong);
+}
+.wsc-cve-row.wsc-cve-sev-high, /* left accent by severity */
+.wsc-cve-preview .wsc-cve-row:nth-child(1) { border-left-color: var(--wsc-recommended); }
+.wsc-cve-preview .wsc-cve-row:nth-child(2) { border-left-color: var(--wsc-attention); }
+.wsc-cve-preview .wsc-cve-row:nth-child(3) { border-left-color: var(--wsc-border-strong); }
+.wsc-cve-note {
+	margin: 10px 0 0;
+	font-size: 12px;
+	color: var(--wsc-muted);
+}
+
+/* 案内カード */
+.wsc-pro-card {
+	padding: 32px 30px;
+	text-align: center;
+	max-width: 620px;
+	margin: 0 auto;
+}
+.wsc-pro-badge {
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 800;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+	color: var(--wsc-blue);
+	background: rgba(37, 99, 235, .08);
+	border-radius: 999px;
+	padding: 5px 12px;
+	margin-bottom: 12px;
+}
+.wsc-pro-title {
+	margin: 0 0 12px;
+	font-size: 20px;
+	font-weight: 850;
+	line-height: 1.5;
+	color: var(--wsc-navy);
+	text-wrap: balance;
+}
+.wsc-pro-desc {
+	margin: 0 auto 14px;
+	max-width: 46ch;
+	font-size: 14px;
+	line-height: 1.85;
+	color: var(--wsc-text);
+}
+.wsc-pro-sub {
+	margin: 0 auto 22px;
+	max-width: 46ch;
+	font-size: 12.5px;
+	line-height: 1.8;
+	color: var(--wsc-muted);
+}
+.wsc-pro-cta {
+	font-size: 14px !important;
+}
+
+@media (max-width: 600px) {
+	.wsc-pro-card { padding: 24px 18px; }
+	.wsc-cve-hint { margin-left: 0; width: 100%; }
+}
