@@ -600,3 +600,14 @@ button.wsc-guide-toggle.wsc-guide-open {
 	width: 16px;
 	height: 16px;
 }
+
+/* 文字バッジ型アイコン（例: PHP）— ステータス色を継承 */
+.wsc-item-icon-label {
+	font-size: 10.5px;
+	font-weight: 900;
+	letter-spacing: .3px;
+	line-height: 1;
+}
+.wsc-widget .wsc-item-icon-label {
+	font-size: 9.5px;
+}

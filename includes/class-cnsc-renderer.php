@@ -284,16 +284,17 @@ class CNSC_Renderer {
 	/**
 	 * Topic (logo) icon for a check ID, using WordPress' built-in Dashicons.
 	 *
-	 * No external assets are loaded. PHP has no official Dashicon, so a
-	 * code glyph is used as a neutral stand-in (avoids bundling a logo file).
+	 * No external assets are loaded. PHP has no official Dashicon, so a short
+	 * "PHP" text badge is used ('text:PHP') — recognizable, lightweight, and
+	 * avoids bundling a trademarked logo file.
 	 *
 	 * @param string $id Check ID.
-	 * @return string Dashicons class slug, or '' when there is no mapping.
+	 * @return string Dashicons class slug, a 'text:LABEL' token, or '' when unmapped.
 	 */
 	public static function topic_icon( $id ) {
 		$map = array(
 			'a1' => 'dashicons-wordpress',
-			'a2' => 'dashicons-editor-code',
+			'a2' => 'text:PHP',
 			'a3' => 'dashicons-admin-plugins',
 			'b1' => 'dashicons-visibility',
 			'b2' => 'dashicons-edit',
@@ -347,7 +348,9 @@ class CNSC_Renderer {
 		?>
 		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 			<div class="wsc-item-icon" aria-hidden="true">
-				<?php if ( $topic ) : ?>
+				<?php if ( 0 === strpos( $topic, 'text:' ) ) : ?>
+					<span class="wsc-item-icon-label"><?php echo esc_html( substr( $topic, 5 ) ); ?></span>
+				<?php elseif ( $topic ) : ?>
 					<span class="dashicons <?php echo esc_attr( $topic ); ?>"></span>
 				<?php else : ?>
 					<?php echo esc_html( self::status_icon_text( $status ) ); ?>
