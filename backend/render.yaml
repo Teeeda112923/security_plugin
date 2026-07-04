@@ -1,0 +1,44 @@
+# Render Blueprint (https://render.com/docs/blueprint-spec)
+# Creates: a web API, a daily ingest cron, and a managed Postgres database.
+# Deploy by connecting this repo in the Render dashboard and pointing it here.
+
+databases:
+  - name: cybernote-db
+    plan: free
+
+services:
+  - type: web
+    name: cybernote-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cybernote-db
+          property: connectionString
+
+  - type: cron
+    name: cybernote-ingest
+    runtime: python
+    rootDir: backend
+    plan: free
+    schedule: "0 3 * * *" # daily 03:00 UTC
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m app.ingest
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cybernote-db
+          property: connectionString
+      - key: FEED_URL
+        sync: false # set the real feed endpoint in the dashboard
+      - key: FEED_TOKEN
+        sync: false
