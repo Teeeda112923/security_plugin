@@ -150,7 +150,7 @@ class CNSC_Admin_Page {
 		wp_enqueue_style(
 			'cnsc-dashboard',
 			CNSC_PLUGIN_URL . 'assets/css/dashboard.css',
-			array(),
+			array( 'dashicons' ),
 			CNSC_VERSION
 		);
 		wp_enqueue_style(

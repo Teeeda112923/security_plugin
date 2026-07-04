@@ -587,3 +587,16 @@ button.wsc-guide-toggle.wsc-guide-open {
 		flex-direction: column;
 	}
 }
+
+/* 診断項目の左アイコン（トピックロゴ / Dashicons）— ステータス色を継承 */
+.wsc-item-icon .dashicons {
+	font-size: 19px;
+	width: 19px;
+	height: 19px;
+	line-height: 1;
+}
+.wsc-widget .wsc-item-icon .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}

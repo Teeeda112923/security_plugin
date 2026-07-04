@@ -282,6 +282,33 @@ class CNSC_Renderer {
 	}
 
 	/**
+	 * Topic (logo) icon for a check ID, using WordPress' built-in Dashicons.
+	 *
+	 * No external assets are loaded. PHP has no official Dashicon, so a
+	 * code glyph is used as a neutral stand-in (avoids bundling a logo file).
+	 *
+	 * @param string $id Check ID.
+	 * @return string Dashicons class slug, or '' when there is no mapping.
+	 */
+	public static function topic_icon( $id ) {
+		$map = array(
+			'a1' => 'dashicons-wordpress',
+			'a2' => 'dashicons-editor-code',
+			'a3' => 'dashicons-admin-plugins',
+			'b1' => 'dashicons-visibility',
+			'b2' => 'dashicons-edit',
+			'b3' => 'dashicons-admin-users',
+			'b4' => 'dashicons-lock',
+			'b5' => 'dashicons-database',
+			'b6' => 'dashicons-rss',
+			'b7' => 'dashicons-rest-api',
+			'b8' => 'dashicons-admin-network',
+			'b9' => 'dashicons-trash',
+		);
+		return isset( $map[ $id ] ) ? $map[ $id ] : '';
+	}
+
+	/**
 	 * Render one diagnostic item as a modern card row.
 	 *
 	 * @param array $item Check result array.
@@ -299,6 +326,7 @@ class CNSC_Renderer {
 
 		$status = isset( $item['status'] ) ? $item['status'] : 'good';
 		$id     = isset( $item['id'] ) ? $item['id'] : '';
+		$topic  = self::topic_icon( $id );
 
 		$classes = array(
 			'wsc-item',
@@ -318,7 +346,13 @@ class CNSC_Renderer {
 		);
 		?>
 		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
-			<div class="wsc-item-icon" aria-hidden="true"><?php echo esc_html( self::status_icon_text( $status ) ); ?></div>
+			<div class="wsc-item-icon" aria-hidden="true">
+				<?php if ( $topic ) : ?>
+					<span class="dashicons <?php echo esc_attr( $topic ); ?>"></span>
+				<?php else : ?>
+					<?php echo esc_html( self::status_icon_text( $status ) ); ?>
+				<?php endif; ?>
+			</div>
 
 			<div class="wsc-item-content">
 				<div class="wsc-item-topline">
