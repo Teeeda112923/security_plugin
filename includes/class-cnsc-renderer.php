@@ -25,9 +25,9 @@ class CNSC_Renderer {
 	 */
 	public static function status_label( $status ) {
 		$labels = array(
-			'good'        => __( '問題なし', 'cybernote-security-checker' ),
-			'attention'   => __( '改善推奨', 'cybernote-security-checker' ),
-			'recommended' => __( '要対応', 'cybernote-security-checker' ),
+			'good'        => __( 'No issues', 'cybernote-security-checker' ),
+			'attention'   => __( 'Recommended improvement', 'cybernote-security-checker' ),
+			'recommended' => __( 'Action required', 'cybernote-security-checker' ),
 		);
 		return isset( $labels[ $status ] ) ? $labels[ $status ] : '';
 	}
@@ -146,134 +146,134 @@ class CNSC_Renderer {
 	private static function guide_data() {
 		return array(
 			'a1' => array(
-				'steps' => 'WordPress管理画面の「ダッシュボード → 更新」を開き、「今すぐ更新」ボタンをクリックしてください。更新前にサイトのバックアップを取っておくと安心です。',
-				'risk'  => '未適用のセキュリティ修正が残ったままになります。公開済みの脆弱性を悪用した攻撃でサイトを改ざんされたり、マルウェアを埋め込まれたりするリスクがあります。',
+				'steps' => __( 'Open Dashboard → Updates in WordPress and click Update Now. Making a backup before updating is recommended.', 'cybernote-security-checker' ),
+				'risk'  => __( 'Unapplied security fixes will remain on the site. Attackers may exploit known vulnerabilities to deface the site or install malware.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：WordPressの更新方法',
+						'label' => __( 'WordPress official: Updating WordPress', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/updating-wordpress/',
 					),
 				),
 			),
 			'a2' => array(
-				'steps' => 'ご利用のサーバー管理画面（cPanel・さくらコントロールパネル・ConoHaコントロールパネルなど）にログインし、PHPバージョンの切り替えメニューから PHP 8.2 以上を選択してください。変更前にサイトのバックアップを取ることを強くおすすめします。',
-				'risk'  => 'サポートが終了したPHPバージョンには、新たに発見された脆弱性の修正パッチが提供されません。攻撃者に悪用されても修正が受けられず、被害が広がりやすくなります。',
+				'steps' => __( 'Log in to your hosting control panel, such as cPanel, Sakura Control Panel, or ConoHa Control Panel. Select PHP 8.2 or later from the PHP version menu. We strongly recommend backing up your site first.', 'cybernote-security-checker' ),
+				'risk'  => __( 'Unsupported PHP versions do not receive patches for newly discovered vulnerabilities. If attackers exploit them, no fixes may be available and the damage can spread.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：推奨サーバー環境',
+						'label' => __( 'WordPress official: Recommended server environment', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/about/requirements/',
 					),
 					array(
-						'label' => 'PHP 公式：サポート中のバージョン一覧',
+						'label' => __( 'PHP official: Supported versions', 'cybernote-security-checker' ),
 						'url'   => 'https://www.php.net/supported-versions.php',
 					),
 				),
 			),
 			'a3' => array(
-				'steps' => '管理画面の「ダッシュボード → 更新」を開き、未更新のプラグインとテーマにチェックを入れて「プラグインを更新」「テーマを更新」をクリックしてください。更新前にバックアップを取っておくと安心です。',
-				'risk'  => 'プラグイン・テーマの更新にはセキュリティ修正が含まれることがあります。更新しないまま放置すると、既知の脆弱性を利用した攻撃を受けるリスクがあります。',
+				'steps' => __( 'Open Dashboard → Updates, select the outdated plugins and themes, and click Update Plugins or Update Themes. Making a backup before updating is recommended.', 'cybernote-security-checker' ),
+				'risk'  => __( 'Plugin and theme updates may include security fixes. Leaving them outdated increases the risk of attacks that exploit known vulnerabilities.', 'cybernote-security-checker' ),
 				'has_update_link' => true,
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：プラグインの管理',
+						'label' => __( 'WordPress official: Managing plugins', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/manage-plugins/',
 					),
 				),
 			),
 			'b1' => array(
-				'steps' => 'サーバー上の wp-config.php をテキストエディタで開き、以下の行を探してください。<br><code>define(\'WP_DEBUG\', true);</code><br>これを次のように書き換えて保存します。<br><code>define(\'WP_DEBUG\', false);</code>',
-				'risk'  => 'デバッグ情報が画面に表示されると、PHPエラーメッセージにサーバー内のファイルパスや内部構造が含まれることがあります。攻撃者にサーバー環境の情報を与えることになります。',
+				'steps' => __( 'Open wp-config.php on the server in a text editor and find the following line:<br><code>define(\'WP_DEBUG\', true);</code><br>Change it to the following and save the file:<br><code>define(\'WP_DEBUG\', false);</code>', 'cybernote-security-checker' ),
+				'risk'  => __( 'When debug information is displayed, PHP error messages may reveal server file paths and internal structures. This gives attackers information about the server environment.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：WordPressのデバッグ',
+						'label' => __( 'WordPress official: Debugging WordPress', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/debugging-in-wordpress/',
 					),
 				),
 			),
 			'b2' => array(
-				'steps' => 'wp-config.php を開き、以下の1行を追加してください（「/* 編集が必要なのはここまでです */」という行より前の位置に記述します）。<br><code>define(\'DISALLOW_FILE_EDIT\', true);</code>',
-				'risk'  => '管理者アカウントが乗っ取られた場合、テーマ・プラグインのコードエディターからサーバー上のPHPファイルを直接書き換えられてしまいます。バックドアを仕込まれる可能性があります。',
+				'steps' => __( 'Open wp-config.php and add the following line before the line that says "/* That\'s all you need to edit. */":<br><code>define(\'DISALLOW_FILE_EDIT\', true);</code>', 'cybernote-security-checker' ),
+				'risk'  => __( 'If an administrator account is compromised, attackers can directly edit PHP files on the server through the theme and plugin code editor. They may install a backdoor.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：WordPressのセキュリティ強化',
+						'label' => __( 'WordPress official: Hardening WordPress', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/hardening-wordpress/',
 					),
 				),
 			),
 			'b3' => array(
-				'steps' => 'まず別の管理者アカウントを作成してそちらでログインし直してください。その後「ユーザー一覧」から「admin」アカウントを削除します。削除時に既存の投稿を新しいアカウントに引き継ぐ選択ができます。',
-				'risk'  => '「admin」はWordPressで最も狙われるユーザー名です。ユーザー名が判明していると、パスワードを総当たりするだけでログインされてしまうリスクが大幅に上がります。',
+				'steps' => __( 'First create another administrator account and log in with it. Then delete the admin account from Users. When deleting it, you can assign its existing posts to the new account.', 'cybernote-security-checker' ),
+				'risk'  => __( 'The username "admin" is one of the most frequently targeted in WordPress. Once the username is known, the risk of a successful password-guessing attack increases significantly.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：WordPressのセキュリティ強化',
+						'label' => __( 'WordPress official: Hardening WordPress', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/hardening-wordpress/',
 					),
 				),
 			),
 			'b4' => array(
-				'steps' => 'ご利用のサーバー管理画面でSSL証明書を発行します（多くのサーバーでLet\'s Encryptによる無料発行が可能です）。証明書の設定が完了したら、WordPressの「設定 → 一般」でサイトアドレスとWordPressアドレスをどちらも https:// に変更してください。',
-				'risk'  => 'HTTPのままでは通信が暗号化されません。ログイン時のパスワードや問い合わせフォームに入力した個人情報が、通信経路上で盗み見られる（盗聴）リスクがあります。',
+				'steps' => __( 'Issue an SSL certificate from your hosting control panel. Many hosting providers offer free certificates through Let\'s Encrypt. After configuring the certificate, go to Settings → General in WordPress and change both the WordPress Address and Site Address to https://.', 'cybernote-security-checker' ),
+				'risk'  => __( 'HTTP does not encrypt communications. Passwords and personal information entered into forms may be intercepted while traveling across the network.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：WordPressでHTTPSを使う',
+						'label' => __( 'WordPress official: Using HTTPS with WordPress', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/https-for-wordpress/',
 					),
 				),
 			),
 			'b5' => array(
-				'steps' => 'この変更は既存サイトでは慎重な作業が必要です。必ずバックアップを取ってから行ってください。phpMyAdminなどでデータベースの全テーブル名の「wp_」部分を別の文字列（例：mywp_）に変更し、wp-config.php の <code>$table_prefix</code> の値も同じ文字列に更新します。',
-				'risk'  => 'テーブル名が「wp_」という既知のパターンのままだと、SQLインジェクション攻撃が成功した際にデータベースを操作されやすくなります。',
+				'steps' => __( 'Changing this on an existing site requires care. Always make a backup first. In phpMyAdmin or a similar tool, change the "wp_" portion of every database table name to another string, such as "mywp_", and update the <code>$table_prefix</code> value in wp-config.php to match.', 'cybernote-security-checker' ),
+				'risk'  => __( 'If table names retain the well-known "wp_" pattern, attackers may find it easier to target the database after a successful SQL injection attack.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：WordPressのセキュリティ強化',
+						'label' => __( 'WordPress official: Hardening WordPress', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/hardening-wordpress/',
 					),
 				),
 			),
 			'b6' => array(
-				'steps' => '「Disable XML-RPC」などの無料プラグインを使うと簡単に無効化できます。または .htaccess に以下を追加することで xmlrpc.php へのアクセスをブロックできます。<br><code>&lt;Files xmlrpc.php&gt;<br>Order Deny,Allow<br>Deny from all<br>&lt;/Files&gt;</code>',
-				'risk'  => 'XML-RPCは古い連携機能で現在のWordPressではほとんど不要です。有効なままにしておくと、1回のリクエストで大量のログイン試行が可能なため、ブルートフォース攻撃に利用されやすくなります。',
+				'steps' => __( 'A free plugin such as "Disable XML-RPC" can disable it easily. Alternatively, add the following to .htaccess to block access to xmlrpc.php:<br><code>&lt;Files xmlrpc.php&gt;<br>Order Deny,Allow<br>Deny from all<br>&lt;/Files&gt;</code>', 'cybernote-security-checker' ),
+				'risk'  => __( 'XML-RPC is an older integration feature and is rarely needed in current WordPress sites. When enabled, it allows many login attempts in a single request and can be abused for brute-force attacks.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：XML-RPC について',
+						'label' => __( 'WordPress official: XML-RPC support', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/xml-rpc-support/',
 					),
 				),
 			),
 			'b7' => array(
-				'steps' => 'セキュリティプラグイン（例：Wordfence・SiteGuard WP Plugin）を使う方法が手軽です。または、テーマの functions.php に以下を追加する方法もあります。<br><code>add_filter(\'rest_endpoints\', function($ep) {<br>&nbsp;&nbsp;if (!is_user_logged_in()) {<br>&nbsp;&nbsp;&nbsp;&nbsp;unset($ep[\'/wp/v2/users\']);<br>&nbsp;&nbsp;&nbsp;&nbsp;unset($ep[\'/wp/v2/users/(?P&lt;id&gt;[\\d]+)\']);<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;return $ep;<br>});</code>',
-				'risk'  => 'REST APIのユーザー一覧エンドポイントが公開されていると、誰でもユーザー名を取得できます。ユーザー名が判明するとパスワードの総当たり攻撃がしやすくなります。',
+				'steps' => __( 'A security plugin such as Wordfence or SiteGuard WP Plugin is the easiest option. You can also add the following to your theme\'s functions.php:<br><code>add_filter(\'rest_endpoints\', function($ep) {<br>&nbsp;&nbsp;if (!is_user_logged_in()) {<br>&nbsp;&nbsp;&nbsp;&nbsp;unset($ep[\'/wp/v2/users\']);<br>&nbsp;&nbsp;&nbsp;&nbsp;unset($ep[\'/wp/v2/users/(?P&lt;id&gt;[\\d]+)\']);<br>&nbsp;&nbsp;}<br>&nbsp;&nbsp;return $ep;<br>});</code>', 'cybernote-security-checker' ),
+				'risk'  => __( 'If the REST API user list endpoint is publicly available, anyone can collect usernames. Once usernames are known, password-guessing attacks become easier.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：REST API ハンドブック',
+						'label' => __( 'WordPress official: REST API handbook', 'cybernote-security-checker' ),
 						'url'   => 'https://developer.wordpress.org/rest-api/',
 					),
 				),
 			),
 			'b8' => array(
-				'steps' => 'WordPress公式の「秘密鍵サービス」（下記リンク）を開くと、8行のコードが自動生成されます。wp-config.php を開き、「AUTH_KEY」から「NONCE_SALT」までの8行を、生成された内容にまるごと置き換えて保存してください。置き換えると、現在ログイン中の人は一度ログアウトされます（再ログインすれば問題ありません）。',
-				'risk'  => 'この秘密の文字列は、ログイン状態を保存するcookieの暗号化に使われます。初期値や空のままだと、cookieを偽装されてログインを乗っ取られる（なりすまし）恐れがあります。',
+				'steps' => __( 'Open the WordPress Secret Key Service using the link below to generate eight lines of code. Open wp-config.php and replace the eight lines from AUTH_KEY through NONCE_SALT with the generated values. Everyone currently logged in will be logged out once; they can simply log in again.', 'cybernote-security-checker' ),
+				'risk'  => __( 'These secret strings encrypt the cookies that store login sessions. If they are empty or left at their defaults, attackers may forge cookies and take over accounts.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：秘密鍵（認証ユニークキー）生成サービス',
+						'label' => __( 'WordPress official: Secret Key Service', 'cybernote-security-checker' ),
 						'url'   => 'https://api.wordpress.org/secret-key/1.1/salt/',
 					),
 					array(
-						'label' => 'WordPress 公式：WordPressのセキュリティ強化',
+						'label' => __( 'WordPress official: Hardening WordPress', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/hardening-wordpress/',
 					),
 				),
 			),
 			'b9' => array(
-				'steps' => 'プラグインは「プラグイン一覧」で停止中のものの「削除」を実行します。テーマは「外観 → テーマ」で使っていないテーマを選び「テーマの詳細 → 削除」を実行します。削除前に、本当に使っていないかを確認してください。切り替え用にテーマを1つ残しておくのは問題ありません。',
-				'risk'  => '使っていないプラグイン・テーマでも、古いバージョンに脆弱性があると、有効・無効に関わらずファイルが直接狙われて侵入経路になることがあります。',
+				'steps' => __( 'In Plugins, delete anything that is inactive. In Appearance → Themes, select an unused theme and choose Theme Details → Delete. Confirm that you really do not use it before deleting. Keeping one fallback theme is fine.', 'cybernote-security-checker' ),
+				'risk'  => __( 'Even unused plugins and themes can become entry points if an old version contains a vulnerability. Their files may be targeted whether they are active or inactive.', 'cybernote-security-checker' ),
 				'links' => array(
 					array(
-						'label' => 'WordPress 公式：プラグインの管理',
+						'label' => __( 'WordPress official: Managing plugins', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/manage-plugins/',
 					),
 					array(
-						'label' => 'WordPress 公式：テーマの使い方',
+						'label' => __( 'WordPress official: Working with themes', 'cybernote-security-checker' ),
 						'url'   => 'https://wordpress.org/documentation/article/work-with-themes/',
 					),
 				),
@@ -374,7 +374,7 @@ class CNSC_Renderer {
 				<?php if ( $args['show_action'] && 'a3' === $id && 'good' !== $status ) : ?>
 					<div class="wsc-item-action">
 						<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small wsc-secondary-action">
-							<?php esc_html_e( '更新画面を開く', 'cybernote-security-checker' ); ?>
+							<?php esc_html_e( 'Open Updates', 'cybernote-security-checker' ); ?>
 						</a>
 					</div>
 				<?php endif; ?>
@@ -382,23 +382,23 @@ class CNSC_Renderer {
 				<?php if ( $guide ) : ?>
 					<div class="wsc-item-guide" id="<?php echo esc_attr( $guide_id ); ?>" style="display:none">
 						<div class="wsc-guide-section">
-							<div class="wsc-guide-section-title"><?php esc_html_e( '対応手順', 'cybernote-security-checker' ); ?></div>
+							<div class="wsc-guide-section-title"><?php esc_html_e( 'What to do', 'cybernote-security-checker' ); ?></div>
 							<div class="wsc-guide-steps"><?php echo wp_kses( $guide['steps'], $allowed_html ); ?></div>
 						</div>
 						<?php if ( ! empty( $guide['has_update_link'] ) ) : ?>
 							<div class="wsc-guide-action">
 								<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button button-small wsc-secondary-action">
-									<?php esc_html_e( '更新画面を開く', 'cybernote-security-checker' ); ?>
+									<?php esc_html_e( 'Open Updates', 'cybernote-security-checker' ); ?>
 								</a>
 							</div>
 						<?php endif; ?>
 						<div class="wsc-guide-section">
-							<div class="wsc-guide-section-title"><?php esc_html_e( '対応しないと…', 'cybernote-security-checker' ); ?></div>
+							<div class="wsc-guide-section-title"><?php esc_html_e( 'What happens if you do nothing', 'cybernote-security-checker' ); ?></div>
 							<div class="wsc-guide-risk"><?php echo wp_kses( $guide['risk'], $allowed_html ); ?></div>
 						</div>
 						<?php if ( ! empty( $guide['links'] ) ) : ?>
 							<div class="wsc-guide-links">
-								<div class="wsc-guide-section-title"><?php esc_html_e( '詳細はこちら', 'cybernote-security-checker' ); ?></div>
+								<div class="wsc-guide-section-title"><?php esc_html_e( 'Learn more', 'cybernote-security-checker' ); ?></div>
 								<?php foreach ( $guide['links'] as $link ) : ?>
 									<a href="<?php echo esc_url( $link['url'] ); ?>" class="wsc-guide-link" target="_blank" rel="noopener noreferrer">
 										<span class="dashicons dashicons-external" aria-hidden="true"></span>
@@ -416,7 +416,7 @@ class CNSC_Renderer {
 					class="wsc-item-chevron wsc-guide-toggle"
 					aria-expanded="false"
 					aria-controls="<?php echo esc_attr( $guide_id ); ?>"
-					aria-label="<?php esc_attr_e( '詳細ガイドを表示', 'cybernote-security-checker' ); ?>"
+					aria-label="<?php esc_attr_e( 'Show detailed guide', 'cybernote-security-checker' ); ?>"
 					onclick="cnscToggleGuide(this)"
 				>›</button>
 			<?php else : ?>
