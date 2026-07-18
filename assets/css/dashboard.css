@@ -321,14 +321,14 @@ button.wsc-guide-toggle.wsc-guide-open {
 }
 
 /* Dashboard widget */
-#wsc_security_checker.postbox .inside {
+#cnsc_security_checker.postbox .inside {
 	padding: 0;
 	margin: 0;
 	background: var(--wsc-bg);
 }
 
-#wsc_security_checker.postbox .hndle,
-#wsc_security_checker.postbox .handlediv {
+#cnsc_security_checker.postbox .hndle,
+#cnsc_security_checker.postbox .handlediv {
 	display: none;
 }
 
@@ -586,4 +586,28 @@ button.wsc-guide-toggle.wsc-guide-open {
 		align-items: flex-start;
 		flex-direction: column;
 	}
+}
+
+/* 診断項目の左アイコン（トピックロゴ / Dashicons）— ステータス色を継承 */
+.wsc-item-icon .dashicons {
+	font-size: 19px;
+	width: 19px;
+	height: 19px;
+	line-height: 1;
+}
+.wsc-widget .wsc-item-icon .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+/* 文字バッジ型アイコン（例: PHP）— ステータス色を継承 */
+.wsc-item-icon-label {
+	font-size: 10.5px;
+	font-weight: 900;
+	letter-spacing: .3px;
+	line-height: 1;
+}
+.wsc-widget .wsc-item-icon-label {
+	font-size: 9.5px;
 }

@@ -5,7 +5,7 @@
  * ダッシュボードウィジェットと専用管理ページの両方から利用し、
  * 1項目の表示マークアップを一箇所に集約する（表示の食い違いを防ぐ）。
  *
- * @package WP_Security_Checker
+ * @package CyberNote_Security_Checker
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Shared rendering helpers for diagnostic results.
  */
-class WSC_Renderer {
+class CNSC_Renderer {
 
 	/**
 	 * Localized status label keyed by status.
@@ -50,7 +50,7 @@ class WSC_Renderer {
 	/**
 	 * Count results by severity.
 	 *
-	 * @param array $results Diagnostic results from WSC_Diagnostics::run().
+	 * @param array $results Diagnostic results from CNSC_Diagnostics::run().
 	 * @return array Counts keyed by good|attention|recommended.
 	 */
 	public static function severity_counts( $results ) {
@@ -71,7 +71,7 @@ class WSC_Renderer {
 	/**
 	 * Flatten category results.
 	 *
-	 * @param array $results Diagnostic results from WSC_Diagnostics::run().
+	 * @param array $results Diagnostic results from CNSC_Diagnostics::run().
 	 * @return array
 	 */
 	public static function flatten_results( $results ) {
@@ -83,7 +83,7 @@ class WSC_Renderer {
 	/**
 	 * Return issue items ordered by urgency.
 	 *
-	 * @param array $results Diagnostic results from WSC_Diagnostics::run().
+	 * @param array $results Diagnostic results from CNSC_Diagnostics::run().
 	 * @param int   $limit Maximum number of items to return. 0 means unlimited.
 	 * @return array
 	 */
@@ -250,7 +250,63 @@ class WSC_Renderer {
 					),
 				),
 			),
+			'b8' => array(
+				'steps' => 'WordPress公式の「秘密鍵サービス」（下記リンク）を開くと、8行のコードが自動生成されます。wp-config.php を開き、「AUTH_KEY」から「NONCE_SALT」までの8行を、生成された内容にまるごと置き換えて保存してください。置き換えると、現在ログイン中の人は一度ログアウトされます（再ログインすれば問題ありません）。',
+				'risk'  => 'この秘密の文字列は、ログイン状態を保存するcookieの暗号化に使われます。初期値や空のままだと、cookieを偽装されてログインを乗っ取られる（なりすまし）恐れがあります。',
+				'links' => array(
+					array(
+						'label' => 'WordPress 公式：秘密鍵（認証ユニークキー）生成サービス',
+						'url'   => 'https://api.wordpress.org/secret-key/1.1/salt/',
+					),
+					array(
+						'label' => 'WordPress 公式：WordPressのセキュリティ強化',
+						'url'   => 'https://wordpress.org/documentation/article/hardening-wordpress/',
+					),
+				),
+			),
+			'b9' => array(
+				'steps' => 'プラグインは「プラグイン一覧」で停止中のものの「削除」を実行します。テーマは「外観 → テーマ」で使っていないテーマを選び「テーマの詳細 → 削除」を実行します。削除前に、本当に使っていないかを確認してください。切り替え用にテーマを1つ残しておくのは問題ありません。',
+				'risk'  => '使っていないプラグイン・テーマでも、古いバージョンに脆弱性があると、有効・無効に関わらずファイルが直接狙われて侵入経路になることがあります。',
+				'links' => array(
+					array(
+						'label' => 'WordPress 公式：プラグインの管理',
+						'url'   => 'https://wordpress.org/documentation/article/manage-plugins/',
+					),
+					array(
+						'label' => 'WordPress 公式：テーマの使い方',
+						'url'   => 'https://wordpress.org/documentation/article/work-with-themes/',
+					),
+				),
+			),
 		);
+	}
+
+	/**
+	 * Topic (logo) icon for a check ID, using WordPress' built-in Dashicons.
+	 *
+	 * No external assets are loaded. PHP has no official Dashicon, so a short
+	 * "PHP" text badge is used ('text:PHP') — recognizable, lightweight, and
+	 * avoids bundling a trademarked logo file.
+	 *
+	 * @param string $id Check ID.
+	 * @return string Dashicons class slug, a 'text:LABEL' token, or '' when unmapped.
+	 */
+	public static function topic_icon( $id ) {
+		$map = array(
+			'a1' => 'dashicons-wordpress',
+			'a2' => 'text:PHP',
+			'a3' => 'dashicons-admin-plugins',
+			'b1' => 'dashicons-visibility',
+			'b2' => 'dashicons-edit',
+			'b3' => 'dashicons-admin-users',
+			'b4' => 'dashicons-lock',
+			'b5' => 'dashicons-database',
+			'b6' => 'dashicons-rss',
+			'b7' => 'dashicons-rest-api',
+			'b8' => 'dashicons-admin-network',
+			'b9' => 'dashicons-trash',
+		);
+		return isset( $map[ $id ] ) ? $map[ $id ] : '';
 	}
 
 	/**
@@ -271,6 +327,7 @@ class WSC_Renderer {
 
 		$status = isset( $item['status'] ) ? $item['status'] : 'good';
 		$id     = isset( $item['id'] ) ? $item['id'] : '';
+		$topic  = self::topic_icon( $id );
 
 		$classes = array(
 			'wsc-item',
@@ -290,7 +347,15 @@ class WSC_Renderer {
 		);
 		?>
 		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
-			<div class="wsc-item-icon" aria-hidden="true"><?php echo esc_html( self::status_icon_text( $status ) ); ?></div>
+			<div class="wsc-item-icon" aria-hidden="true">
+				<?php if ( 0 === strpos( $topic, 'text:' ) ) : ?>
+					<span class="wsc-item-icon-label"><?php echo esc_html( substr( $topic, 5 ) ); ?></span>
+				<?php elseif ( $topic ) : ?>
+					<span class="dashicons <?php echo esc_attr( $topic ); ?>"></span>
+				<?php else : ?>
+					<?php echo esc_html( self::status_icon_text( $status ) ); ?>
+				<?php endif; ?>
+			</div>
 
 			<div class="wsc-item-content">
 				<div class="wsc-item-topline">
@@ -352,7 +417,7 @@ class WSC_Renderer {
 					aria-expanded="false"
 					aria-controls="<?php echo esc_attr( $guide_id ); ?>"
 					aria-label="<?php esc_attr_e( '詳細ガイドを表示', 'cybernote-security-checker' ); ?>"
-					onclick="wscToggleGuide(this)"
+					onclick="cnscToggleGuide(this)"
 				>›</button>
 			<?php else : ?>
 				<span class="wsc-item-chevron" aria-hidden="true">›</span>

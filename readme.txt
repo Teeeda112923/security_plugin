@@ -3,7 +3,7 @@ Contributors: teeeda1129
 Tags: security, hardening, diagnostic, audit, maintenance
 Requires at least: 5.9
 Tested up to: 7.0
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -16,7 +16,7 @@ CyberNote Security Checker is a lightweight plugin that audits your WordPress si
 
 Many security plugins are powerful but heavy, English-only, and full of technical jargon. CyberNote Security Checker takes the opposite approach: it targets Japanese individual bloggers and small business owners who need to understand exactly what to do — delivered quickly and without specialist knowledge.
 
-**10 diagnostic checks. Zero external requests.**
+**12 diagnostic checks. Zero external requests.**
 
 A widget appears on the WordPress dashboard showing results in three levels: good (no action needed) / attention (improvement recommended) / recommended (priority action required). Each item includes a plain-Japanese explanation of the risk and step-by-step remediation guidance.
 
@@ -26,7 +26,7 @@ A widget appears on the WordPress dashboard showing results in three levels: goo
 * **PHP version** — Evaluated against official PHP support status. End-of-life versions flagged as "priority action"; security-only branches as "attention".
 * **Plugin and theme updates** — Displays the count and names of pending updates. A direct link opens the standard WordPress update screen; the plugin never performs updates itself.
 
-= Category B: Hardening Settings (7 checks) =
+= Category B: Hardening Settings (9 checks) =
 
 * **Debug display** — WP_DEBUG with screen output on a production site is flagged as "priority action"; log-only mode as "attention".
 * **File editing** — If the theme and plugin code editor is enabled in the admin panel, flagged as "priority action".
@@ -35,6 +35,8 @@ A widget appears on the WordPress dashboard showing results in three levels: goo
 * **Database table prefix** — Default wp_ prefix flagged as "attention" (live-site changes carry risk, so no urgent push).
 * **XML-RPC** — Enabled XML-RPC is flagged as "attention"; use-case guidance included before recommending disablement.
 * **REST API user enumeration** — If anonymous requests to /wp/v2/users return user data, flagged as "attention".
+* **Security keys (salts)** — Checks whether the wp-config.php authentication unique keys and salts are set and not left at the default placeholder. Missing or default keys are flagged as "priority action" (login cookies could be forged). Key values are never read out or displayed.
+* **Unused plugins and themes** — Inactive plugins and unused themes still ship files on the server that can be exploited if vulnerable. Their presence is flagged as "attention" with removal guidance (keeping one fallback theme is fine).
 
 = Design Principles =
 
@@ -43,9 +45,9 @@ A widget appears on the WordPress dashboard showing results in three levels: goo
 * **Lightweight** — No real-time file scanning, no custom WAF, no resident processes. Diagnostics run once when the admin page loads.
 * **Plain language** — Technical terms are avoided. Each check explains why it matters and what to do in everyday language.
 
-= Pro Plan (coming soon) =
+= Vulnerability alerts (separate external service) =
 
-The free plan covers whether updates are available. The Pro plan will add CVE vulnerability alerts in Japanese — matching installed plugins and themes against external vulnerability databases, with daily/weekly automated scans and email notifications.
+This plugin is free and fully functional on its own. Matching your installed plugins and themes against external vulnerability databases (CVE) requires server-side processing that cannot be done locally, so it is offered separately as an external service called CyberNote, not bundled in this plugin. See https://www.cybernote.click/wp-security-checker-guide/ for details.
 
 == Installation ==
 
@@ -95,15 +97,24 @@ If you use Jetpack or a mobile app that relies on XML-RPC, leaving it enabled is
 
 == Changelog ==
 
+= 1.1.0 =
+* Refreshed the admin UI with a cleaner, SaaS-style dashboard (summary gauge, priority card, category cards)
+* Reorganized the results display into three categories: A. Version freshness / B. Hardening / C. Hygiene (diagnostic logic unchanged)
+* Added a "Hygiene" sub-page and redesigned the vulnerability-alert page as a clearer external-service (CyberNote) information page — still no bundled scanning or license code
+* Japanese-only status labels throughout (要対応 / 改善推奨 / 問題なし)
+
 = 1.0.0 =
 * Initial release
 * Category A (version freshness): 3 diagnostic checks
-* Category B (hardening settings): 7 diagnostic checks
+* Category B (hardening settings): 9 diagnostic checks
 * WordPress dashboard widget with AJAX refresh
-* Dedicated admin panel with 7 sub-pages
+* Dedicated admin panel with diagnostic sub-pages
 * Full Japanese language support
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+UI refresh and clearer category organization. No change to what is diagnosed.
 
 = 1.0.0 =
 Initial release.

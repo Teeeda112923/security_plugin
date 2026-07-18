@@ -1,7 +1,7 @@
 /**
  * Accordion toggle for diagnostic guide panels.
  */
-function wscToggleGuide( btn ) {
+function cnscToggleGuide( btn ) {
 	var guideId  = btn.getAttribute( 'aria-controls' );
 	var guide    = document.getElementById( guideId );
 	if ( ! guide ) { return; }

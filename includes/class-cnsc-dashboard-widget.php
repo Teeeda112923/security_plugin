@@ -2,7 +2,7 @@
 /**
  * ダッシュボードウィジェット
  *
- * @package WP_Security_Checker
+ * @package CyberNote_Security_Checker
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,12 +12,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Registers and renders the Security Checker dashboard widget.
  */
-class WSC_Dashboard_Widget {
+class CNSC_Dashboard_Widget {
 
 	public function __construct() {
 		add_action( 'wp_dashboard_setup', array( $this, 'register_widget' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-		add_action( 'wp_ajax_wsc_refresh', array( $this, 'ajax_refresh' ) );
+		add_action( 'wp_ajax_cnsc_refresh', array( $this, 'ajax_refresh' ) );
 	}
 
 	public function register_widget() {
@@ -25,7 +25,7 @@ class WSC_Dashboard_Widget {
 			return;
 		}
 		wp_add_dashboard_widget(
-			'wsc_security_checker',
+			'cnsc_security_checker',
 			__( 'セキュリティ診断', 'cybernote-security-checker' ),
 			array( $this, 'render_widget' )
 		);
@@ -36,28 +36,28 @@ class WSC_Dashboard_Widget {
 			return;
 		}
 		wp_enqueue_style(
-			'wsc-dashboard',
-			WSC_PLUGIN_URL . 'assets/css/dashboard.css',
-			array(),
-			WSC_VERSION
+			'cnsc-dashboard',
+			CNSC_PLUGIN_URL . 'assets/css/dashboard.css',
+			array( 'dashicons' ),
+			CNSC_VERSION
 		);
 		wp_enqueue_script(
-			'wsc-guide',
-			WSC_PLUGIN_URL . 'assets/js/wsc-guide.js',
+			'cnsc-guide',
+			CNSC_PLUGIN_URL . 'assets/js/cnsc-guide.js',
 			array(),
-			WSC_VERSION,
+			CNSC_VERSION,
 			true
 		);
 		wp_enqueue_script(
-			'wsc-widget',
-			WSC_PLUGIN_URL . 'assets/js/wsc-widget.js',
-			array( 'wsc-guide' ),
-			WSC_VERSION,
+			'cnsc-widget',
+			CNSC_PLUGIN_URL . 'assets/js/cnsc-widget.js',
+			array( 'cnsc-guide' ),
+			CNSC_VERSION,
 			true
 		);
 		wp_localize_script(
-			'wsc-widget',
-			'wscWidgetData',
+			'cnsc-widget',
+			'cnscWidgetData',
 			array(
 				'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
 				'refreshingText' => __( '診断中...', 'cybernote-security-checker' ),
@@ -69,16 +69,16 @@ class WSC_Dashboard_Widget {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		$results = ( new WSC_Diagnostics() )->run();
+		$results = ( new CNSC_Diagnostics() )->run();
 		$this->render_html( $results );
 	}
 
 	public function ajax_refresh() {
-		check_ajax_referer( 'wsc_refresh_nonce', 'nonce' );
+		check_ajax_referer( 'cnsc_refresh_nonce', 'nonce' );
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( -1 );
 		}
-		$results = ( new WSC_Diagnostics() )->run();
+		$results = ( new CNSC_Diagnostics() )->run();
 		$this->render_html( $results );
 		wp_die();
 	}
@@ -86,12 +86,12 @@ class WSC_Dashboard_Widget {
 	/**
 	 * Output the widget HTML.
 	 *
-	 * @param array $results Diagnostic results from WSC_Diagnostics::run().
+	 * @param array $results Diagnostic results from CNSC_Diagnostics::run().
 	 */
 	private function render_html( $results ) {
 		$issues         = (int) $results['summary']['issues'];
-		$counts         = WSC_Renderer::severity_counts( $results );
-		$priority_items = WSC_Renderer::priority_items( $results, 5 );
+		$counts         = CNSC_Renderer::severity_counts( $results );
+		$priority_items = CNSC_Renderer::priority_items( $results, 5 );
 		?>
 		<div class="wsc-widget" id="wsc-widget" aria-live="polite">
 			<div class="wsc-widget-head">
@@ -104,8 +104,8 @@ class WSC_Dashboard_Widget {
 				</div>
 				<button
 					class="button button-secondary wsc-refresh-btn"
-					onclick="wscRefresh(this)"
-					data-nonce="<?php echo esc_attr( wp_create_nonce( 'wsc_refresh_nonce' ) ); ?>"
+					onclick="cnscRefresh(this)"
+					data-nonce="<?php echo esc_attr( wp_create_nonce( 'cnsc_refresh_nonce' ) ); ?>"
 				>
 					<span class="dashicons dashicons-update" aria-hidden="true"></span>
 					<?php esc_html_e( '再診断', 'cybernote-security-checker' ); ?>
@@ -146,13 +146,13 @@ class WSC_Dashboard_Widget {
 					<div class="wsc-widget-empty"><?php esc_html_e( '確認が必要な項目はありません。', 'cybernote-security-checker' ); ?></div>
 				<?php else : ?>
 					<?php foreach ( $priority_items as $item ) : ?>
-						<?php WSC_Renderer::render_item( $item, array( 'compact' => true, 'show_message' => false, 'show_action' => false ) ); ?>
+						<?php CNSC_Renderer::render_item( $item, array( 'compact' => true, 'show_message' => false, 'show_action' => false ) ); ?>
 					<?php endforeach; ?>
 				<?php endif; ?>
 			</div>
 
 			<div class="wsc-widget-footer">
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . WSC_Admin_Page::MENU_SLUG ) ); ?>" class="wsc-detail-link">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . CNSC_Admin_Page::MENU_SLUG ) ); ?>" class="wsc-detail-link">
 					<span class="dashicons dashicons-external" aria-hidden="true"></span>
 					<?php esc_html_e( '詳細画面を開く', 'cybernote-security-checker' ); ?>
 					<span aria-hidden="true">›</span>
