@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class CNAPI_Matcher {
 
-	const API_BASE        = 'https://www.wpvulnerability.com';
+	const API_BASE        = 'https://www.wpvulnerability.net'; // 注意: APIは .net（.com は説明サイトで404になる）。
 	const CACHE_TTL       = DAY_IN_SECONDS;
 	const REQUEST_TIMEOUT = 8;   // 1問い合わせあたりの上限秒。
 	const TIME_BUDGET     = 20;  // スキャン全体の外部問い合わせ予算秒（接続側の30秒より短く）。
