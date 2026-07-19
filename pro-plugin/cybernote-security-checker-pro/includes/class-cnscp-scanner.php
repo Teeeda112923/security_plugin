@@ -39,9 +39,10 @@ class CNSCP_Scanner {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			$error = new WP_Error( 'api_error', 'CyberNoteに接続できませんでした。時間をおいてお試しください。' );
-			update_option( self::OPT_LAST_ERROR, $error->get_error_message(), false );
-			return $error;
+			// 生のエラー内容（cURLのタイムアウト/SSL/DNS等）を残して原因特定に使う。
+			$detail = $response->get_error_message();
+			update_option( self::OPT_LAST_ERROR, 'CyberNoteに接続できませんでした。（詳細: ' . $detail . '）', false );
+			return new WP_Error( 'api_error', 'CyberNoteに接続できませんでした。時間をおいてお試しください。' );
 		}
 
 		$code = (int) wp_remote_retrieve_response_code( $response );
