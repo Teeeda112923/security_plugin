@@ -293,8 +293,9 @@ includes/
 - 現在の無料版を提出できる状態。申請手順の確認・実施。
 
 **D. cybernote.click バックエンドの構築（Pro版 Phase 2）**
-- FastAPI/Laravel等でスキャンAPIを構築
-- WPScan API連携・キャッシュ実装
+- スキャンAPIは cybernote.click 用WordPressプラグイン（backend/cybernote-api）として実装済み（B1）
+- データ源はWPVulnerability.com（無料）で開始、キャッシュ実装済み。将来WPScan等へ差し替え可能
+- 次: Pro接続プラグイン（B2）→ Lemon Squeezy決済・メール通知（B3）
 
 ---
 

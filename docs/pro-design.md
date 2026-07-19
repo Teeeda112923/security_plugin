@@ -323,7 +323,7 @@ WSC_Pro_Notifier::notify_if_needed()
 
 **目標**: 実際のライセンスキーでスキャンが動作すること。
 
-- [ ] cybernote.click に FastAPI / Laravel 等でスキャンAPI実装
+- [x] cybernote.click 用WordPressプラグイン（backend/cybernote-api）としてスキャンAPI実装済み
 - [ ] WPScan API との突合ロジック実装（キャッシュ込み）
 - [ ] NIST NVD との WP 本体 / PHP 突合
 - [ ] ライセンス発行・検証エンドポイント実装
