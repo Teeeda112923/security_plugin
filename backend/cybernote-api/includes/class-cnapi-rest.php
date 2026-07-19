@@ -61,12 +61,18 @@ class CNAPI_Rest {
 
 		$matcher         = new CNAPI_Matcher();
 		$vulnerabilities = $matcher->scan( $env );
+		$stats           = $matcher->get_stats();
+
+		// 一部でも脆弱性DBへ到達できなかった／打ち切った場合は「不完全」を明示する。
+		$incomplete = ( $stats['failed'] > 0 || $stats['aborted'] );
 
 		return new WP_REST_Response(
 			array(
 				'status'          => 'ok',
 				'scanned_at'      => gmdate( 'c' ),
 				'vulnerabilities' => $vulnerabilities,
+				'incomplete'      => $incomplete,
+				'stats'           => $stats,
 				'next_check_at'   => gmdate( 'c', time() + DAY_IN_SECONDS ),
 			),
 			200

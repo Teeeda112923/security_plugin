@@ -180,5 +180,24 @@ CNSCP_Admin::render_page();
 $html3 = ob_get_clean();
 check( '0件時は問題なし表示', false !== strpos( $html3, '既知の脆弱性は見つかりませんでした' ) );
 
+// 照合が不完全（incomplete=true）なら「安全」と誤表示せず警告を出す。
+echo "== Admin: incomplete ==\n";
+$GLOBALS['_http_response'] = array(
+	'code' => 200,
+	'body' => json_encode( array(
+		'status'          => 'ok',
+		'scanned_at'      => 'x',
+		'vulnerabilities' => array(),
+		'incomplete'      => true,
+	) ),
+);
+CNSCP_Scanner::run();
+check( 'incompleteフラグを保存', true === ( CNSCP_Scanner::latest_results()['incomplete'] ?? false ) );
+ob_start();
+CNSCP_Admin::render_page();
+$html4 = ob_get_clean();
+check( '不完全時は警告を表示', false !== strpos( $html4, '照合が最後まで完了しませんでした' ) );
+check( '不完全時は「問題なし」を出さない', false === strpos( $html4, '既知の脆弱性は見つかりませんでした' ) );
+
 echo $fails ? "\n$fails FAILED\n" : "\nALL PASSED\n";
 exit( $fails ? 1 : 0 );

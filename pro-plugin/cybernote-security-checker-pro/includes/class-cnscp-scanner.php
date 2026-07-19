@@ -32,7 +32,7 @@ class CNSCP_Scanner {
 		$response = wp_remote_post(
 			CNSCP_API_URL,
 			array(
-				'timeout' => 30,
+				'timeout' => 60,
 				'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 				'body'    => wp_json_encode( $payload ),
 			)
@@ -61,6 +61,8 @@ class CNSCP_Scanner {
 			array(
 				'scanned_at'      => (string) ( $body['scanned_at'] ?? '' ),
 				'vulnerabilities' => self::sanitize_results( $body['vulnerabilities'] ?? array() ),
+				// 一部の照合が失敗/打ち切りなら「0件＝安全」と誤認させない。
+				'incomplete'      => ! empty( $body['incomplete'] ),
 			),
 			false
 		);

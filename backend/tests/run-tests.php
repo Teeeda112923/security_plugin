@@ -134,6 +134,39 @@ unset( $GLOBALS['_http_fixtures']['/plugin/contact-form-7/'] );
 $out3 = $m->scan( array( 'plugins' => array( array( 'slug' => 'contact-form-7', 'version' => '5.9', 'name' => 'CF7' ) ) ) );
 check( 'キャッシュから再スキャン可能', 1 === count( $out3 ) );
 
+// ---- 統計・接続テスト ----
+echo "== Matcher: stats & probe ==\n";
+// フィクスチャを戻して統計を確認。
+$GLOBALS['_http_fixtures']['/plugin/contact-form-7/'] = array(
+	'error' => 0,
+	'data'  => array( 'vulnerability' => array(
+		array( 'name' => 'x', 'operator' => array( 'max_version' => '5.9.5', 'max_operator' => 'lt' ), 'impact' => array( 'cvss' => array( 'score' => 9.8 ) ) ),
+	) ),
+);
+$GLOBALS['_transients'] = array(); // キャッシュ全消しでネットワーク経路を通す。
+$m2 = new CNAPI_Matcher();
+$m2->scan( array(
+	'wp_version' => '6.5.3',
+	'plugins'    => array( array( 'slug' => 'contact-form-7', 'version' => '5.9', 'name' => 'CF7' ) ),
+) );
+$st = $m2->get_stats();
+check( '統計: 到達失敗0', 0 === $st['failed'] );
+check( '統計: 打ち切り無し', false === $st['aborted'] );
+check( '統計: 問い合わせ回数を記録', $st['checked'] >= 1 );
+
+// 到達不可（存在しないfixture）は failed としてカウント。
+$GLOBALS['_transients'] = array();
+$m3 = new CNAPI_Matcher();
+$m3->scan( array( 'plugins' => array( array( 'slug' => 'no-such-plugin-xyz', 'version' => '1.0', 'name' => 'X' ) ) ) );
+check( '統計: 到達不可を failed に計上', $m3->get_stats()['failed'] >= 1 );
+
+// probe: 接続テスト（キャッシュ非依存）。
+$probe = ( new CNAPI_Matcher() )->probe( 'contact-form-7' );
+check( 'probe: 接続OK', true === $probe['ok'] );
+check( 'probe: 脆弱性件数を取得', $probe['vuln_count'] >= 1 );
+$probe2 = ( new CNAPI_Matcher() )->probe( 'no-such-plugin-xyz' );
+check( 'probe: 到達不可はok=false', false === $probe2['ok'] );
+
 // ---- ライセンス ----
 echo "== License ==\n";
 update_option( CNAPI_License::OPTION_KEYS, "WSC-AAAA-BBBB-CCCC-DDDD\nbadline\nwsc-1111-2222-3333-4444\n" );

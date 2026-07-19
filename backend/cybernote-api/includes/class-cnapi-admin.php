@@ -71,6 +71,12 @@ class CNAPI_Admin {
 			self::clear_vdb_cache();
 			echo '<div class="notice notice-success"><p>脆弱性データのキャッシュを削除しました。</p></div>';
 		}
+
+		$probe = null;
+		if ( isset( $_POST['cnapi_probe'] ) && check_admin_referer( 'cnapi_probe' ) ) {
+			$matcher = new CNAPI_Matcher();
+			$probe   = $matcher->probe( 'contact-form-7' );
+		}
 		?>
 		<div class="wrap">
 			<h1>CyberNote API</h1>
@@ -82,6 +88,32 @@ class CNAPI_Admin {
 				<p>1行に1キー（形式: <code>WSC-XXXX-XXXX-XXXX-XXXX</code>）。決済連携までは、発行したキーをここに手動で登録します。</p>
 				<textarea name="<?php echo esc_attr( CNAPI_License::OPTION_KEYS ); ?>" rows="8" cols="40" class="large-text code"><?php echo esc_textarea( (string) get_option( CNAPI_License::OPTION_KEYS, '' ) ); ?></textarea>
 				<?php submit_button( 'キーを保存' ); ?>
+			</form>
+
+			<hr />
+			<h2>脆弱性DBへの接続テスト</h2>
+			<p>このサーバー（cybernote.click）から脆弱性データベース（WPVulnerability）へ実際に1回だけ問い合わせ、照合が機能しているかを確認します。</p>
+			<?php if ( is_array( $probe ) ) : ?>
+				<?php if ( ! empty( $probe['ok'] ) ) : ?>
+					<div class="notice notice-success inline"><p>
+						✓ 接続成功（HTTP <?php echo esc_html( (string) $probe['http'] ); ?>）。
+						テスト用プラグイン「contact-form-7」について
+						<strong><?php echo esc_html( (string) $probe['vuln_count'] ); ?>件</strong>
+						の脆弱性データを取得できました。照合は正常に機能しています。
+					</p></div>
+				<?php else : ?>
+					<div class="notice notice-error inline"><p>
+						× 接続失敗。このサーバーから脆弱性DBへ到達できていません。
+						<?php if ( ! empty( $probe['error'] ) ) : ?>
+							（詳細: <?php echo esc_html( (string) $probe['error'] ); ?>）
+						<?php endif; ?><br>
+						サーバーの外部通信（アウトバウンド）が許可されているか、ホスティング事業者にご確認ください。
+					</p></div>
+				<?php endif; ?>
+			<?php endif; ?>
+			<form method="post">
+				<?php wp_nonce_field( 'cnapi_probe' ); ?>
+				<button type="submit" name="cnapi_probe" value="1" class="button button-primary">接続テストを実行</button>
 			</form>
 
 			<hr />

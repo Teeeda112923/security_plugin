@@ -115,10 +115,11 @@ class CNSCP_Admin {
 			return;
 		}
 
-		$license   = trim( (string) get_option( CNSCP_Scanner::OPT_LICENSE, '' ) );
-		$results   = CNSCP_Scanner::latest_results();
-		$vulns     = is_array( $results['vulnerabilities'] ?? null ) ? $results['vulnerabilities'] : array();
-		$last_scan = (int) get_option( CNSCP_Scanner::OPT_LAST_SCAN, 0 );
+		$license    = trim( (string) get_option( CNSCP_Scanner::OPT_LICENSE, '' ) );
+		$results    = CNSCP_Scanner::latest_results();
+		$vulns      = is_array( $results['vulnerabilities'] ?? null ) ? $results['vulnerabilities'] : array();
+		$incomplete = ! empty( $results['incomplete'] );
+		$last_scan  = (int) get_option( CNSCP_Scanner::OPT_LAST_SCAN, 0 );
 		?>
 		<div class="wrap cnscp-wrap">
 			<h1 class="cnscp-title"><span class="dashicons dashicons-shield-alt"></span> 脆弱性アラート</h1>
@@ -144,8 +145,18 @@ class CNSCP_Admin {
 					</form>
 				</div>
 
+				<?php if ( $incomplete ) : ?>
+					<div class="cnscp-card cnscp-tone-warning">
+						<div class="cnscp-card-head">
+							<span class="cnscp-name">照合が最後まで完了しませんでした</span>
+							<span class="cnscp-sev">要確認</span>
+						</div>
+						<p class="cnscp-desc">脆弱性データベースへの問い合わせが一部届かなかったため、結果が不完全な可能性があります（「安全」と判断できません）。時間をおいて「今すぐスキャン」でお試しください。繰り返す場合はサポートにご連絡ください。</p>
+					</div>
+				<?php endif; ?>
+
 				<?php if ( empty( $vulns ) ) : ?>
-					<?php if ( $last_scan ) : ?>
+					<?php if ( $last_scan && ! $incomplete ) : ?>
 						<div class="cnscp-allclear">
 							<span class="dashicons dashicons-yes-alt"></span>
 							<div>
