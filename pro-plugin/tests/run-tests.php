@@ -117,6 +117,7 @@ $GLOBALS['_http_response'] = array(
 					'description_ja'    => '入力値の処理に不備があります。',
 					'action_ja'         => 'Contact Form 7 を 5.9.5 以上に更新してください。',
 					'cve_id'            => 'CVE-2026-11111',
+					'cybernote_url'     => 'https://www.cybernote.click/2026/07/02/cve-2026-11111-foo/',
 					'references'        => array( 'https://example.com/ref', 'javascript:alert(1)' ),
 				),
 			),
@@ -161,6 +162,9 @@ check( '検出プラグイン名表示', false !== strpos( $html, 'Contact Form 
 check( '深刻度: 重大 表示', false !== strpos( $html, '深刻度: 重大' ) );
 check( '対処文表示', false !== strpos( $html, '5.9.5 以上に更新' ) );
 check( 'CVE表示', false !== strpos( $html, 'CVE-2026-11111' ) );
+check( '種別ラベル(プラグイン)表示', false !== strpos( $html, 'cnscp-type' ) && false !== strpos( $html, 'プラグイン' ) );
+check( 'CyberNote解説リンク表示', false !== strpos( $html, 'CyberNoteで詳しく見る' ) );
+check( 'CyberNoteリンク先URL', false !== strpos( $html, 'cve-2026-11111-foo' ) );
 check( '更新画面ボタン', false !== strpos( $html, 'update-core.php' ) );
 check( 'プライバシー注記', false !== strpos( $html, '個人情報は送信しません' ) );
 

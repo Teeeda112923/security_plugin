@@ -232,10 +232,12 @@ class CNSCP_Admin {
 		<div class="cnscp-card cnscp-tone-<?php echo esc_attr( $tone ); ?>">
 			<div class="cnscp-card-head">
 				<div>
-					<span class="cnscp-name"><?php echo esc_html( $vuln['name'] ); ?></span>
-					<span class="cnscp-version">v<?php echo esc_html( $vuln['installed_version'] ); ?></span>
 					<?php if ( $type_label ) : ?>
 						<span class="cnscp-type"><?php echo esc_html( $type_label ); ?></span>
+					<?php endif; ?>
+					<span class="cnscp-name"><?php echo esc_html( $vuln['name'] ); ?></span>
+					<?php if ( 'core' !== ( $vuln['type'] ?? '' ) ) : ?>
+						<span class="cnscp-version">v<?php echo esc_html( $vuln['installed_version'] ); ?></span>
 					<?php endif; ?>
 				</div>
 				<span class="cnscp-sev"><?php echo esc_html( $sev_label ); ?></span>
@@ -258,6 +260,9 @@ class CNSCP_Admin {
 			<div class="cnscp-card-foot">
 				<?php if ( empty( $vuln['unfixed'] ) && in_array( $vuln['type'], array( 'plugin', 'theme' ), true ) ) : ?>
 					<a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>" class="button">更新画面を開く</a>
+				<?php endif; ?>
+				<?php if ( ! empty( $vuln['cybernote_url'] ) ) : ?>
+					<a href="<?php echo esc_url( $vuln['cybernote_url'] ); ?>" target="_blank" rel="noopener noreferrer" class="button button-primary">CyberNoteで詳しく見る ↗</a>
 				<?php endif; ?>
 				<?php foreach ( (array) ( $vuln['references'] ?? array() ) as $i => $url ) : ?>
 					<a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer" class="cnscp-ref">参考情報<?php echo count( (array) $vuln['references'] ) > 1 ? esc_html( (string) ( $i + 1 ) ) : ''; ?> ↗</a>

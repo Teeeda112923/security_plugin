@@ -143,6 +143,7 @@ class CNSCP_Scanner {
 				'description_ja'    => sanitize_text_field( (string) ( $item['description_ja'] ?? '' ) ),
 				'action_ja'         => sanitize_text_field( (string) ( $item['action_ja'] ?? '' ) ),
 				'cve_id'            => sanitize_text_field( (string) ( $item['cve_id'] ?? '' ) ),
+				'cybernote_url'     => esc_url_raw( (string) ( $item['cybernote_url'] ?? '' ) ),
 				'references'        => array_slice( $refs, 0, 3 ),
 			);
 		}

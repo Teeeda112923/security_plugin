@@ -32,6 +32,15 @@ function is_wp_error( $x ) { return $x instanceof WP_Error; }
 function wp_remote_retrieve_response_code( $r ) { return $r['code'] ?? 0; }
 function wp_remote_retrieve_body( $r ) { return $r['body'] ?? ''; }
 class WP_Error {}
+// 自サイトのCVE解説記事検索用スタブ。cve-2026-11111 の記事だけ存在する想定。
+function get_permalink( $id ) { return 'https://www.cybernote.click/article/' . (int) $id . '/'; }
+class Fake_WPDB {
+	public $posts = 'wp_posts';
+	public function esc_like( $s ) { return $s; }
+	public function prepare( $q, $arg ) { return str_replace( '%s', "'" . $arg . "'", $q ); }
+	public function get_var( $q ) { return ( false !== strpos( $q, 'cve-2026-11111' ) ) ? 55 : null; }
+}
+$GLOBALS['wpdb'] = new Fake_WPDB();
 function wp_remote_get( $url, $args = array() ) {
 	$path = parse_url( $url, PHP_URL_PATH );
 	if ( isset( $GLOBALS['_http_fixtures'][ $path ] ) ) {
@@ -119,11 +128,13 @@ check( 'CF7: 修正版5.9.5', '5.9.5' === $cf7['fixed_version'] );
 check( 'CF7: CVE取得', 'CVE-2026-11111' === $cf7['cve_id'] );
 check( 'CF7: XSS日本語分類', 'クロスサイトスクリプティング（XSS）' === $cf7['vuln_type_ja'] );
 check( 'CF7: 対応文に5.9.5', false !== strpos( $cf7['action_ja'], '5.9.5' ) );
+check( 'CF7: CyberNote解説記事URLを付与', 'https://www.cybernote.click/article/55/' === $cf7['cybernote_url'] );
 $sqli = $out[1];
 check( 'テーマ: unfixed=true', true === $sqli['unfixed'] );
 check( 'テーマ: severity=unknown（スコア無し）', 'unknown' === $sqli['severity'] );
 check( 'テーマ: SQLi日本語分類（数値CWE表記）', 'SQLインジェクション' === $sqli['vuln_type_ja'] );
 check( 'テーマ: 未修正の対応文', false !== strpos( $sqli['action_ja'], '修正版が公開されていません' ) );
+check( 'テーマ(CVE無し)は記事URL空', '' === $sqli['cybernote_url'] );
 
 // バージョン非該当（更新済みサイト）
 $out2 = $m->scan( array( 'plugins' => array( array( 'slug' => 'contact-form-7', 'version' => '5.9.5', 'name' => 'CF7' ) ) ) );

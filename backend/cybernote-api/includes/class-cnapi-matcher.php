@@ -287,8 +287,37 @@ class CNAPI_Matcher {
 			'description_ja'    => $desc_ja,
 			'action_ja'         => $action_ja,
 			'cve_id'            => $cve_id,
+			'cybernote_url'     => $this->find_local_article( $cve_id ),
 			'references'        => array_slice( array_values( array_unique( $sources ) ), 0, 3 ),
 		);
+	}
+
+	/**
+	 * 自サイト（cybernote.click）に、このCVEの日本語解説記事があればそのURLを返す。
+	 *
+	 * 記事のスラッグが cve-xxxx-yyyy... で始まる前提で照合する。
+	 * APIは cybernote.click 上で動くため、自分の投稿を直接検索できる。
+	 *
+	 * @param string $cve_id 例: CVE-2026-7467.
+	 * @return string 記事URL。無ければ空文字。
+	 */
+	protected function find_local_article( $cve_id ) {
+		global $wpdb;
+		if ( '' === $cve_id || ! isset( $wpdb ) || ! is_object( $wpdb ) ) {
+			return '';
+		}
+
+		$like = $wpdb->esc_like( strtolower( $cve_id ) ) . '%'; // 例: cve-2026-7467%
+		$id   = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT ID FROM {$wpdb->posts}
+				 WHERE post_status = 'publish' AND post_type = 'post' AND post_name LIKE %s
+				 ORDER BY post_date DESC LIMIT 1",
+				$like
+			)
+		);
+
+		return $id ? (string) get_permalink( (int) $id ) : '';
 	}
 
 	/**
