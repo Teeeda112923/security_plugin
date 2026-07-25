@@ -4,8 +4,10 @@
 /.git
 /.github
 /.wordpress-org
+/backend
 /docs
 /node_modules
+/pro-plugin
 
 .gitignore
 .gitattributes
