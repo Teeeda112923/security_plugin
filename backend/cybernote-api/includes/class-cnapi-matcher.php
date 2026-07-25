@@ -15,8 +15,8 @@ class CNAPI_Matcher {
 
 	const API_BASE        = 'https://www.wpvulnerability.net'; // 注意: APIは .net（.com は説明サイトで404になる）。
 	const CACHE_TTL       = DAY_IN_SECONDS;
-	const REQUEST_TIMEOUT = 8;   // 1問い合わせあたりの上限秒。
-	const TIME_BUDGET     = 20;  // スキャン全体の外部問い合わせ予算秒（接続側の30秒より短く）。
+	const REQUEST_TIMEOUT = 12;  // 1問い合わせあたりの上限秒（相手DBの一時的な遅延に耐える）。
+	const TIME_BUDGET     = 40;  // スキャン全体の外部問い合わせ予算秒（接続側の60秒より短く）。
 
 	/** @var int このスキャンで実際に外部へ問い合わせた回数（キャッシュ命中は除く）。 */
 	protected $checked = 0;
