@@ -151,7 +151,7 @@ class CNSCP_Admin {
 							<span class="cnscp-name">照合が最後まで完了しませんでした</span>
 							<span class="cnscp-sev">要確認</span>
 						</div>
-						<p class="cnscp-desc">脆弱性データベースへの問い合わせが一部届かなかったため、結果が不完全な可能性があります（「安全」と判断できません）。時間をおいて「今すぐスキャン」でお試しください。繰り返す場合はサポートにご連絡ください。</p>
+						<p class="cnscp-desc">現在、脆弱性データベースとの通信が一時的に不調のため、照合を最後まで完了できませんでした（この結果では「安全」と判断できません）。<strong>数時間ほどおいてから</strong>「今すぐスキャン」で再度お試しください。繰り返し発生する場合は <a href="https://www.cybernote.click/contact/" target="_blank" rel="noopener noreferrer">https://www.cybernote.click/contact/</a> からご連絡ください。</p>
 					</div>
 				<?php endif; ?>
 
@@ -294,7 +294,7 @@ class CNSCP_Admin {
 				<button type="submit" class="button <?php echo $onboarding ? 'button-primary' : ''; ?>">保存して接続を確認</button>
 			</form>
 			<?php if ( ! $onboarding ) : ?>
-				<p class="cnscp-license-help">キーの確認・プラン変更は <a href="https://www.cybernote.click/" target="_blank" rel="noopener noreferrer">cybernote.click</a> のマイページへ。</p>
+				<p class="cnscp-license-help">ライセンスキーやご契約に関するお問い合わせは <a href="https://www.cybernote.click/contact/" target="_blank" rel="noopener noreferrer">cybernote.click のお問い合わせ</a> へ。</p>
 			<?php endif; ?>
 		</div>
 		<?php
