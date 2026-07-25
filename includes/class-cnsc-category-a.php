@@ -56,11 +56,11 @@ class CNSC_Category_A {
 		) {
 			return array(
 				'id'      => 'a1',
-				'label'   => __( 'WordPress本体', 'cybernote-security-checker' ),
+				'label'   => __( 'WordPress core', 'cybernote-security-checker' ),
 				'status'  => 'good',
 				'message' => '',
 				/* translators: %s: current WordPress version */
-				'detail'  => sprintf( __( '現在のバージョン: %s（最新）', 'cybernote-security-checker' ), esc_html( $current ) ),
+				'detail'  => sprintf( __( 'Current version: %s (up to date)', 'cybernote-security-checker' ), esc_html( $current ) ),
 			);
 		}
 
@@ -102,10 +102,10 @@ class CNSC_Category_A {
 
 		if ( $has_maintenance ) {
 			$status  = 'recommended';
-			$message = __( 'メンテナンス版（セキュリティ・不具合修正）が未適用です。更新画面から早めに本体を更新してください', 'cybernote-security-checker' );
+			$message = __( 'A maintenance release containing security and bug fixes is available. Update WordPress from the Updates screen as soon as possible.', 'cybernote-security-checker' );
 		} elseif ( $has_feature ) {
 			$status  = 'attention';
-			$message = __( '新しいバージョン（機能更新）が出ています。緊急性は低めですが、更新画面から本体を更新できます', 'cybernote-security-checker' );
+			$message = __( 'A new feature release is available. It is not urgent, but you can update WordPress from the Updates screen.', 'cybernote-security-checker' );
 		} else {
 			$status  = 'good';
 			$message = '';
@@ -113,11 +113,11 @@ class CNSC_Category_A {
 
 		return array(
 			'id'      => 'a1',
-			'label'   => __( 'WordPress本体', 'cybernote-security-checker' ),
+			'label'   => __( 'WordPress core', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
 			/* translators: 1: current WP version, 2: latest WP version */
-			'detail'  => sprintf( __( '現在: %1$s / 最新: %2$s', 'cybernote-security-checker' ), esc_html( $current ), esc_html( $latest_version ) ),
+			'detail'  => sprintf( __( 'Current: %1$s / Latest: %2$s', 'cybernote-security-checker' ), esc_html( $current ), esc_html( $latest_version ) ),
 		);
 	}
 
@@ -138,19 +138,19 @@ class CNSC_Category_A {
 			$message = '';
 		} elseif ( version_compare( $current, '8.2', '>=' ) ) {
 			$status  = 'attention';
-			$message = __( 'セキュリティ修正のみ、または間もなく終了する系列です。サーバーの管理画面からPHPのバージョンアップを検討してください（変更前にバックアップ推奨）', 'cybernote-security-checker' );
+			$message = __( 'This PHP branch receives security fixes only or will reach end of life soon. Consider upgrading PHP from your hosting control panel. Back up your site first.', 'cybernote-security-checker' );
 		} else {
 			$status  = 'recommended';
-			$message = __( 'サポートが終了した系列です。新しい脆弱性が見つかっても修正されません。サーバーの管理画面からPHPのバージョンを上げてください（変更前にバックアップ推奨）', 'cybernote-security-checker' );
+			$message = __( 'This PHP branch is no longer supported. Newly discovered vulnerabilities will not be fixed. Upgrade PHP from your hosting control panel. Back up your site first.', 'cybernote-security-checker' );
 		}
 
 		return array(
 			'id'      => 'a2',
-			'label'   => __( 'PHPバージョン', 'cybernote-security-checker' ),
+			'label'   => __( 'PHP version', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
 			/* translators: %s: current PHP version string */
-			'detail'  => sprintf( __( '現在のバージョン: %s', 'cybernote-security-checker' ), esc_html( $current ) ),
+			'detail'  => sprintf( __( 'Current version: %s', 'cybernote-security-checker' ), esc_html( $current ) ),
 		);
 	}
 
@@ -201,18 +201,18 @@ class CNSC_Category_A {
 		} else {
 			$status  = 'attention';
 			/* translators: %d: number of plugins/themes needing updates */
-			$message = sprintf( __( '%d件の更新待ちがあります。更新画面から最新版に更新してください（更新前のバックアップ推奨）', 'cybernote-security-checker' ), $count );
+			$message = sprintf( __( '%d update(s) are available. Update them from the Updates screen. Back up your site first.', 'cybernote-security-checker' ), $count );
 		}
 
 		$detail = '';
 		if ( ! empty( $names ) ) {
 			/* translators: %s: comma-separated list of plugin/theme names */
-			$detail = sprintf( __( '対象: %s', 'cybernote-security-checker' ), implode( '、', array_map( 'esc_html', $names ) ) );
+			$detail = sprintf( __( 'Affected items: %s', 'cybernote-security-checker' ), implode( ', ', array_map( 'esc_html', $names ) ) );
 		}
 
 		return array(
 			'id'      => 'a3',
-			'label'   => __( 'プラグイン・テーマの更新', 'cybernote-security-checker' ),
+			'label'   => __( 'Plugin and theme updates', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
 			'detail'  => $detail,
