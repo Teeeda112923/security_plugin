@@ -223,6 +223,50 @@ check( '登録キーは有効', CNAPI_License::is_valid( 'WSC-AAAA-BBBB-CCCC-DDD
 check( '小文字入力でも有効', CNAPI_License::is_valid( 'wsc-1111-2222-3333-4444' ) );
 check( '未登録キーは無効', ! CNAPI_License::is_valid( 'WSC-ZZZZ-ZZZZ-ZZZZ-ZZZZ' ) );
 check( '形式不正は無効', ! CNAPI_License::is_valid( 'HELLO' ) );
+// ---- Lemon Squeezy 連携 ----
+echo "== License: Lemon Squeezy ==\n";
+$LS_KEY = '38b1460a-5104-4067-a91d-77b872934d51';
+$GLOBALS['_ls_response'] = null;
+// wp_remote_post のスタブ（LS検証用）。
+function wp_remote_post( $url, $args = array() ) {
+	return $GLOBALS['_ls_response'];
+}
+
+// 連携OFFのあいだはLS形式のキーを受け付けない。
+update_option( CNAPI_License::OPTION_LS_ON, 0 );
+check( 'LS連携OFFではLSキーは無効', ! CNAPI_License::is_valid( $LS_KEY ) );
+
+update_option( CNAPI_License::OPTION_LS_ON, 1 );
+$GLOBALS['_transients'] = array();
+$GLOBALS['_ls_response'] = array( 'code' => 200, 'body' => json_encode( array( 'valid' => true, 'license_key' => array( 'status' => 'active' ) ) ) );
+check( '有効なLSキーを受け付ける', CNAPI_License::is_valid( $LS_KEY ) );
+
+$GLOBALS['_transients'] = array();
+$GLOBALS['_ls_response'] = array( 'code' => 200, 'body' => json_encode( array( 'valid' => false, 'license_key' => array( 'status' => 'expired' ) ) ) );
+check( '期限切れは無効', ! CNAPI_License::is_valid( $LS_KEY ) );
+check( '期限切れの理由を返す', false !== strpos( CNAPI_License::invalid_reason( $LS_KEY ), '有効期限' ) );
+
+$GLOBALS['_transients'] = array();
+$GLOBALS['_ls_response'] = array( 'code' => 404, 'body' => json_encode( array( 'valid' => false, 'error' => 'license_key not found' ) ) );
+check( '存在しないキーは無効', ! CNAPI_License::is_valid( $LS_KEY ) );
+
+// LS障害時: 直前に有効だった人を締め出さない（猶予）。
+$GLOBALS['_transients'] = array();
+$GLOBALS['_ls_response'] = array( 'code' => 200, 'body' => json_encode( array( 'valid' => true, 'license_key' => array( 'status' => 'active' ) ) ) );
+CNAPI_License::is_valid( $LS_KEY ); // 正常判定をキャッシュ。
+foreach ( $GLOBALS['_transients'] as $k => $v ) { // キャッシュを古くして再問い合わせを強制。
+	if ( is_array( $v ) && isset( $v['ts'] ) ) {
+		$GLOBALS['_transients'][ $k ]['ts'] = time() - ( 13 * 3600 );
+	}
+}
+$GLOBALS['_ls_response'] = array( 'code' => 503, 'body' => '' );
+check( 'LS障害中は前回の有効判定を維持', CNAPI_License::is_valid( $LS_KEY ) );
+
+// 手動キーは従来どおり（LS連携ONでも併用可）。
+update_option( CNAPI_License::OPTION_KEYS, "WSC-AAAA-BBBB-CCCC-DDDD\n" );
+check( 'LS連携ONでも手動キーは有効', CNAPI_License::is_valid( 'WSC-AAAA-BBBB-CCCC-DDDD' ) );
+update_option( CNAPI_License::OPTION_LS_ON, 0 );
+
 $okcount = 0;
 for ( $i = 0; $i < 12; $i++ ) {
 	if ( CNAPI_License::within_rate_limit( 'WSC-AAAA-BBBB-CCCC-DDDD' ) ) { $okcount++; }

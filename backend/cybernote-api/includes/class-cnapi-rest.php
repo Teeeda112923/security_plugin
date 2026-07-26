@@ -42,7 +42,8 @@ class CNAPI_Rest {
 
 		$license_key = (string) ( $params['license_key'] ?? '' );
 		if ( ! CNAPI_License::is_valid( $license_key ) ) {
-			return self::error( 'invalid_license', 'ライセンスキーが無効です。', 403 );
+			// 期限切れ・無効化・一時的な確認失敗を区別して伝える。
+			return self::error( 'invalid_license', CNAPI_License::invalid_reason( $license_key ), 403 );
 		}
 		if ( ! CNAPI_License::within_rate_limit( $license_key ) ) {
 			return self::error( 'rate_limited', 'スキャン回数の上限に達しました。しばらくしてからお試しください。', 429 );

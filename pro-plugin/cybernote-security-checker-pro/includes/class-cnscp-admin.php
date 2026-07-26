@@ -74,7 +74,8 @@ class CNSCP_Admin {
 		}
 		check_admin_referer( 'cnscp_save_license' );
 
-		$key = strtoupper( sanitize_text_field( wp_unslash( $_POST['cnscp_license_key'] ?? '' ) ) );
+		// 大文字化しない。Lemon Squeezy のキーは小文字を含み、変換すると検証に通らなくなる。
+		$key = trim( sanitize_text_field( wp_unslash( $_POST['cnscp_license_key'] ?? '' ) ) );
 		update_option( CNSCP_Scanner::OPT_LICENSE, $key, false );
 
 		$result = '' === $key ? true : CNSCP_Scanner::run();
@@ -340,14 +341,14 @@ class CNSCP_Admin {
 		<div class="cnscp-license <?php echo $onboarding ? 'cnscp-license-onboarding' : ''; ?>">
 			<?php if ( $onboarding ) : ?>
 				<h2>はじめに: ライセンスキーを設定してください</h2>
-				<p>ご購入時にメールでお送りしたライセンスキー（<code>WSC-XXXX-XXXX-XXXX-XXXX</code>）を入力すると、自動チェックが始まります。</p>
+				<p>ご購入時にメールでお送りしたライセンスキーを入力すると、自動チェックが始まります。</p>
 			<?php else : ?>
 				<h2 class="cnscp-license-title">ライセンス</h2>
 			<?php endif; ?>
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<?php wp_nonce_field( 'cnscp_save_license' ); ?>
 				<input type="hidden" name="action" value="cnscp_save_license" />
-				<input type="text" name="cnscp_license_key" class="regular-text code" placeholder="WSC-XXXX-XXXX-XXXX-XXXX" value="<?php echo esc_attr( $license ); ?>" />
+				<input type="text" name="cnscp_license_key" class="regular-text code" placeholder="ライセンスキーを貼り付け" value="<?php echo esc_attr( $license ); ?>" />
 				<button type="submit" class="button <?php echo $onboarding ? 'button-primary' : ''; ?>">保存して接続を確認</button>
 			</form>
 			<?php if ( ! $onboarding ) : ?>

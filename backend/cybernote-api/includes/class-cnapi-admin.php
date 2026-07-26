@@ -37,6 +37,18 @@ class CNAPI_Admin {
 				'default'           => '',
 			)
 		);
+
+		register_setting(
+			'cnapi_settings',
+			CNAPI_License::OPTION_LS_ON,
+			array(
+				'type'              => 'boolean',
+				'sanitize_callback' => static function ( $v ) {
+					return empty( $v ) ? 0 : 1;
+				},
+				'default'           => 0,
+			)
+		);
 	}
 
 	/**
@@ -83,6 +95,16 @@ class CNAPI_Admin {
 			$matcher = new CNAPI_Matcher();
 			$diag    = $matcher->diagnose( 'contact-form-7' );
 		}
+
+		$keycheck = null;
+		if ( isset( $_POST['cnapi_check_key'] ) && check_admin_referer( 'cnapi_check_key' ) ) {
+			$test_key = sanitize_text_field( wp_unslash( $_POST['cnapi_test_key'] ?? '' ) );
+			$keycheck = array(
+				'key'    => $test_key,
+				'valid'  => CNAPI_License::is_valid( $test_key ),
+				'reason' => CNAPI_License::invalid_reason( $test_key ),
+			);
+		}
 		?>
 		<div class="wrap">
 			<h1>CyberNote API</h1>
@@ -93,7 +115,36 @@ class CNAPI_Admin {
 				<h2>ライセンスキー（暫定管理）</h2>
 				<p>1行に1キー（形式: <code>WSC-XXXX-XXXX-XXXX-XXXX</code>）。決済連携までは、発行したキーをここに手動で登録します。</p>
 				<textarea name="<?php echo esc_attr( CNAPI_License::OPTION_KEYS ); ?>" rows="8" cols="40" class="large-text code"><?php echo esc_textarea( (string) get_option( CNAPI_License::OPTION_KEYS, '' ) ); ?></textarea>
-				<?php submit_button( 'キーを保存' ); ?>
+
+				<h2>Lemon Squeezy 連携</h2>
+				<p>
+					<label>
+						<input type="checkbox" name="<?php echo esc_attr( CNAPI_License::OPTION_LS_ON ); ?>" value="1" <?php checked( CNAPI_License::ls_enabled() ); ?> />
+						購入時に Lemon Squeezy が発行したライセンスキーを有効にする
+					</label>
+				</p>
+				<p class="description">
+					有効にすると、購入者のキーを Lemon Squeezy に問い合わせて検証します（有効期限・解約も自動で反映）。<br>
+					ストアのAPIキーをこのサーバーに置く必要はありません。上の手動登録キーは検証用・無償提供用として引き続き使えます。
+				</p>
+				<?php submit_button( '保存' ); ?>
+			</form>
+
+			<h3>キーの動作確認</h3>
+			<p>ライセンスキーを入力すると、実際の判定結果を表示します。</p>
+			<?php if ( is_array( $keycheck ) ) : ?>
+				<div class="notice notice-<?php echo $keycheck['valid'] ? 'success' : 'error'; ?> inline"><p>
+					<?php if ( $keycheck['valid'] ) : ?>
+						✓ 有効なライセンスキーです。
+					<?php else : ?>
+						× <?php echo esc_html( $keycheck['reason'] ); ?>
+					<?php endif; ?>
+				</p></div>
+			<?php endif; ?>
+			<form method="post">
+				<?php wp_nonce_field( 'cnapi_check_key' ); ?>
+				<input type="text" name="cnapi_test_key" class="regular-text code" placeholder="キーを貼り付け" value="" />
+				<button type="submit" name="cnapi_check_key" value="1" class="button">このキーを確認</button>
 			</form>
 
 			<hr />
