@@ -31,6 +31,8 @@ function esc_url_raw( $s ) { return filter_var( $s, FILTER_VALIDATE_URL ) ? $s :
 function is_wp_error( $x ) { return $x instanceof WP_Error; }
 function wp_remote_retrieve_response_code( $r ) { return $r['code'] ?? 0; }
 function wp_remote_retrieve_body( $r ) { return $r['body'] ?? ''; }
+function wp_remote_retrieve_header( $r, $k ) { return $r['headers'][ $k ] ?? ''; }
+function wp_strip_all_tags( $s ) { return strip_tags( (string) $s ); }
 class WP_Error {}
 // 自サイトのCVE解説記事検索用スタブ。cve-2026-11111 の記事だけ存在する想定。
 function get_permalink( $id ) { return 'https://www.cybernote.click/article/' . (int) $id . '/'; }

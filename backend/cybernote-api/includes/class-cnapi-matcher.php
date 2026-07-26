@@ -441,6 +441,70 @@ class CNAPI_Matcher {
 	}
 
 	/**
+	 * 詳細診断: 複数のURL形式を実際に試し、生の応答を記録して返す。
+	 *
+	 * 500などで失敗が続くとき、相手が何を返しているかを目視するための機能。
+	 *
+	 * @param string $slug 例: contact-form-7.
+	 * @return array 各候補の { url, http, error, type, excerpt, vuln_count }
+	 */
+	public function diagnose( $slug = 'contact-form-7' ) {
+		$slug = sanitize_key( $slug );
+
+		$candidates = array(
+			'https://www.wpvulnerability.net/plugin/' . $slug . '/',
+			'https://www.wpvulnerability.net/plugin/' . $slug,
+			'https://wpvulnerability.net/plugin/' . $slug . '/',
+			'https://www.wpvulnerability.net/core/6.5.3/',
+		);
+
+		$results = array();
+		foreach ( $candidates as $url ) {
+			$response = wp_remote_get(
+				$url,
+				array(
+					'timeout'     => self::REQUEST_TIMEOUT,
+					'user-agent'  => self::USER_AGENT,
+					'headers'     => array( 'Accept' => 'application/json' ),
+					'redirection' => 3,
+				)
+			);
+
+			if ( is_wp_error( $response ) ) {
+				$results[] = array(
+					'url'        => $url,
+					'http'       => 0,
+					'error'      => $response->get_error_message(),
+					'type'       => '',
+					'excerpt'    => '',
+					'vuln_count' => null,
+				);
+				continue;
+			}
+
+			$code = (int) wp_remote_retrieve_response_code( $response );
+			$raw  = (string) wp_remote_retrieve_body( $response );
+			$type = (string) wp_remote_retrieve_header( $response, 'content-type' );
+			$json = json_decode( $raw, true );
+			$cnt  = is_array( $json ) && isset( $json['data']['vulnerability'] ) && is_array( $json['data']['vulnerability'] )
+				? count( $json['data']['vulnerability'] )
+				: null;
+
+			$results[] = array(
+				'url'        => $url,
+				'http'       => $code,
+				'error'      => '',
+				'type'       => $type,
+				// 生応答の先頭だけ（HTMLエラーページの中身を確認するため）。
+				'excerpt'    => mb_substr( trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $raw ) ) ), 0, 300 ),
+				'vuln_count' => $cnt,
+			);
+		}
+
+		return $results;
+	}
+
+	/**
 	 * 脆弱性DBへの1回のGET。成功時はデコード済み配列、失敗時はnull。
 	 *
 	 * @param string $path 例: /plugin/contact-form-7/

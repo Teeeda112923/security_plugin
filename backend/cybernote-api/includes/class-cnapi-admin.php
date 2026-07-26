@@ -77,6 +77,12 @@ class CNAPI_Admin {
 			$matcher = new CNAPI_Matcher();
 			$probe   = $matcher->probe( 'contact-form-7' );
 		}
+
+		$diag = null;
+		if ( isset( $_POST['cnapi_diagnose'] ) && check_admin_referer( 'cnapi_diagnose' ) ) {
+			$matcher = new CNAPI_Matcher();
+			$diag    = $matcher->diagnose( 'contact-form-7' );
+		}
 		?>
 		<div class="wrap">
 			<h1>CyberNote API</h1>
@@ -115,6 +121,29 @@ class CNAPI_Admin {
 			<form method="post">
 				<?php wp_nonce_field( 'cnapi_probe' ); ?>
 				<button type="submit" name="cnapi_probe" value="1" class="button button-primary">接続テストを実行</button>
+			</form>
+
+			<h3>詳細診断（うまくいかないとき）</h3>
+			<p>複数のURL形式を実際に試し、相手サーバーが返している内容をそのまま表示します。原因の特定に使います。</p>
+			<?php if ( is_array( $diag ) ) : ?>
+				<table class="widefat striped" style="max-width:100%;margin-bottom:12px">
+					<thead><tr><th>URL</th><th>応答</th><th>種類</th><th>脆弱性件数</th><th>本文（先頭300文字）</th></tr></thead>
+					<tbody>
+					<?php foreach ( $diag as $row ) : ?>
+						<tr>
+							<td><code style="word-break:break-all"><?php echo esc_html( $row['url'] ); ?></code></td>
+							<td><?php echo esc_html( $row['http'] ? 'HTTP ' . $row['http'] : ( '通信失敗: ' . $row['error'] ) ); ?></td>
+							<td><?php echo esc_html( $row['type'] ); ?></td>
+							<td><?php echo null === $row['vuln_count'] ? '—' : esc_html( (string) $row['vuln_count'] ); ?></td>
+							<td style="word-break:break-all"><?php echo esc_html( $row['excerpt'] ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+					</tbody>
+				</table>
+			<?php endif; ?>
+			<form method="post">
+				<?php wp_nonce_field( 'cnapi_diagnose' ); ?>
+				<button type="submit" name="cnapi_diagnose" value="1" class="button">詳細診断を実行</button>
 			</form>
 
 			<hr />
