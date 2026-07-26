@@ -55,7 +55,8 @@ class CNAPI_Matcher {
 	 */
 	public function probe( $slug = 'contact-form-7' ) {
 		$slug = sanitize_key( $slug );
-		$url  = self::API_BASE . '/plugin/' . rawurlencode( $slug ) . '/';
+		// plugin は末尾スラッシュ無しが正（有りは相手サーバーが500を返す）。
+		$url  = self::API_BASE . '/plugin/' . rawurlencode( $slug );
 		$args = array(
 			'timeout'    => self::REQUEST_TIMEOUT,
 			'user-agent' => self::USER_AGENT,
@@ -63,10 +64,9 @@ class CNAPI_Matcher {
 		);
 
 		$response = wp_remote_get( $url, $args );
-		// 一時的な不調に備えて1度だけ再試行してから結果を判断する。
+		// 失敗したらスラッシュ有りでも試す（相手の仕様変更に備える）。
 		if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
-			usleep( 400000 );
-			$response = wp_remote_get( $url, $args );
+			$response = wp_remote_get( $url . '/', $args );
 		}
 
 		if ( is_wp_error( $response ) ) {
@@ -163,7 +163,8 @@ class CNAPI_Matcher {
 		if ( 'core' === $type ) {
 			$data = $this->fetch_json( '/core/' . rawurlencode( $version ) . '/' );
 		} else {
-			$data = $this->fetch_json( '/' . $type . '/' . rawurlencode( $slug ) . '/' );
+			// plugin/theme は末尾スラッシュ付きだと相手サーバーが500を返すため付けない。
+			$data = $this->fetch_json( '/' . $type . '/' . rawurlencode( $slug ) );
 		}
 		if ( empty( $data ) || ! is_array( $data ) ) {
 			return array();
@@ -417,10 +418,10 @@ class CNAPI_Matcher {
 		++$this->checked;
 		$body = $this->request( $path );
 
-		// 1回目が失敗したら少し待って1度だけ再試行（相手DBの一時的な不調に強くする）。
+		// 失敗したら末尾スラッシュの有無を反転して1度だけ再試行する。
+		// 相手のルーティングはエンドポイントごとに許容する形式が異なり、将来変わる可能性もある。
 		if ( null === $body ) {
-			usleep( 400000 );
-			$body = $this->request( $path );
+			$body = $this->request( $this->toggle_trailing_slash( $path ) );
 		}
 
 		if ( is_array( $body ) ) {
@@ -505,9 +506,19 @@ class CNAPI_Matcher {
 	}
 
 	/**
+	 * パス末尾のスラッシュを反転する（/a/b → /a/b/ 、/a/b/ → /a/b）。
+	 *
+	 * @param string $path Path.
+	 * @return string
+	 */
+	protected function toggle_trailing_slash( $path ) {
+		return ( '/' === substr( $path, -1 ) ) ? rtrim( $path, '/' ) : $path . '/';
+	}
+
+	/**
 	 * 脆弱性DBへの1回のGET。成功時はデコード済み配列、失敗時はnull。
 	 *
-	 * @param string $path 例: /plugin/contact-form-7/
+	 * @param string $path 例: /plugin/contact-form-7
 	 * @return array|null
 	 */
 	protected function request( $path ) {

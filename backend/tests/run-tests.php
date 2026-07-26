@@ -113,6 +113,12 @@ $GLOBALS['_http_fixtures']['/core/6.5.3/'] = array(
 	'data'  => array( 'vulnerability' => array() ),
 );
 
+// 実サーバーに合わせ、plugin/theme は末尾スラッシュ無しが正（路線変更: 末尾スラッシュ無し）。
+foreach ( array( '/plugin/contact-form-7/', '/theme/twentytwenty/' ) as $withslash ) {
+	$GLOBALS['_http_fixtures'][ rtrim( $withslash, '/' ) ] = $GLOBALS['_http_fixtures'][ $withslash ];
+	unset( $GLOBALS['_http_fixtures'][ $withslash ] );
+}
+
 // ---- 突合エンジン ----
 echo "== Matcher ==\n";
 $m = new CNAPI_Matcher();
@@ -178,8 +184,9 @@ $GLOBALS['_transients'] = array();
 $m4 = new CNAPI_Matcher();
 $env_cf7 = array( 'plugins' => array( array( 'slug' => 'contact-form-7', 'version' => '5.9', 'name' => 'CF7' ) ) );
 $m4->scan( $env_cf7 ); // 1回目: 正常データを取得してキャッシュ。
-$saved_fixture = $GLOBALS['_http_fixtures']['/plugin/contact-form-7/'];
-unset( $GLOBALS['_http_fixtures']['/plugin/contact-form-7/'] ); // 相手DBが落ちた状況を再現。
+// 相手DBが落ちた状況を再現（スラッシュ有無どちらの形式も応答しない）。
+$saved_fixture = $GLOBALS['_http_fixtures']['/plugin/contact-form-7/'] ?? $GLOBALS['_http_fixtures']['/plugin/contact-form-7'];
+unset( $GLOBALS['_http_fixtures']['/plugin/contact-form-7/'], $GLOBALS['_http_fixtures']['/plugin/contact-form-7'] );
 // キャッシュを「古い」状態にして再問い合わせを強制する。
 foreach ( $GLOBALS['_transients'] as $k => $v ) {
 	if ( is_array( $v ) && isset( $v['ts'] ) ) {
@@ -192,7 +199,13 @@ $st5  = $m5->get_stats();
 check( 'DB不調でも前回データで検出継続', 1 === count( $out4 ) );
 check( 'DB不調でも失敗0（不完全にしない）', 0 === $st5['failed'] );
 check( '前回データ使用を記録', true === $st5['used_stale'] );
+// 末尾スラッシュ有りの形式でしか応答しないサーバーでも、自動で切り替えて成功する。
 $GLOBALS['_http_fixtures']['/plugin/contact-form-7/'] = $saved_fixture;
+unset( $GLOBALS['_http_fixtures']['/plugin/contact-form-7'] );
+$GLOBALS['_transients'] = array();
+$m6   = new CNAPI_Matcher();
+$out5 = $m6->scan( $env_cf7 );
+check( 'スラッシュ有無を自動で切り替えて成功', 1 === count( $out5 ) && 0 === $m6->get_stats()['failed'] );
 
 // probe: 接続テスト（キャッシュ非依存）。
 $probe = ( new CNAPI_Matcher() )->probe( 'contact-form-7' );
