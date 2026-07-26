@@ -168,6 +168,7 @@ class CNSCP_Admin {
 		$results    = CNSCP_Scanner::latest_results();
 		$vulns      = is_array( $results['vulnerabilities'] ?? null ) ? $results['vulnerabilities'] : array();
 		$incomplete = ! empty( $results['incomplete'] );
+		$components = (int) ( $results['components'] ?? 0 );
 		$last_scan  = (int) get_option( CNSCP_Scanner::OPT_LAST_SCAN, 0 );
 		?>
 		<div class="wrap cnscp-wrap">
@@ -210,7 +211,12 @@ class CNSCP_Admin {
 							<span class="dashicons dashicons-yes-alt"></span>
 							<div>
 								<strong>既知の脆弱性は見つかりませんでした。</strong>
-								<p>このまま毎日自動でチェックを続けます。新しく見つかった場合はここに表示されます。</p>
+								<p>
+								<?php if ( $components > 0 ) : ?>
+									プラグイン・テーマ・WordPress本体を<strong><?php echo esc_html( number_format_i18n( $components ) ); ?>件</strong>照合しての結果です。
+								<?php endif; ?>
+								このまま毎日自動でチェックを続けます。新しく見つかった場合はここに表示されます。
+							</p>
 							</div>
 						</div>
 					<?php endif; ?>

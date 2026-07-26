@@ -29,6 +29,8 @@ class CNAPI_Matcher {
 	protected $aborted = false;
 	/** @var bool 相手DB不調のため、期限内の前回データで照合した項目があるか。 */
 	protected $used_stale = false;
+	/** @var int 実際に照合したコンポーネント数（プラグイン＋テーマ＋本体）。 */
+	protected $components = 0;
 	/** @var int 予算の締め切り時刻（Unix秒）。 */
 	protected $deadline = 0;
 
@@ -43,6 +45,7 @@ class CNAPI_Matcher {
 			'failed'     => $this->failed,
 			'aborted'    => $this->aborted,
 			'used_stale' => $this->used_stale,
+			'components' => $this->components,
 		);
 	}
 
@@ -101,6 +104,7 @@ class CNAPI_Matcher {
 		$this->failed     = 0;
 		$this->aborted    = false;
 		$this->used_stale = false;
+		$this->components = 0;
 		$this->deadline   = time() + self::TIME_BUDGET;
 
 		$found = array();
@@ -174,6 +178,9 @@ class CNAPI_Matcher {
 		if ( ! is_array( $vulns ) ) {
 			return array();
 		}
+
+		// ここまで来た＝この項目は脆弱性DBと照合できた。
+		++$this->components;
 
 		$results = array();
 		foreach ( $vulns as $vuln ) {

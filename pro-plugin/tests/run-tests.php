@@ -183,11 +183,12 @@ check( '未設定時はスキャンボタン非表示', false === strpos( $html2
 
 // 結果ゼロ件時は「問題なし」
 update_option( CNSCP_Scanner::OPT_LICENSE, 'WSC-AAAA-BBBB-CCCC-DDDD' );
-update_option( CNSCP_Scanner::OPT_RESULTS, array( 'scanned_at' => 'x', 'vulnerabilities' => array() ) );
+update_option( CNSCP_Scanner::OPT_RESULTS, array( 'scanned_at' => 'x', 'vulnerabilities' => array(), 'components' => 37 ) );
 ob_start();
 CNSCP_Admin::render_page();
 $html3 = ob_get_clean();
 check( '0件時は問題なし表示', false !== strpos( $html3, '既知の脆弱性は見つかりませんでした' ) );
+check( '0件時は照合件数を表示', false !== strpos( $html3, '37' ) );
 
 // 照合が不完全（incomplete=true）なら「安全」と誤表示せず警告を出す。
 echo "== Admin: incomplete ==\n";

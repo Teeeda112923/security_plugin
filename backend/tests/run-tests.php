@@ -172,6 +172,8 @@ $st = $m2->get_stats();
 check( '統計: 到達失敗0', 0 === $st['failed'] );
 check( '統計: 打ち切り無し', false === $st['aborted'] );
 check( '統計: 問い合わせ回数を記録', $st['checked'] >= 1 );
+check( '統計: 照合できた件数を記録', 2 === $st['components'] ); // CF7 + 本体
+
 
 // 到達不可（存在しないfixture）は failed としてカウント。
 $GLOBALS['_transients'] = array();

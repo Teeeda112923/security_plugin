@@ -66,6 +66,8 @@ class CNSCP_Scanner {
 				'vulnerabilities' => $vulns,
 				// 一部の照合が失敗/打ち切りなら「0件＝安全」と誤認させない。
 				'incomplete'      => $incomplete,
+				// 実際に照合できた件数。「0件＝安全」の根拠として画面に示す。
+				'components'      => (int) ( $body['stats']['components'] ?? 0 ),
 			),
 			false
 		);
