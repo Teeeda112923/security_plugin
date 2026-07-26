@@ -25,6 +25,7 @@ if ( ! defined( 'CNSCP_API_URL' ) ) {
 }
 
 require_once CNSCP_PLUGIN_DIR . 'includes/class-cnscp-scanner.php';
+require_once CNSCP_PLUGIN_DIR . 'includes/class-cnscp-notifier.php';
 require_once CNSCP_PLUGIN_DIR . 'includes/class-cnscp-cron.php';
 require_once CNSCP_PLUGIN_DIR . 'includes/class-cnscp-admin.php';
 
@@ -36,3 +37,4 @@ add_action( 'admin_menu', array( 'CNSCP_Admin', 'register_menu' ), 20 );
 add_action( 'admin_enqueue_scripts', array( 'CNSCP_Admin', 'enqueue_assets' ) );
 add_action( 'admin_post_cnscp_save_license', array( 'CNSCP_Admin', 'handle_save_license' ) );
 add_action( 'admin_post_cnscp_scan_now', array( 'CNSCP_Admin', 'handle_scan_now' ) );
+add_action( 'admin_post_cnscp_save_settings', array( 'CNSCP_Admin', 'handle_save_settings' ) );

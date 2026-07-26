@@ -171,6 +171,27 @@ $m3 = new CNAPI_Matcher();
 $m3->scan( array( 'plugins' => array( array( 'slug' => 'no-such-plugin-xyz', 'version' => '1.0', 'name' => 'X' ) ) ) );
 check( '統計: 到達不可を failed に計上', $m3->get_stats()['failed'] >= 1 );
 
+// DB不調でも「前回の正常データ」で照合を続け、不完全にしない。
+$GLOBALS['_transients'] = array();
+$m4 = new CNAPI_Matcher();
+$env_cf7 = array( 'plugins' => array( array( 'slug' => 'contact-form-7', 'version' => '5.9', 'name' => 'CF7' ) ) );
+$m4->scan( $env_cf7 ); // 1回目: 正常データを取得してキャッシュ。
+$saved_fixture = $GLOBALS['_http_fixtures']['/plugin/contact-form-7/'];
+unset( $GLOBALS['_http_fixtures']['/plugin/contact-form-7/'] ); // 相手DBが落ちた状況を再現。
+// キャッシュを「古い」状態にして再問い合わせを強制する。
+foreach ( $GLOBALS['_transients'] as $k => $v ) {
+	if ( is_array( $v ) && isset( $v['ts'] ) ) {
+		$GLOBALS['_transients'][ $k ]['ts'] = time() - ( 2 * 86400 );
+	}
+}
+$m5  = new CNAPI_Matcher();
+$out4 = $m5->scan( $env_cf7 );
+$st5  = $m5->get_stats();
+check( 'DB不調でも前回データで検出継続', 1 === count( $out4 ) );
+check( 'DB不調でも失敗0（不完全にしない）', 0 === $st5['failed'] );
+check( '前回データ使用を記録', true === $st5['used_stale'] );
+$GLOBALS['_http_fixtures']['/plugin/contact-form-7/'] = $saved_fixture;
+
 // probe: 接続テスト（キャッシュ非依存）。
 $probe = ( new CNAPI_Matcher() )->probe( 'contact-form-7' );
 check( 'probe: 接続OK', true === $probe['ok'] );

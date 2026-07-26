@@ -14,7 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class CNAPI_Matcher {
 
 	const API_BASE        = 'https://www.wpvulnerability.net'; // 注意: APIは .net（.com は説明サイトで404になる）。
-	const CACHE_TTL       = DAY_IN_SECONDS;
+	const CACHE_TTL       = DAY_IN_SECONDS;      // この時間内は再問い合わせしない（新鮮）。
+	const STALE_TTL       = 7 * DAY_IN_SECONDS;  // DB不調時は最大この期間、前回の正常データで照合を続行。
+	// WAF/ボット判定に弾かれにくい標準的なWordPress形式のUA。
+	const USER_AGENT      = 'WordPress/6.5; https://www.cybernote.click/';
 	const REQUEST_TIMEOUT = 12;  // 1問い合わせあたりの上限秒（相手DBの一時的な遅延に耐える）。
 	const TIME_BUDGET     = 40;  // スキャン全体の外部問い合わせ予算秒（接続側の60秒より短く）。
 
@@ -24,6 +27,8 @@ class CNAPI_Matcher {
 	protected $failed = 0;
 	/** @var bool 時間予算切れで一部の照合を打ち切ったか。 */
 	protected $aborted = false;
+	/** @var bool 相手DB不調のため、期限内の前回データで照合した項目があるか。 */
+	protected $used_stale = false;
 	/** @var int 予算の締め切り時刻（Unix秒）。 */
 	protected $deadline = 0;
 
@@ -34,9 +39,10 @@ class CNAPI_Matcher {
 	 */
 	public function get_stats() {
 		return array(
-			'checked' => $this->checked,
-			'failed'  => $this->failed,
-			'aborted' => $this->aborted,
+			'checked'    => $this->checked,
+			'failed'     => $this->failed,
+			'aborted'    => $this->aborted,
+			'used_stale' => $this->used_stale,
 		);
 	}
 
@@ -48,14 +54,20 @@ class CNAPI_Matcher {
 	 * @return array { ok, http, error, vuln_count }
 	 */
 	public function probe( $slug = 'contact-form-7' ) {
-		$slug     = sanitize_key( $slug );
-		$response = wp_remote_get(
-			self::API_BASE . '/plugin/' . rawurlencode( $slug ) . '/',
-			array(
-				'timeout'    => self::REQUEST_TIMEOUT,
-				'user-agent' => 'CyberNoteAPI/' . CNAPI_VERSION . ' (+https://www.cybernote.click/)',
-			)
+		$slug = sanitize_key( $slug );
+		$url  = self::API_BASE . '/plugin/' . rawurlencode( $slug ) . '/';
+		$args = array(
+			'timeout'    => self::REQUEST_TIMEOUT,
+			'user-agent' => self::USER_AGENT,
+			'headers'    => array( 'Accept' => 'application/json' ),
 		);
+
+		$response = wp_remote_get( $url, $args );
+		// 一時的な不調に備えて1度だけ再試行してから結果を判断する。
+		if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
+			usleep( 400000 );
+			$response = wp_remote_get( $url, $args );
+		}
 
 		if ( is_wp_error( $response ) ) {
 			return array(
@@ -85,10 +97,11 @@ class CNAPI_Matcher {
 	 * @return array vulnerabilities配列（scanレスポンスのvulnerabilities要素）.
 	 */
 	public function scan( $env ) {
-		$this->checked  = 0;
-		$this->failed   = 0;
-		$this->aborted  = false;
-		$this->deadline = time() + self::TIME_BUDGET;
+		$this->checked    = 0;
+		$this->failed     = 0;
+		$this->aborted    = false;
+		$this->used_stale = false;
+		$this->deadline   = time() + self::TIME_BUDGET;
 
 		$found = array();
 
@@ -394,33 +407,60 @@ class CNAPI_Matcher {
 	protected function fetch_json( $path ) {
 		$cache_key = 'cnapi_vdb_' . md5( $path );
 		$cached    = get_transient( $cache_key );
-		if ( false !== $cached ) {
-			return is_array( $cached ) ? $cached : null;
+
+		// 新鮮なキャッシュがあればそのまま使う（外部問い合わせなし）。
+		if ( is_array( $cached ) && isset( $cached['ts'], $cached['body'] )
+			&& ( time() - (int) $cached['ts'] ) < self::CACHE_TTL ) {
+			return is_array( $cached['body'] ) ? $cached['body'] : null;
 		}
 
 		++$this->checked;
+		$body = $this->request( $path );
+
+		// 1回目が失敗したら少し待って1度だけ再試行（相手DBの一時的な不調に強くする）。
+		if ( null === $body ) {
+			usleep( 400000 );
+			$body = $this->request( $path );
+		}
+
+		if ( is_array( $body ) ) {
+			set_transient( $cache_key, array( 'ts' => time(), 'body' => $body ), self::STALE_TTL );
+			return $body;
+		}
+
+		// 取得できなかった場合、期限内の「前回の正常データ」があればそれで照合を続ける。
+		// これにより相手DBの一時的な不調でスキャン全体が不完全にならない。
+		if ( is_array( $cached ) && isset( $cached['body'] ) && is_array( $cached['body'] ) ) {
+			$this->used_stale = true;
+			return $cached['body'];
+		}
+
+		// 前回データも無い＝この項目は本当に照合できていない。
+		++$this->failed;
+		return null;
+	}
+
+	/**
+	 * 脆弱性DBへの1回のGET。成功時はデコード済み配列、失敗時はnull。
+	 *
+	 * @param string $path 例: /plugin/contact-form-7/
+	 * @return array|null
+	 */
+	protected function request( $path ) {
 		$response = wp_remote_get(
 			self::API_BASE . $path,
 			array(
 				'timeout'    => self::REQUEST_TIMEOUT,
-				'user-agent' => 'CyberNoteAPI/' . CNAPI_VERSION . ' (+https://www.cybernote.click/)',
+				'user-agent' => self::USER_AGENT,
+				'headers'    => array( 'Accept' => 'application/json' ),
 			)
 		);
 
 		if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
-			// 到達不可・エラー。失敗として記録し、短時間だけキャッシュして連打を防ぐ。
-			++$this->failed;
-			set_transient( $cache_key, array(), 5 * MINUTE_IN_SECONDS );
 			return null;
 		}
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
-		if ( ! is_array( $body ) ) {
-			set_transient( $cache_key, array(), 5 * MINUTE_IN_SECONDS );
-			return null;
-		}
-
-		set_transient( $cache_key, $body, self::CACHE_TTL );
-		return $body;
+		return is_array( $body ) ? $body : null;
 	}
 }

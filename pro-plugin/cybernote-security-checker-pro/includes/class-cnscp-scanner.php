@@ -56,18 +56,26 @@ class CNSCP_Scanner {
 			return new WP_Error( 'api_error', $message );
 		}
 
+		$vulns      = self::sanitize_results( $body['vulnerabilities'] ?? array() );
+		$incomplete = ! empty( $body['incomplete'] );
+
 		update_option(
 			self::OPT_RESULTS,
 			array(
 				'scanned_at'      => (string) ( $body['scanned_at'] ?? '' ),
-				'vulnerabilities' => self::sanitize_results( $body['vulnerabilities'] ?? array() ),
+				'vulnerabilities' => $vulns,
 				// 一部の照合が失敗/打ち切りなら「0件＝安全」と誤認させない。
-				'incomplete'      => ! empty( $body['incomplete'] ),
+				'incomplete'      => $incomplete,
 			),
 			false
 		);
 		update_option( self::OPT_LAST_SCAN, time(), false );
 		delete_option( self::OPT_LAST_ERROR );
+
+		// 新規脆弱性があればメール通知（不完全スキャンでは送らない）。
+		if ( class_exists( 'CNSCP_Notifier' ) ) {
+			CNSCP_Notifier::maybe_notify( $vulns, $incomplete );
+		}
 		return true;
 	}
 

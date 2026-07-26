@@ -99,12 +99,61 @@ class CNSCP_Admin {
 	}
 
 	/**
+	 * メール通知設定の保存（admin-post）。
+	 */
+	public static function handle_save_settings() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'permission denied' );
+		}
+		check_admin_referer( 'cnscp_save_settings' );
+
+		$enabled = ! empty( $_POST['cnscp_notify_enabled'] );
+		$email   = sanitize_email( wp_unslash( $_POST['cnscp_notify_email'] ?? '' ) );
+
+		update_option( CNSCP_Notifier::OPT_ENABLED, $enabled ? 1 : 0, false );
+		update_option( CNSCP_Notifier::OPT_EMAIL, $email, false );
+
+		wp_safe_redirect( add_query_arg( 'cnscp_msg', 'settings_saved', self::page_url() ) );
+		exit;
+	}
+
+	/**
 	 * ページURL。
 	 *
 	 * @return string
 	 */
 	protected static function page_url() {
 		return admin_url( 'admin.php?page=' . self::PAGE_SLUG );
+	}
+
+	/**
+	 * メール通知の設定フォーム。
+	 */
+	protected static function render_notify_form() {
+		$enabled = CNSCP_Notifier::is_enabled();
+		$email   = (string) get_option( CNSCP_Notifier::OPT_EMAIL, '' );
+		$default = (string) get_option( 'admin_email' );
+		?>
+		<div class="cnscp-license">
+			<h2 class="cnscp-license-title">メール通知</h2>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<?php wp_nonce_field( 'cnscp_save_settings' ); ?>
+				<input type="hidden" name="action" value="cnscp_save_settings" />
+				<p>
+					<label>
+						<input type="checkbox" name="cnscp_notify_enabled" value="1" <?php checked( $enabled ); ?> />
+						新しい脆弱性が見つかったときにメールで知らせる
+					</label>
+				</p>
+				<p>
+					送信先メール:
+					<input type="email" name="cnscp_notify_email" class="regular-text" value="<?php echo esc_attr( $email ); ?>" placeholder="<?php echo esc_attr( $default ); ?>（未入力なら管理者メール）" />
+				</p>
+				<p class="cnscp-license-help">毎回ではなく、<strong>前回から新しく増えた脆弱性だけ</strong>をお知らせします。</p>
+				<button type="submit" class="button">保存</button>
+			</form>
+		</div>
+		<?php
 	}
 
 	/**
@@ -173,6 +222,7 @@ class CNSCP_Admin {
 				<?php endif; ?>
 
 				<?php self::render_license_form( $license, false ); ?>
+				<?php self::render_notify_form(); ?>
 
 			<?php endif; ?>
 
@@ -196,6 +246,7 @@ class CNSCP_Admin {
 			'scan_error'    => array( 'error', 'スキャンに失敗しました。' . $error_detail ),
 			'license_saved' => array( 'success', 'ライセンスキーを保存し、スキャンを実行しました。' ),
 			'license_error' => array( 'error', 'ライセンスキーを保存しましたが、接続確認に失敗しました。' . $error_detail ),
+			'settings_saved' => array( 'success', 'メール通知の設定を保存しました。' ),
 		);
 		if ( ! isset( $map[ $msg ] ) ) {
 			return;

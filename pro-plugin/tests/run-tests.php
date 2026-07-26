@@ -42,6 +42,10 @@ function number_format_i18n( $n ) { return number_format( $n ); }
 function wp_date( $f, $t ) { return gmdate( $f, $t ); }
 function wp_unslash( $v ) { return $v; }
 function current_user_can( $c ) { return true; }
+function sanitize_email( $s ) { return filter_var( trim( (string) $s ), FILTER_VALIDATE_EMAIL ) ?: ''; }
+function checked( $a, $b = true ) { echo $a == $b ? 'checked' : ''; }
+$GLOBALS['_mail'] = array();
+function wp_mail( $to, $subject, $body ) { $GLOBALS['_mail'][] = compact( 'to', 'subject', 'body' ); return true; }
 
 class WP_Error {
 	private $code;
@@ -73,6 +77,7 @@ function wp_get_themes() {
 }
 
 require CNSCP_PLUGIN_DIR . 'includes/class-cnscp-scanner.php';
+require CNSCP_PLUGIN_DIR . 'includes/class-cnscp-notifier.php';
 require CNSCP_PLUGIN_DIR . 'includes/class-cnscp-admin.php';
 
 $fails = 0;
@@ -202,6 +207,43 @@ CNSCP_Admin::render_page();
 $html4 = ob_get_clean();
 check( '不完全時は警告を表示', false !== strpos( $html4, '照合が最後まで完了しませんでした' ) );
 check( '不完全時は「問題なし」を出さない', false === strpos( $html4, '既知の脆弱性は見つかりませんでした' ) );
+
+// ---- メール通知（差分のみ・不完全時は送らない） ----
+echo "== Notifier ==\n";
+$GLOBALS['_options'] = array( 'admin_email' => 'owner@example.com' );
+$GLOBALS['_mail']    = array();
+$v_cf7  = array( 'type' => 'plugin', 'slug' => 'contact-form-7', 'name' => 'Contact Form 7', 'severity' => 'critical', 'cve_id' => 'CVE-2026-11111', 'vuln_type_ja' => 'XSS', 'action_ja' => '更新してください。', 'title' => 'x' );
+$v_woo  = array( 'type' => 'plugin', 'slug' => 'woocommerce', 'name' => 'WooCommerce', 'severity' => 'high', 'cve_id' => 'CVE-2026-22222', 'action_ja' => '更新', 'title' => 'y' );
+
+$n1 = CNSCP_Notifier::maybe_notify( array( $v_cf7 ), false );
+check( '初回: 新規1件を通知', 1 === $n1 && 1 === count( $GLOBALS['_mail'] ) );
+check( '宛先は管理者メール', 'owner@example.com' === $GLOBALS['_mail'][0]['to'] );
+check( '本文にCVEと対処', false !== strpos( $GLOBALS['_mail'][0]['body'], 'CVE-2026-11111' ) );
+
+$GLOBALS['_mail'] = array();
+$n2 = CNSCP_Notifier::maybe_notify( array( $v_cf7 ), false );
+check( '同じ内容の再スキャンは通知しない', 0 === $n2 && 0 === count( $GLOBALS['_mail'] ) );
+
+$GLOBALS['_mail'] = array();
+$n3 = CNSCP_Notifier::maybe_notify( array( $v_cf7, $v_woo ), false );
+check( '新たに増えた分だけ通知', 1 === $n3 && false !== strpos( $GLOBALS['_mail'][0]['body'], 'CVE-2026-22222' ) );
+
+$GLOBALS['_mail'] = array();
+$n4 = CNSCP_Notifier::maybe_notify( array( $v_cf7 ), true );
+check( '不完全スキャンでは通知しない', 0 === $n4 && 0 === count( $GLOBALS['_mail'] ) );
+
+// 送信先指定・OFF。
+$GLOBALS['_options']['cnscp_notify_email']   = 'me@example.com';
+$GLOBALS['_options']['cnscp_notified_ids']   = array();
+$GLOBALS['_mail']                            = array();
+CNSCP_Notifier::maybe_notify( array( $v_cf7 ), false );
+check( '送信先指定が反映', 'me@example.com' === $GLOBALS['_mail'][0]['to'] );
+
+$GLOBALS['_options']['cnscp_notify_enabled'] = 0;
+$GLOBALS['_options']['cnscp_notified_ids']   = array();
+$GLOBALS['_mail']                            = array();
+CNSCP_Notifier::maybe_notify( array( $v_woo ), false );
+check( 'OFFなら送らない', 0 === count( $GLOBALS['_mail'] ) );
 
 echo $fails ? "\n$fails FAILED\n" : "\nALL PASSED\n";
 exit( $fails ? 1 : 0 );
