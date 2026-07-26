@@ -148,9 +148,12 @@ class CNSCP_Admin {
 				</p>
 				<p>
 					送信先メール:
-					<input type="email" name="cnscp_notify_email" class="regular-text" value="<?php echo esc_attr( $email ); ?>" placeholder="<?php echo esc_attr( $default ); ?>（未入力なら管理者メール）" />
+					<input type="email" name="cnscp_notify_email" class="regular-text" value="<?php echo esc_attr( $email ); ?>" placeholder="<?php echo esc_attr( $default ); ?>" />
 				</p>
-				<p class="cnscp-license-help">毎回ではなく、<strong>前回から新しく増えた脆弱性だけ</strong>をお知らせします。</p>
+				<p class="cnscp-license-help">
+					未入力の場合は、このサイトの管理者メール（<?php echo esc_html( $default ); ?>）に送ります。<br>
+					毎回ではなく、<strong>前回から新しく増えた脆弱性だけ</strong>をお知らせします。
+				</p>
 				<button type="submit" class="button">保存</button>
 			</form>
 		</div>
