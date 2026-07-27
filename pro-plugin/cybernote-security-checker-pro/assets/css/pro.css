@@ -240,10 +240,38 @@
 	align-items: center;
 }
 
+/* 記入欄は枠の内側に収める。WordPress標準の .regular-text は約25em固定で、
+   画面が狭いとカードからはみ出すため、ここで上書きして可変にする。 */
+.cnscp-license input[type="text"],
+.cnscp-license input[type="email"] {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 380px;
+	min-width: 0;
+}
+
+/* キー入力欄＋ボタンの行。狭いときはボタンが下へ回り込む。 */
+.cnscp-license form > input[type="text"] {
+	flex: 1 1 240px;
+}
+
+/* フォーム内の各行は1行ずつ縦に並べ、入力欄が横幅いっぱいまで使えるようにする。 */
+.cnscp-license form > p {
+	flex: 1 1 100%;
+	margin: 6px 0;
+	max-width: 100%;
+}
+
+.cnscp-license form > p input[type="email"] {
+	display: block;
+	margin-top: 4px;
+}
+
 .cnscp-license-help {
 	margin: 10px 0 0;
 	color: #64748B;
 	font-size: 12px;
+	overflow-wrap: anywhere;
 }
 
 .cnscp-note {
@@ -257,5 +285,15 @@
 	.cnscp-toolbar {
 		flex-direction: column;
 		align-items: flex-start;
+	}
+
+	/* 狭い画面では入力欄を枠いっぱいに広げ、ボタンは次の行へ。 */
+	.cnscp-license input[type="text"],
+	.cnscp-license input[type="email"] {
+		max-width: 100%;
+	}
+
+	.cnscp-license form > input[type="text"] {
+		flex: 1 1 100%;
 	}
 }
