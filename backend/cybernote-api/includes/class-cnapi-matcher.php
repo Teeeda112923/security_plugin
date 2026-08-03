@@ -31,6 +31,12 @@ class CNAPI_Matcher {
 	protected $used_stale = false;
 	/** @var int 実際に照合したコンポーネント数（プラグイン＋テーマ＋本体）。 */
 	protected $components = 0;
+	/** @var int スラッグ・バージョンが取れず照合できなかったコンポーネント数。 */
+	protected $skipped = 0;
+	/** @var int 応答は返ったが想定した形でなく、照合できなかったコンポーネント数。 */
+	protected $unknown = 0;
+	/** @var int 影響範囲が読み取れず判定を見送った脆弱性の件数。 */
+	protected $unevaluated = 0;
 	/** @var int 予算の締め切り時刻（Unix秒）。 */
 	protected $deadline = 0;
 
@@ -45,7 +51,10 @@ class CNAPI_Matcher {
 			'failed'     => $this->failed,
 			'aborted'    => $this->aborted,
 			'used_stale' => $this->used_stale,
-			'components' => $this->components,
+			'components'  => $this->components,
+			'skipped'     => $this->skipped,
+			'unknown'     => $this->unknown,
+			'unevaluated' => $this->unevaluated,
 		);
 	}
 
@@ -104,18 +113,16 @@ class CNAPI_Matcher {
 		$this->failed     = 0;
 		$this->aborted    = false;
 		$this->used_stale = false;
-		$this->components = 0;
-		$this->deadline   = time() + self::TIME_BUDGET;
+		$this->components   = 0;
+		$this->skipped      = 0;
+		$this->unknown      = 0;
+		$this->unevaluated  = 0;
+		$this->deadline     = time() + self::TIME_BUDGET;
 
 		$found = array();
 
-		foreach ( (array) ( $env['plugins'] ?? array() ) as $item ) {
-			$found = array_merge( $found, $this->match_component( 'plugin', $item ) );
-		}
-		foreach ( (array) ( $env['themes'] ?? array() ) as $item ) {
-			$found = array_merge( $found, $this->match_component( 'theme', $item ) );
-		}
-
+		// 本体を最初に照合する。時間切れで打ち切られたとき、
+		// 最も影響の大きいWordPress本体が落ちるのを避けるため。
 		if ( ! empty( $env['wp_version'] ) ) {
 			$found = array_merge(
 				$found,
@@ -130,6 +137,15 @@ class CNAPI_Matcher {
 			);
 		}
 
+		foreach ( (array) ( $env['plugins'] ?? array() ) as $item ) {
+			$found = array_merge( $found, $this->match_component( 'plugin', $item ) );
+		}
+		foreach ( (array) ( $env['themes'] ?? array() ) as $item ) {
+			$found = array_merge( $found, $this->match_component( 'theme', $item ) );
+		}
+
+		$found = $this->deduplicate( $found );
+
 		// 深刻度の高い順に並べる。
 		usort(
 			$found,
@@ -140,6 +156,29 @@ class CNAPI_Matcher {
 		);
 
 		return $found;
+	}
+
+	/**
+	 * 同じ脆弱性が複数の範囲レコードに分かれている場合に、表示を1件にまとめる。
+	 *
+	 * 利用者から見れば同じ1つの問題なので、まったく同じものを二度並べない。
+	 * ただしCVE番号だけで束ねると別の問題を隠しかねないため、見出しも鍵に含める。
+	 *
+	 * @param array $found Vulnerability rows.
+	 * @return array
+	 */
+	protected function deduplicate( $found ) {
+		$seen   = array();
+		$unique = array();
+		foreach ( $found as $row ) {
+			$key = $row['type'] . '|' . $row['slug'] . '|' . $row['cve_id'] . '|' . $row['title'];
+			if ( isset( $seen[ $key ] ) ) {
+				continue;
+			}
+			$seen[ $key ] = true;
+			$unique[]     = $row;
+		}
+		return $unique;
 	}
 
 	/**
@@ -155,6 +194,9 @@ class CNAPI_Matcher {
 		$name    = trim( (string) ( $item['name'] ?? $slug ) );
 
 		if ( '' === $slug || '' === $version ) {
+			// バージョン表記が無いプラグイン（自社開発・受託の独自プラグイン等）は照合できない。
+			// 黙って飛ばすと「全部見た」ように見えてしまうため、件数だけ記録しておく。
+			++$this->skipped;
 			return array();
 		}
 
@@ -174,8 +216,13 @@ class CNAPI_Matcher {
 			return array();
 		}
 
-		$vulns = $data['data']['vulnerability'] ?? array();
+		// 想定した形（data.vulnerability が配列）で返ってこない場合は照合できていない。
+		// ここを「0件＝安全」と解釈すると、相手の仕様変更や未収録を安全と誤って伝えてしまう。
+		$vulns = ( isset( $data['data'] ) && is_array( $data['data'] ) && isset( $data['data']['vulnerability'] ) )
+			? $data['data']['vulnerability']
+			: null;
 		if ( ! is_array( $vulns ) ) {
+			++$this->unknown;
 			return array();
 		}
 
@@ -188,8 +235,16 @@ class CNAPI_Matcher {
 				continue;
 			}
 			// coreエンドポイントはバージョン指定で問い合わせるため常に該当扱い。
-			if ( 'core' !== $type && ! $this->version_affected( $version, $vuln['operator'] ?? null ) ) {
-				continue;
+			if ( 'core' !== $type ) {
+				$operator = $vuln['operator'] ?? null;
+				// 影響範囲が読み取れないものは報告しない。件数だけ記録して見えなくしない。
+				if ( ! is_array( $operator ) || ! $operator ) {
+					++$this->unevaluated;
+					continue;
+				}
+				if ( ! $this->version_affected( $version, $operator ) ) {
+					continue;
+				}
 			}
 			$results[] = $this->format_vulnerability( $type, $slug, $name, $version, $vuln );
 		}
@@ -211,40 +266,170 @@ class CNAPI_Matcher {
 			return false;
 		}
 
-		$max    = $operator['max_version'] ?? null;
-		$max_op = $this->normalize_operator( $operator['max_operator'] ?? 'le' );
-		$min    = $operator['min_version'] ?? null;
-		$min_op = $this->normalize_operator( $operator['min_operator'] ?? 'ge' );
+		$version = trim( (string) $version );
+		// 数字で始まらない表記（'trunk' 'latest' 'dev' など）は比較しても意味が無い。
+		// PHPの比較では最小値扱いになり、あらゆる「◯◯未満が影響」に当たってしまうため、
+		// 判定不能として報告しない（推測で脅かさない）。
+		if ( '' === $version || ! preg_match( '/^[vV]?\d/', $version ) ) {
+			return false;
+		}
+
+		// 影響範囲が複数並んでいる形式（範囲の配列）にも耐える。どれか1つに入れば該当。
+		if ( $this->is_range_list( $operator ) ) {
+			foreach ( $operator as $range ) {
+				if ( $this->version_affected( $version, $range ) ) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		// 空文字は「指定なし」と同じに扱う（'' のまま比較すると判定が壊れるため）。
+		$max = $this->range_bound( $operator['max_version'] ?? null );
+		$min = $this->range_bound( $operator['min_version'] ?? null );
+		// 未知の表記に落ちたときの既定値は、上限・下限それぞれの向きに合わせる。
+		// 上限に '>=' 等を当ててしまうと範囲が反転し、検知漏れ・誤検知の原因になる。
+		$max_op = $this->normalize_operator( $operator['max_operator'] ?? 'le', '<=' );
+		$min_op = $this->normalize_operator( $operator['min_operator'] ?? 'ge', '>=' );
 
 		// 修正版が存在せず範囲上限も無い＝全バージョン影響。
-		if ( null === $max && ! empty( $operator['unfixed'] ) ) {
-			return null === $min || version_compare( $version, $min, $min_op );
+		if ( null === $max && $this->is_true( $operator['unfixed'] ?? null ) ) {
+			return null === $min || $this->compare_versions( $version, $min, $min_op );
 		}
 		if ( null === $max ) {
 			return false;
 		}
-		if ( ! version_compare( $version, $max, $max_op ) ) {
+		if ( ! $this->compare_versions( $version, $max, $max_op ) ) {
 			return false;
 		}
-		return null === $min || version_compare( $version, $min, $min_op );
+		return null === $min || $this->compare_versions( $version, $min, $min_op );
+	}
+
+	/**
+	 * 影響範囲が「範囲の配列」形式かどうか。
+	 *
+	 * 1件の脆弱性に複数の影響範囲が並ぶ形（0,1,2… の連番キーで範囲が入る）を、
+	 * 単一の範囲オブジェクトと取り違えないための判定。
+	 *
+	 * @param array $operator Operator info.
+	 * @return bool
+	 */
+	protected function is_range_list( $operator ) {
+		if ( ! is_array( $operator ) || ! $operator ) {
+			return false;
+		}
+		foreach ( $operator as $key => $value ) {
+			if ( ! is_int( $key ) || ! is_array( $value ) ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * JSON由来の真偽値を判定する。
+	 *
+	 * 文字列の "false" や "0" はPHPでは真になってしまい、
+	 * 「修正版なし＝全バージョン影響」と誤解して全利用者に警告を出す事故につながる。
+	 *
+	 * @param mixed $value Raw value.
+	 * @return bool
+	 */
+	protected function is_true( $value ) {
+		if ( is_string( $value ) ) {
+			$value = strtolower( trim( $value ) );
+			return ! in_array( $value, array( '', '0', 'false', 'no', 'null', 'off' ), true );
+		}
+		return ! empty( $value );
+	}
+
+	/**
+	 * 範囲の端点を正規化する。空文字・空白のみは「指定なし」(null) とみなす。
+	 *
+	 * @param mixed $value Raw bound.
+	 * @return string|null
+	 */
+	protected function range_bound( $value ) {
+		if ( null === $value || is_array( $value ) ) {
+			return null;
+		}
+		$value = trim( (string) $value );
+		return ( '' === $value ) ? null : $value;
+	}
+
+	/**
+	 * 2つのバージョンを比較する。表記ゆれを吸収してから version_compare() に渡す。
+	 *
+	 * PHPの version_compare() をそのまま使うと、次の誤判定が起きる。
+	 *   - 'v9.9.9' は先頭の v が数字より小さいと解釈され、1.0.0 未満と判定される（誤検知）
+	 *   - '1.0' と '1.0.0' が別物になり、修正済みなのに影響ありと判定される（誤検知）
+	 *   - '6.0' と '6.0.0' が一致しないため、完全一致指定の脆弱性を取りこぼす（見逃し）
+	 * 先頭の v を外し、数字部分の桁数を両側で揃えることで、
+	 * 'beta' 等の符号を壊さずに表記ゆれだけを吸収する。
+	 *
+	 * @param string $version Installed version.
+	 * @param string $bound   Range bound.
+	 * @param string $op      version_compare() operator.
+	 * @return bool
+	 */
+	protected function compare_versions( $version, $bound, $op ) {
+		list( $a_nums, $a_tail ) = $this->split_version( $version );
+		list( $b_nums, $b_tail ) = $this->split_version( $bound );
+
+		// '1.0' と '1.0.0' を比べられるよう、短い方を 0 で埋めて桁数を合わせる。
+		$depth = max( count( $a_nums ), count( $b_nums ) );
+		$a_nums = array_pad( $a_nums, $depth, '0' );
+		$b_nums = array_pad( $b_nums, $depth, '0' );
+
+		return version_compare( implode( '.', $a_nums ) . $a_tail, implode( '.', $b_nums ) . $b_tail, $op );
+	}
+
+	/**
+	 * バージョン文字列を「数字の並び」と「それ以降（beta1 等）」に分ける。
+	 *
+	 * 例: '5.9.5-beta1' → [ ['5','9','5'], '-beta1' ] / '3.0RC1' → [ ['3','0'], 'RC1' ]
+	 *
+	 * @param mixed $version Raw version string.
+	 * @return array [ 数字部分の配列, 残りの文字列 ]
+	 */
+	protected function split_version( $version ) {
+		$version = trim( (string) $version );
+		// 'v1.2.3' → '1.2.3'（v の直後が数字のときだけ外す）。
+		if ( preg_match( '/^[vV](?=\d)/', $version ) ) {
+			$version = substr( $version, 1 );
+		}
+		if ( preg_match( '/^(\d+(?:\.\d+)*)(.*)$/', $version, $m ) ) {
+			return array( explode( '.', $m[1] ), $m[2] );
+		}
+		// 数字で始まらない想定外の表記は、桁合わせをせずそのまま比較に回す。
+		return array( array( $version ), '' );
 	}
 
 	/**
 	 * APIのoperator表記をversion_compare()の演算子へ。
 	 *
-	 * @param string $op Operator token.
+	 * @param string $op      Operator token.
+	 * @param string $default 未知の表記だったときの既定値（上限は '<='、下限は '>='）。
 	 * @return string
 	 */
-	protected function normalize_operator( $op ) {
+	protected function normalize_operator( $op, $default = '<=' ) {
 		$map = array(
-			'lt' => '<',
-			'le' => '<=',
-			'gt' => '>',
-			'ge' => '>=',
-			'eq' => '==',
+			'lt'  => '<',
+			'le'  => '<=',
+			'lte' => '<=',
+			'gt'  => '>',
+			'ge'  => '>=',
+			'gte' => '>=',
+			'eq'  => '==',
+			'=='  => '==',
+			'='   => '==',
+			'<'   => '<',
+			'<='  => '<=',
+			'>'   => '>',
+			'>='  => '>=',
 		);
 		$op  = strtolower( trim( (string) $op ) );
-		return $map[ $op ] ?? '<=';
+		return $map[ $op ] ?? $default;
 	}
 
 	/**
@@ -265,7 +450,7 @@ class CNAPI_Matcher {
 		if ( ! empty( $operator['max_version'] ) && 'lt' === strtolower( (string) ( $operator['max_operator'] ?? '' ) ) ) {
 			$fixed = (string) $operator['max_version'];
 		}
-		$unfixed = ! empty( $operator['unfixed'] );
+		$unfixed = $this->is_true( $operator['unfixed'] ?? null );
 
 		list( $severity, $score ) = $this->extract_severity( $vuln );
 		list( $type_slug, $type_ja, $desc_ja ) = $this->classify_cwe( $vuln );
@@ -423,12 +608,12 @@ class CNAPI_Matcher {
 		}
 
 		++$this->checked;
-		$body = $this->request( $path );
+		$body = $this->request( $path, $this->remaining_timeout() );
 
 		// 失敗したら末尾スラッシュの有無を反転して1度だけ再試行する。
 		// 相手のルーティングはエンドポイントごとに許容する形式が異なり、将来変わる可能性もある。
 		if ( null === $body ) {
-			$body = $this->request( $this->toggle_trailing_slash( $path ) );
+			$body = $this->request( $this->toggle_trailing_slash( $path ), $this->remaining_timeout() );
 		}
 
 		if ( is_array( $body ) ) {
@@ -513,6 +698,23 @@ class CNAPI_Matcher {
 	}
 
 	/**
+	 * 1回の問い合わせに許す秒数。残り予算を超えないよう切り詰める。
+	 *
+	 * 予算の判定はコンポーネント単位で行うため、締め切り直前に始まった問い合わせが
+	 * 満額（12秒×2回）待つと、接続プラグイン側の60秒を超えて全体が失敗しうる。
+	 * 残り時間に合わせて縮めることで、超過を数秒に抑える。
+	 *
+	 * @return int
+	 */
+	protected function remaining_timeout() {
+		if ( ! $this->deadline ) {
+			return self::REQUEST_TIMEOUT;
+		}
+		$left = $this->deadline - time();
+		return (int) max( 3, min( self::REQUEST_TIMEOUT, $left ) );
+	}
+
+	/**
 	 * パス末尾のスラッシュを反転する（/a/b → /a/b/ 、/a/b/ → /a/b）。
 	 *
 	 * @param string $path Path.
@@ -528,11 +730,11 @@ class CNAPI_Matcher {
 	 * @param string $path 例: /plugin/contact-form-7
 	 * @return array|null
 	 */
-	protected function request( $path ) {
+	protected function request( $path, $timeout = null ) {
 		$response = wp_remote_get(
 			self::API_BASE . $path,
 			array(
-				'timeout'    => self::REQUEST_TIMEOUT,
+				'timeout'    => ( null === $timeout ) ? self::REQUEST_TIMEOUT : $timeout,
 				'user-agent' => self::USER_AGENT,
 				'headers'    => array( 'Accept' => 'application/json' ),
 			)

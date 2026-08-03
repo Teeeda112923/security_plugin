@@ -18,6 +18,7 @@ define( 'CNAPI_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once CNAPI_PLUGIN_DIR . 'includes/class-cnapi-license.php';
 require_once CNAPI_PLUGIN_DIR . 'includes/class-cnapi-matcher.php';
+require_once CNAPI_PLUGIN_DIR . 'includes/class-cnapi-poc.php';
 require_once CNAPI_PLUGIN_DIR . 'includes/class-cnapi-rest.php';
 require_once CNAPI_PLUGIN_DIR . 'includes/class-cnapi-admin.php';
 
