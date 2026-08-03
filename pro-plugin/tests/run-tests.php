@@ -129,10 +129,16 @@ $GLOBALS['_http_response'] = array(
 		)
 	),
 );
+$body_ok                            = json_decode( $GLOBALS['_http_response']['body'], true );
+$body_ok['stats']                   = array( 'components' => 24, 'unknown' => 3, 'skipped' => 2, 'unevaluated' => 1, 'failed' => 0 );
+$GLOBALS['_http_response']['body']  = json_encode( $body_ok );
+
 $r = CNSCP_Scanner::run();
 check( 'run()成功', true === $r );
 $saved = CNSCP_Scanner::latest_results();
 check( '結果保存', 1 === count( $saved['vulnerabilities'] ) );
+check( '照合できた件数を保存', 24 === $saved['components'] );
+check( '照合できなかった件数も保存（安全と言い切らないため）', 5 === $saved['unchecked'] );
 check( '不正URLは除去', array( 'https://example.com/ref' ) === $saved['vulnerabilities'][0]['references'] );
 check( '最終スキャン時刻を記録', 0 !== (int) get_option( CNSCP_Scanner::OPT_LAST_SCAN, 0 ) );
 $sent = $GLOBALS['_http_log'][0]['body'];

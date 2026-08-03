@@ -173,6 +173,7 @@ class CNSCP_Admin {
 		$vulns      = is_array( $results['vulnerabilities'] ?? null ) ? $results['vulnerabilities'] : array();
 		$incomplete = ! empty( $results['incomplete'] );
 		$components = (int) ( $results['components'] ?? 0 );
+		$unchecked  = (int) ( $results['unchecked'] ?? 0 );
 		$last_scan  = (int) get_option( CNSCP_Scanner::OPT_LAST_SCAN, 0 );
 		?>
 		<div class="wrap cnscp-wrap">
@@ -219,13 +220,13 @@ class CNSCP_Admin {
 								<?php if ( $components > 0 ) : ?>
 									プラグイン・テーマ・WordPress本体を<strong><?php echo esc_html( number_format_i18n( $components ) ); ?>件</strong>照合しての結果です。
 								<?php endif; ?>
-								このまま毎日自動でチェックを続けます。新しく見つかった場合はここに表示されます。
+								このまま毎日自動でチェックを続けます。新しく見つかった場合はここに表示されます。<?php self::render_unchecked_note( $unchecked ); ?>
 							</p>
 							</div>
 						</div>
 					<?php endif; ?>
 				<?php else : ?>
-					<p class="cnscp-count"><strong><?php echo esc_html( number_format_i18n( count( $vulns ) ) ); ?>件</strong>の既知の脆弱性が見つかりました。深刻度の高い順に表示しています。</p>
+					<p class="cnscp-count"><strong><?php echo esc_html( number_format_i18n( count( $vulns ) ) ); ?>件</strong>の既知の脆弱性が見つかりました。深刻度の高い順に表示しています。<?php self::render_unchecked_note( $unchecked ); ?></p>
 					<?php foreach ( $vulns as $vuln ) : ?>
 						<?php self::render_vulnerability( $vuln ); ?>
 					<?php endforeach; ?>
@@ -238,6 +239,27 @@ class CNSCP_Admin {
 
 			<p class="cnscp-note">スキャンで送信するのは、プラグイン・テーマの名前とバージョン、WordPress・PHPのバージョン、サイトURLのみです。個人情報は送信しません。</p>
 		</div>
+		<?php
+	}
+
+	/**
+	 * 照合できなかった件数の但し書き。
+	 *
+	 * 「0件でした」だけを見せると、確認できていないものまで安全に見えてしまう。
+	 * 不安をあおらずに、事実として件数だけ添える。
+	 *
+	 * @param int $unchecked 照合できなかった件数.
+	 */
+	protected static function render_unchecked_note( $unchecked ) {
+		if ( $unchecked < 1 ) {
+			return;
+		}
+		?>
+		<br>
+		<span class="cnscp-unchecked">
+			このうち<strong><?php echo esc_html( number_format_i18n( $unchecked ) ); ?>件</strong>は、脆弱性データベースに情報が無いため確認できていません。
+			危険という意味ではなく<u>判断できない</u>という意味です（日本国内向けのプラグインでよくあります）。
+		</span>
 		<?php
 	}
 

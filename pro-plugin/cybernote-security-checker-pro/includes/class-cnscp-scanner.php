@@ -68,6 +68,9 @@ class CNSCP_Scanner {
 				'incomplete'      => $incomplete,
 				// 実際に照合できた件数。「0件＝安全」の根拠として画面に示す。
 				'components'      => (int) ( $body['stats']['components'] ?? 0 ),
+				// 照合できなかった件数（脆弱性データベースに情報が無い／バージョン表記が無い）。
+				// 黙って伏せると「全部見た結果0件」に見えてしまうため、必ず一緒に保存する。
+				'unchecked'       => (int) ( $body['stats']['unknown'] ?? 0 ) + (int) ( $body['stats']['skipped'] ?? 0 ),
 			),
 			false
 		);
