@@ -92,7 +92,11 @@
 	color: #0F172A;
 }
 
-/* 「確認できていない件数」の但し書き。事実として添えるだけで、不安をあおらない見え方にする。 */
+/* 「何件中、何件を確認できたか」の内訳。事実として添えるだけで、不安をあおらない見え方にする。 */
+.cnscp-coverage {
+	color: #334155;
+}
+
 .cnscp-unchecked {
 	display: inline-block;
 	margin-top: 6px;

@@ -70,7 +70,10 @@ class CNSCP_Scanner {
 				'components'      => (int) ( $body['stats']['components'] ?? 0 ),
 				// 照合できなかった件数（脆弱性データベースに情報が無い／バージョン表記が無い）。
 				// 黙って伏せると「全部見た結果0件」に見えてしまうため、必ず一緒に保存する。
-				'unchecked'       => (int) ( $body['stats']['unknown'] ?? 0 ) + (int) ( $body['stats']['skipped'] ?? 0 ),
+				'no_data'         => (int) ( $body['stats']['unknown'] ?? 0 ),        // 脆弱性DBに情報が無い
+				'no_version'      => (int) ( $body['stats']['skipped'] ?? 0 ),        // バージョン表記が無い
+				'not_reached'     => (int) ( $body['stats']['failed'] ?? 0 ),         // 通信できなかった
+				'timed_out'       => (int) ( $body['stats']['aborted_count'] ?? 0 ),  // 時間切れで見送った
 			),
 			false
 		);

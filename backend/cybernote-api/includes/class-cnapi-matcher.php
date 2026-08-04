@@ -37,6 +37,8 @@ class CNAPI_Matcher {
 	protected $unknown = 0;
 	/** @var int 影響範囲が読み取れず判定を見送った脆弱性の件数。 */
 	protected $unevaluated = 0;
+	/** @var int 時間切れで照合を見送ったコンポーネント数。 */
+	protected $aborted_count = 0;
 	/** @var int 予算の締め切り時刻（Unix秒）。 */
 	protected $deadline = 0;
 
@@ -55,6 +57,7 @@ class CNAPI_Matcher {
 			'skipped'     => $this->skipped,
 			'unknown'     => $this->unknown,
 			'unevaluated' => $this->unevaluated,
+			'aborted_count' => $this->aborted_count,
 		);
 	}
 
@@ -117,6 +120,7 @@ class CNAPI_Matcher {
 		$this->skipped      = 0;
 		$this->unknown      = 0;
 		$this->unevaluated  = 0;
+		$this->aborted_count = 0;
 		$this->deadline     = time() + self::TIME_BUDGET;
 
 		$found = array();
@@ -203,6 +207,8 @@ class CNAPI_Matcher {
 		// 時間予算を超えたら以降の外部問い合わせは打ち切る（接続側のタイムアウト回避）。
 		if ( time() > $this->deadline ) {
 			$this->aborted = true;
+			// 打ち切った件数も数える。合計が合わないと「何件中何件」を正しく言えない。
+			++$this->aborted_count;
 			return array();
 		}
 

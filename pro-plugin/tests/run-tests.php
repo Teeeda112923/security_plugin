@@ -130,7 +130,7 @@ $GLOBALS['_http_response'] = array(
 	),
 );
 $body_ok                            = json_decode( $GLOBALS['_http_response']['body'], true );
-$body_ok['stats']                   = array( 'components' => 24, 'unknown' => 3, 'skipped' => 2, 'unevaluated' => 1, 'failed' => 0 );
+$body_ok['stats']                   = array( 'components' => 24, 'unknown' => 3, 'skipped' => 2, 'unevaluated' => 1, 'failed' => 0, 'aborted_count' => 0 );
 $GLOBALS['_http_response']['body']  = json_encode( $body_ok );
 
 $r = CNSCP_Scanner::run();
@@ -138,7 +138,10 @@ check( 'run()成功', true === $r );
 $saved = CNSCP_Scanner::latest_results();
 check( '結果保存', 1 === count( $saved['vulnerabilities'] ) );
 check( '照合できた件数を保存', 24 === $saved['components'] );
-check( '照合できなかった件数も保存（安全と言い切らないため）', 5 === $saved['unchecked'] );
+check( 'DBに情報が無い件数を保存', 3 === $saved['no_data'] );
+check( 'バージョン不明の件数を保存', 2 === $saved['no_version'] );
+check( '到達できなかった件数を保存', 0 === $saved['not_reached'] );
+check( '時間切れの件数を保存', 0 === $saved['timed_out'] );
 check( '不正URLは除去', array( 'https://example.com/ref' ) === $saved['vulnerabilities'][0]['references'] );
 check( '最終スキャン時刻を記録', 0 !== (int) get_option( CNSCP_Scanner::OPT_LAST_SCAN, 0 ) );
 $sent = $GLOBALS['_http_log'][0]['body'];
@@ -195,6 +198,34 @@ CNSCP_Admin::render_page();
 $html3 = ob_get_clean();
 check( '0件時は問題なし表示', false !== strpos( $html3, '既知の脆弱性は見つかりませんでした' ) );
 check( '0件時は照合件数を表示', false !== strpos( $html3, '37' ) );
+check( '未確認が無ければ但し書きを出さない', false === strpos( $html3, '確認できていません' ) );
+
+// 「17件中17件が未確認」のような矛盾表示にならないこと（合計＝確認済＋未確認）。
+echo "== Admin: coverage note ==\n";
+update_option(
+	CNSCP_Scanner::OPT_RESULTS,
+	array( 'scanned_at' => 'x', 'vulnerabilities' => array(), 'components' => 17, 'no_data' => 15, 'no_version' => 2 )
+);
+ob_start();
+CNSCP_Admin::render_page();
+$html4 = ob_get_clean();
+check( '合計件数を表示（17+17=34）', false !== strpos( $html4, '34件' ) );
+check( '照合できた件数を表示', false !== strpos( $html4, '17件</strong>を脆弱性データベースと照合' ) );
+check( '未確認の件数を表示', false !== strpos( $html4, '残る<strong>17件' ) );
+check( '未確認の理由を内訳で示す', false !== strpos( $html4, '脆弱性データベースに情報が無い 15件' ) );
+check( 'バージョン不明も内訳に出す', false !== strpos( $html4, 'バージョンが分からない 2件' ) );
+check( '矛盾表現（このうち◯件）を使わない', false === strpos( $html4, 'このうち' ) );
+
+// 1件も照合できていないときは「安全」と読ませない。
+update_option(
+	CNSCP_Scanner::OPT_RESULTS,
+	array( 'scanned_at' => 'x', 'vulnerabilities' => array(), 'components' => 0, 'no_data' => 20 )
+);
+ob_start();
+CNSCP_Admin::render_page();
+$html5 = ob_get_clean();
+check( '照合0件なら判断できないと明示', false !== strpos( $html5, '照合できた項目がありません' ) );
+check( '照合0件では「よくあります」で流さない', false === strpos( $html5, 'よくあります' ) );
 
 // 照合が不完全（incomplete=true）なら「安全」と誤表示せず警告を出す。
 echo "== Admin: incomplete ==\n";
