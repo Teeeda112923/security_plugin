@@ -2,7 +2,7 @@ name: Update Tested up to
 
 # Weekly check of the latest WordPress release. When a newer version exists,
 # bump the "Tested up to" headers and commit directly to the default branch.
-# This triggers wordpress-assets.yml, which pushes the change live immediately.
+# wordpress-assets.yml then runs (via workflow_run) and pushes the readme live.
 on:
   schedule:
     - cron: '0 6 * * 1'   # every Monday 06:00 UTC
@@ -24,7 +24,7 @@ jobs:
       - name: Resolve latest WordPress version
         id: wp
         run: |
-          latest=$(curl -fsSL -A "site-security-checker (WordPress.org compatibility check)" https://api.wordpress.org/core/stable-check/1.0/ \
+          latest=$(curl -fsSL -A "cybernote-security-checker (WordPress.org compatibility check)" https://api.wordpress.org/core/stable-check/1.0/ \
             | python3 -c "import sys, json; d = json.load(sys.stdin); print(next(k for k, v in d.items() if v == 'latest'))")
           major=$(echo "$latest" | cut -d. -f1,2)
           echo "Latest WordPress: $latest (major.minor: $major)"
@@ -45,13 +45,13 @@ jobs:
         if: steps.check.outputs.needed == 'true'
         run: |
           sed -i "s/^Tested up to: .*/Tested up to: ${{ steps.wp.outputs.version }}/" readme.txt
-          sed -i "s/\(\* Tested up to: \).*/\1${{ steps.wp.outputs.version }}/" wp-security-checker.php
+          sed -i "s/\(\* Tested up to: \).*/\1${{ steps.wp.outputs.version }}/" cybernote-security-checker.php
 
       - name: Commit and push
         if: steps.check.outputs.needed == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add readme.txt wp-security-checker.php
+          git add readme.txt cybernote-security-checker.php
           git commit -m "Bump Tested up to ${{ steps.wp.outputs.version }} [skip ci]"
           git push

@@ -179,6 +179,7 @@ class CNSC_Admin_Page {
 			array(
 				'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
 				'refreshingText' => __( '診断中...', 'cybernote-security-checker' ),
+				'errorText'      => __( '再診断に失敗しました。ページを再読み込みしてから、もう一度お試しください。', 'cybernote-security-checker' ),
 			)
 		);
 	}
@@ -502,7 +503,11 @@ class CNSC_Admin_Page {
 						if ( 0 === $issues ) {
 							esc_html_e( '現在の基本設定は良好です。定期的に再診断してください。', 'cybernote-security-checker' );
 						} else {
-							esc_html_e( '確認が必要な項目があります。まずは「要対応」から確認しましょう。', 'cybernote-security-checker' );
+							if ( $counts['recommended'] > 0 ) {
+								esc_html_e( '確認が必要な項目があります。まずは「要対応」から確認しましょう。', 'cybernote-security-checker' );
+							} else {
+								esc_html_e( '急ぎの項目はありません。「改善推奨」の項目を順に確認しましょう。', 'cybernote-security-checker' );
+							}
 						}
 						?>
 					</p>
@@ -646,19 +651,19 @@ class CNSC_Admin_Page {
 					printf(
 						/* translators: %d: number of issue items */
 						esc_html__( '確認が必要: %d件', 'cybernote-security-checker' ),
-						$issues
+						(int) $issues
 					);
 				}
 				?>
 			</strong>
 			<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--wsc-recommended);background:var(--wsc-recommended-bg);border:1px solid var(--wsc-recommended-border)">
-				<?php printf( esc_html__( '要対応 %d件', 'cybernote-security-checker' ), (int) $counts['recommended'] ); ?>
+				<?php /* translators: %d: number of items */ printf( esc_html__( '要対応 %d件', 'cybernote-security-checker' ), (int) $counts['recommended'] ); ?>
 			</span>
 			<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--wsc-attention);background:var(--wsc-attention-bg);border:1px solid var(--wsc-attention-border)">
-				<?php printf( esc_html__( '改善推奨 %d件', 'cybernote-security-checker' ), (int) $counts['attention'] ); ?>
+				<?php /* translators: %d: number of items */ printf( esc_html__( '改善推奨 %d件', 'cybernote-security-checker' ), (int) $counts['attention'] ); ?>
 			</span>
 			<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--wsc-good);background:var(--wsc-good-bg);border:1px solid var(--wsc-good-border)">
-				<?php printf( esc_html__( '問題なし %d件', 'cybernote-security-checker' ), (int) $counts['good'] ); ?>
+				<?php /* translators: %d: number of items */ printf( esc_html__( '問題なし %d件', 'cybernote-security-checker' ), (int) $counts['good'] ); ?>
 			</span>
 		</div>
 		<?php

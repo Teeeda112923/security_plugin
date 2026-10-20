@@ -61,6 +61,7 @@ class CNSC_Dashboard_Widget {
 			array(
 				'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
 				'refreshingText' => __( '診断中...', 'cybernote-security-checker' ),
+				'errorText'      => __( '再診断に失敗しました。ページを再読み込みしてから、もう一度お試しください。', 'cybernote-security-checker' ),
 			)
 		);
 	}
@@ -124,12 +125,22 @@ class CNSC_Dashboard_Widget {
 								printf(
 									/* translators: %d: number of issues found */
 									esc_html__( '要確認 %d件', 'cybernote-security-checker' ),
-									$issues
+									(int) $issues
 								);
 							}
 							?>
 						</strong>
-						<span><?php esc_html_e( 'まずは要対応の項目から確認してください。', 'cybernote-security-checker' ); ?></span>
+						<span>
+							<?php
+							if ( $counts['recommended'] > 0 ) {
+								esc_html_e( 'まずは要対応の項目から確認してください。', 'cybernote-security-checker' );
+							} elseif ( $issues > 0 ) {
+								esc_html_e( '急ぎの項目はありません。改善推奨の項目を順に確認してください。', 'cybernote-security-checker' );
+							} else {
+								esc_html_e( '定期的に再診断してください。', 'cybernote-security-checker' );
+							}
+							?>
+						</span>
 					</div>
 				</div>
 

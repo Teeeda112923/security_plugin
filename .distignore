@@ -8,11 +8,13 @@
 /docs
 /node_modules
 /pro-plugin
+/tests
 
 .gitignore
 .gitattributes
 .distignore
 CLAUDE.md
+DESIGN.md
 
 *.zip
 *.log

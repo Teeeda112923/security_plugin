@@ -40,22 +40,23 @@ WordPress向けの軽量セキュリティプラグイン。コンセプトは�
 すべて good / attention / recommended の三段階で表示する。
 
 カテゴリA（バージョン鮮度・class-cnsc-category-a.php / CNSC_Category_A）
-- a1 WordPress本体（最新=good / 新メジャーあり=attention / メンテナンス版未適用=recommended）
-- a2 PHPバージョン（8.4以上=good / 8.2〜8.3=attention / 8.1以下=recommended）
-- a3 プラグイン・テーマ更新（0件=good / 1件以上=attention。recommendedは設けない。標準の更新画面へ案内し、プラグイン自身は更新を実行しない）
+- a1 WordPress本体（最新=good / 新メジャーあり・更新情報未取得=attention / メンテナンス版未適用=recommended。更新情報が無いときに good にしない）
+- a2 PHPバージョン（PHP公式のサポート期限表 `php_support_schedule()` と今日の日付で判定: 通常サポート中=good / セキュリティ修正のみ=attention / 終了=recommended。新系列が出たら表に行を追加）
+- a3 プラグイン・テーマ更新（0件=good / 1件以上・更新情報未取得=attention。recommendedは設けない。標準の更新画面へ案内し、プラグイン自身は更新を実行しない）
 
 カテゴリB（ハードニング設定・class-cnsc-category-b.php / CNSC_Category_B）
-- b1 WP_DEBUG（off=good / logのみ=attention / 画面表示on=recommended）
-- b2 DISALLOW_FILE_EDIT（true=good / false・未定義=recommended）
-- b3 管理者ユーザー名（admin/administratorなし=good / 存在する=attention）
-- b4 HTTPS（https=good / http=recommended）
-- b5 DBテーブルプレフィックス（wp_以外=good / wp_=attention）
+- b1 WP_DEBUG（off かつ php.ini の display_errors off=good / WP_DEBUG on で画面表示off（公開位置の debug.log も明示）・WP_DEBUG off でも display_errors on=attention / WP_DEBUG で画面表示on=recommended）
+- b2 DISALLOW_FILE_EDIT（true または DISALLOW_FILE_MODS true=good / それ以外=recommended）
+- b3 管理者ユーザー名（manage_options 権限を持つ admin/administrator なし=good / 存在する=attention）
+- b4 HTTPS（home と siteurl が両方 https=good / どちらかが http=recommended。is_ssl() はプロキシ環境で誤判定するため使わない）
+- b5 DBテーブルプレフィックス（$wpdb->base_prefix が wp_以外=good / wp_=attention）
 - b6 XML-RPC（無効=good / 有効=attention）
-- b7 REST APIユーザー列挙（不可=good / 可能=attention）
-- b8 セキュリティキー（SALT）（8個すべて設定済み=good / 未設定・初期値・短すぎがある=recommended。値そのものは絶対に表示しない）
-- b9 未使用のプラグイン・テーマ（停止中プラグイン0かつ未使用テーマ1つ以内=good / それ以外=attention。テーマは切り替え用に1つ残すのは許容）
+- b7 REST APIユーザー列挙（不可=good / 可能=attention。匿名で rest_authentication_errors を先に評価し、try/finally でユーザーを復帰）
+- b8 セキュリティキー（SALT）（8個すべて固有で32文字以上=good / 未設定・初期値・重複あり=attention（WordPressがDB保存の自動生成値で代用するため） / 短すぎる値が使われている=recommended。値そのものは絶対に表示しない）
+- b9 未使用のプラグイン・テーマ（停止中プラグイン0かつ未使用テーマ1つ以内=good / それ以外=attention。名前を最大5件ずつ表示。テーマは切り替え用に1つ残すのは許容）
 
-recommended（強い警告）は「漏れる・壊される・盗まれる」に該当するものだけ（a1メンテナンス版・b1画面表示・b2・b4・b8）。既存サイトで変更にリスクがある項目（b3・b5）は attention 止まりにし、変更を急かさない。
+recommended（強い警告）は「漏れる・壊される・盗まれる」に該当するものだけ（a1メンテナンス版・a2サポート終了・b1画面表示・b2・b4・b8短すぎるキー）。
+「確認できなかった」状態は good にせず attention で伝える（誤った安心を与えない）。detail は Renderer 側でエスケープするので、チェック側で esc_html しない（二重エスケープ防止）。既存サイトで変更にリスクがある項目（b3・b5）は attention 止まりにし、変更を急かさない。
 
 ## 実装構造（既存コードに合わせる）
 
@@ -90,7 +91,9 @@ recommended（強い警告）は「漏れる・壊される・盗まれる」に
 
 ## 現在の実装状況
 
-- 無料版は全12項目の診断・SaaS風UI・5サブメニュー・ダッシュボードウィジェット・アコーディオンまで実装済み。WordPress.org審査対応中（接頭辞CNSC化・Proコード非同梱・英語readme済み）。
+- 無料版は全12項目の診断・SaaS風UI・6サブメニュー・ダッシュボードウィジェット・アコーディオンまで実装済み。WordPress.org 公開版は 1.0.0（= コミット 48dd444）。1.1.0 は未公開のまま 1.1.1 として公開予定。
+- 結合テスト: `tests/integration/run.sh`（実WordPress＋WP-CLI。使い方はファイル冒頭）。配布物からは .distignore / .gitattributes で除外。
+- リリース: `v<version>` タグで deploy.yml が WordPress.org（slug: cybernote-security-checker）へ配布。タグ・ヘッダー・CNSC_VERSION・Stable tag の一致を CI が検査する。
 - Pro版は設計済み（docs/pro-design.md）。配布版には同梱しない（WP.org規約のトライアルウェア禁止）。Proは外部サービス cybernote.click で提供予定で、無料版は案内ページからリンクのみ。
 - 旧セッションで一時的に同梱していたライセンスUI・モックスキャナー（class-wsc-pro-*.php）はWP.orgレビュー指摘により削除済み。Pro実装は cybernote.click バックエンド側で行う。
 - 次の候補: 無料版の項目追加 / WordPress.org審査の継続対応 / cybernote.click バックエンド構築。

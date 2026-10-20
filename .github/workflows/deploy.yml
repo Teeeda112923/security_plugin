@@ -1,7 +1,9 @@
 name: Deploy to WordPress.org
 
-# Push a version tag (e.g. v1.0.1) to release that version to WordPress.org.
-#   git tag v1.0.1 && git push origin v1.0.1
+# Push a version tag (e.g. v1.1.1) to release that version to WordPress.org.
+#   git tag v1.1.1 && git push origin v1.1.1
+# The tag must match the plugin header "Version", CNSC_VERSION and the readme
+# "Stable tag"; otherwise the job stops before touching WordPress.org.
 on:
   push:
     tags:
@@ -15,12 +17,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Verify version numbers match the tag
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          header=$(grep -m1 "^ \* Version:" cybernote-security-checker.php | awk '{print $NF}')
+          constant=$(grep -m1 "CNSC_VERSION'," cybernote-security-checker.php | sed -E "s/.*'([0-9.]+)'.*/\1/")
+          stable=$(grep -m1 "^Stable tag:" readme.txt | awk '{print $NF}')
+          echo "tag=$tag header=$header constant=$constant stable=$stable"
+          if [ "$tag" != "$header" ] || [ "$tag" != "$constant" ] || [ "$tag" != "$stable" ]; then
+            echo "::error::Version mismatch. Update the plugin header, CNSC_VERSION and Stable tag before tagging."
+            exit 1
+          fi
+
       - name: Deploy to WordPress.org SVN
+        id: deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-          SLUG: site-security-checker
+          SLUG: cybernote-security-checker
           ASSETS_DIR: .wordpress-org
         with:
           generate-zip: true
@@ -28,5 +43,5 @@ jobs:
       - name: Upload release ZIP as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: site-security-checker
-          path: ${{ github.workspace }}/site-security-checker.zip
+          name: cybernote-security-checker
+          path: ${{ steps.deploy.outputs.zip-path }}

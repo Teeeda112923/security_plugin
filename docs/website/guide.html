@@ -505,8 +505,9 @@
   <!-- ヒーロー -->
   <div class="cn-wsc-hero" id="top">
     <span class="cn-wsc-eyebrow">公式ガイド</span>
-    <h1>Site Security Checkerの使い方（詳細ガイド）</h1>
-    <p class="cn-wsc-hero-lead">WordPressのセキュリティを10項目で診断する無料プラグインです。専門知識ゼロで使え、診断はサイト内だけで完結するため外部へのデータ送信は一切ありません。このガイドではインストールから各項目の対処方法まで、すべてを丁寧に解説します。</p>
+    <h1>CyberNote Security Checkerの使い方（詳細ガイド）</h1>
+    <p class="cn-wsc-hero-lead">WordPressのセキュリティを12項目で診断する無料プラグインです。専門知識ゼロで使え、診断はサイト内だけで完結するため外部へのデータ送信は一切ありません。このガイドではインストールから各項目の対処方法まで、すべてを丁寧に解説します。</p>
+    <p class="cn-wsc-hero-lead">このガイドはバージョン1.1.1に対応しています。</p>
     <div class="cn-wsc-hero-actions">
       <a href="#install" class="cn-wsc-button">インストール手順を見る</a>
       <a href="#faq" class="cn-wsc-button-sub">よくある質問を見る</a>
@@ -524,13 +525,13 @@
         <p><strong>自動インストール（おすすめ）</strong></p>
         <ul>
           <li>WordPress管理画面の左メニューから <strong>「プラグイン」→「新規追加」</strong> を開きます</li>
-          <li>右上の検索窓に <strong>「Site Security Checker」</strong> と入力します</li>
+          <li>右上の検索窓に <strong>「CyberNote Security Checker」</strong> と入力します</li>
           <li>「今すぐインストール」ボタンをクリックします</li>
           <li>インストールが完了したら <strong>「有効化」</strong> をクリックします</li>
         </ul>
         <p><strong>ZIPからインストールする場合</strong></p>
         <ul>
-          <li><a href="https://wordpress.org/plugins/site-security-checker/" target="_blank" rel="noopener noreferrer">WordPress.orgのプラグインページ</a> からZIPファイルをダウンロードします</li>
+          <li><a href="https://wordpress.org/plugins/cybernote-security-checker/" target="_blank" rel="noopener noreferrer">WordPress.orgのプラグインページ</a> からZIPファイルをダウンロードします</li>
           <li>管理画面の <strong>「プラグイン」→「新規追加」→「プラグインのアップロード」</strong> を開きます</li>
           <li>ZIPファイルを選択して「今すぐインストール」をクリックします</li>
           <li>「有効化」をクリックします</li>
@@ -542,7 +543,7 @@
         <p><strong>ダッシュボードウィジェット（かんたん確認）</strong><br>
         管理画面のトップ（ダッシュボード）を開くと <strong>「セキュリティ診断」ウィジェット</strong> が表示されます。確認が必要な件数が一目でわかり、「優先対応が必要な項目」がリストアップされます。</p>
         <p><strong>専用管理画面（詳細確認）</strong><br>
-        左メニューに <strong>「セキュリティ診断」</strong> という項目が追加されます。ここから全10項目の詳細な診断結果を確認できます。</p>
+        左メニューに <strong>「セキュリティ診断」</strong> という項目が追加されます。ここから全12項目の詳細な診断結果を確認できます。診断項目は「A. バージョン鮮度（3項目）」「B. ハードニング設定（7項目）」「C. 衛生状態（2項目）」の3つに分けて表示されます。</p>
       </li>
       <li class="cn-wsc-step">
         <h3>手順3：再診断する</h3>
@@ -620,8 +621,8 @@
           </tr>
           <tr>
             <td class="cn-wsc-attention">🟡 改善推奨</td>
-            <td>機能更新（新バージョン）が出ているが、セキュリティ修正ではない</td>
-            <td>余裕があるときに更新</td>
+            <td>機能更新（新バージョン）が出ている／WordPressがまだ更新情報を取得できておらず、最新かどうか確認できない</td>
+            <td>余裕があるときに更新／「ダッシュボード」→「更新」を開いて更新確認を行う</td>
           </tr>
           <tr>
             <td class="cn-wsc-recommended">🔴 要対応</td>
@@ -633,7 +634,9 @@
     </div>
     <div class="cn-wsc-note">
       <p><strong>「メンテナンス版」とは？</strong><br>
-      WordPressには「機能更新（例: 6.7→6.8）」と「セキュリティ修正（例: 6.7→6.7.1）」の2種類の更新があります。セキュリティ修正のほうが緊急度が高く、このプラグインでは「要対応」として強調表示します。</p>
+      WordPressには「機能更新（例: 6.7→6.8）」と「メンテナンス版（例: 6.7→6.7.1）」の2種類の更新があります。メンテナンス版は主にセキュリティ修正と不具合修正のための更新で緊急度が高いため、このプラグインでは「要対応」として強調表示します。</p>
+      <p><strong>「確認できない」と表示されたら</strong><br>
+      このプラグインは外部と通信しないため、WordPress自身が定期的に取得している更新情報を読み取って判定しています。その情報がまだ無い場合は「問題なし」とは表示せず、確認できなかったことをお知らせします。「ダッシュボード」→「更新」を開くと更新確認が行われます。それでも表示が変わらない場合は、サーバーからWordPress.orgへの通信が制限されていないか、ご利用のサーバー会社にご確認ください。</p>
     </div>
     <p><strong>対処方法</strong></p>
     <ol>
@@ -660,17 +663,17 @@
         <tbody>
           <tr>
             <td class="cn-wsc-good">✅ 問題なし</td>
-            <td>PHP 8.4 以上</td>
+            <td>PHP公式の「通常サポート」期間中の系列</td>
             <td>対応不要</td>
           </tr>
           <tr>
             <td class="cn-wsc-attention">🟡 改善推奨</td>
-            <td>PHP 8.2 または 8.3（公式サポート中だが最新ではない）</td>
-            <td>タイミングを見て更新</td>
+            <td>「セキュリティ修正のみ」の期間に入っている系列（サポート終了日を表示します）</td>
+            <td>終了日までに切り替えを計画する</td>
           </tr>
           <tr>
             <td class="cn-wsc-recommended">🔴 要対応</td>
-            <td>PHP 8.1 以下（公式サポート終了済みまたは間もなく終了）</td>
+            <td>公式サポートが終了した系列</td>
             <td>できるだけ早くバージョンアップ</td>
           </tr>
         </tbody>
@@ -679,6 +682,27 @@
     <div class="cn-wsc-note">
       <p><strong>「公式サポート終了」とは？</strong><br>
       PHPの開発チームがバグやセキュリティの修正を提供しなくなった状態です。新しい脆弱性が発見されても修正されないため、使い続けるとリスクが高まります。</p>
+      <p><strong>判定は日付で自動的に切り替わります</strong><br>
+      PHP公式が公表しているサポート終了日をもとに判定しているため、終了日を過ぎると判定が自動的に厳しくなります。2026年10月時点の例は次のとおりです。</p>
+    </div>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>PHPの系列</th>
+            <th>通常サポート終了</th>
+            <th>セキュリティサポート終了</th>
+            <th>2026年10月時点の判定</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>8.1 以下</td><td>終了済み</td><td>2025年12月31日（終了済み）</td><td class="cn-wsc-recommended">🔴 要対応</td></tr>
+          <tr><td>8.2</td><td>2024年12月31日</td><td>2026年12月31日</td><td class="cn-wsc-attention">🟡 改善推奨（2027年からは要対応）</td></tr>
+          <tr><td>8.3</td><td>2025年12月31日</td><td>2027年12月31日</td><td class="cn-wsc-attention">🟡 改善推奨</td></tr>
+          <tr><td>8.4</td><td>2026年12月31日</td><td>2028年12月31日</td><td class="cn-wsc-good">✅ 問題なし（2027年からは改善推奨）</td></tr>
+          <tr><td>8.5</td><td>2027年12月31日</td><td>2029年12月31日</td><td class="cn-wsc-good">✅ 問題なし</td></tr>
+        </tbody>
+      </table>
     </div>
     <p><strong>対処方法</strong>：PHPのバージョンはサーバーの管理画面から変更できます。</p>
     <div class="cn-wsc-warn">
@@ -724,8 +748,8 @@
           </tr>
           <tr>
             <td class="cn-wsc-attention">🟡 改善推奨</td>
-            <td>1件以上の更新が待機中</td>
-            <td>更新画面から適用する</td>
+            <td>1件以上の更新が待機中／更新情報をまだ取得できておらず確認できない</td>
+            <td>更新画面から適用する／更新画面を開いて更新確認を行う</td>
           </tr>
         </tbody>
       </table>
@@ -748,7 +772,7 @@
   <!-- カテゴリB -->
   <section class="cn-wsc-section" id="category-b">
     <h2>カテゴリB：ハードニング設定</h2>
-    <p class="cn-wsc-section-lead">「ハードニング（Hardening）」とは、設定を見直してサイトを攻撃に強くすることを指します。カテゴリBではWordPressの7つの設定項目を診断します。バージョンの更新（カテゴリA）と合わせて対応することで、サイトのセキュリティレベルを大きく高めることができます。</p>
+    <p class="cn-wsc-section-lead">「ハードニング（Hardening）」とは、設定を見直してサイトを攻撃に強くすることを指します。カテゴリBではWordPressの7つの設定項目を診断します（カテゴリCの2項目はこのあとで説明します）。バージョンの更新（カテゴリA）と合わせて対応することで、サイトのセキュリティレベルを大きく高めることができます。</p>
 
     <!-- B1 -->
     <h3 class="cn-wsc-item-title">B1. デバッグ表示</h3>
@@ -765,12 +789,12 @@
         <tbody>
           <tr>
             <td class="cn-wsc-good">✅ 問題なし</td>
-            <td><code>WP_DEBUG</code> がオフ</td>
+            <td><code>WP_DEBUG</code> がオフで、サーバーのPHP設定でもエラーの画面表示がオフ</td>
             <td>対応不要</td>
           </tr>
           <tr>
             <td class="cn-wsc-attention">🟡 改善推奨</td>
-            <td><code>WP_DEBUG</code> がオンだが、画面表示はオフ（ログファイルのみ）</td>
+            <td><code>WP_DEBUG</code> がオンだが画面表示はオフ（ログが外部から開ける場所 <code>wp-content/debug.log</code> に書き出されている場合はその旨も表示）／<code>WP_DEBUG</code> はオフだが、サーバーのPHP設定（<code>display_errors</code>）でエラーの画面表示がオン</td>
             <td>本番では完全にオフにすることが理想</td>
           </tr>
           <tr>
@@ -790,6 +814,8 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
     <div class="cn-wsc-code"><pre><code>define( 'WP_DEBUG', false );</code></pre></div>
     <div class="cn-wsc-note">
       <p><code>wp-config.php</code> はサーバーのFTPやファイルマネージャー経由で編集できます。変更前にファイルのバックアップを取ってください。</p>
+      <p><strong>ログの保存先にも注意</strong>：<code>define( 'WP_DEBUG_LOG', true );</code> の場合、ログは <code>wp-content/debug.log</code> に保存され、URLを指定すると外部から開ける場合があります。デバッグが必要なときは、ログの保存先を公開されない場所にしてください。</p>
+      <p><strong>WP_DEBUG がオフなのに「改善推奨」と表示される場合</strong>：サーバーのPHP設定でエラーの画面表示（<code>display_errors</code>）がオンになっています。サーバーの管理画面の「PHP設定」などから <code>display_errors</code> をオフにしてください。</p>
     </div>
     <p>参考：<a href="https://wordpress.org/documentation/article/debugging-in-wordpress/" target="_blank" rel="noopener noreferrer">WordPress公式：デバッグの設定（英語）</a></p>
 
@@ -810,7 +836,7 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
         <tbody>
           <tr>
             <td class="cn-wsc-good">✅ 問題なし</td>
-            <td><code>DISALLOW_FILE_EDIT</code> が <code>true</code> に設定されている</td>
+            <td><code>DISALLOW_FILE_EDIT</code> が <code>true</code> に設定されている（より強い制限の <code>DISALLOW_FILE_MODS</code> が <code>true</code> の場合も含む）</td>
             <td>対応不要</td>
           </tr>
           <tr>
@@ -851,7 +877,7 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
           </tr>
           <tr>
             <td class="cn-wsc-attention">🟡 改善推奨</td>
-            <td><code>admin</code>、<code>administrator</code> などのアカウントが存在する</td>
+            <td><code>admin</code>、<code>administrator</code> という名前の管理者アカウントが存在する（購読者など管理者以外は対象外）</td>
             <td>余裕があるときに変更を検討</td>
           </tr>
         </tbody>
@@ -885,13 +911,13 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
         <tbody>
           <tr>
             <td class="cn-wsc-good">✅ 問題なし</td>
-            <td>サイトのURLが <code>https://</code> で始まっている</td>
+            <td>「設定」→「一般」の「WordPressアドレス」と「サイトアドレス」がどちらも <code>https://</code> で始まっている</td>
             <td>対応不要</td>
           </tr>
           <tr>
             <td class="cn-wsc-recommended">🔴 要対応</td>
-            <td>サイトのURLが <code>http://</code> のまま（暗号化されていない）</td>
-            <td>SSL証明書を設定する</td>
+            <td>どちらか、または両方が <code>http://</code> のまま（暗号化されていない）</td>
+            <td>SSL証明書を設定し、両方を https に揃える</td>
           </tr>
         </tbody>
       </table>
@@ -905,6 +931,7 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
     </ol>
     <div class="cn-wsc-note">
       <p>すでにSSL証明書が設定されているのに「要対応」と表示される場合は、サイトのURLが <code>http://</code> のままになっている可能性があります。「設定」→「一般」でURLをご確認ください。</p>
+      <p>この診断はWordPressに設定されたURLで判定します。SSL証明書の有効期限や中身までは確認しません。</p>
     </div>
 
     <hr class="cn-wsc-divider">
@@ -935,7 +962,7 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
         </tbody>
       </table>
     </div>
-    <p><code>wp_</code> のままだと、SQLインジェクション攻撃などの際にテーブル名を推測されやすくなります。ただし、それだけで直接攻撃が成立するわけではなく、影響度は限定的です。</p>
+    <p><code>wp_</code> のままだと、一部の自動化された攻撃でテーブル名を推測されやすくなります。ただし、それだけで攻撃が成立するわけではなく、接頭辞を変えても脆弱性そのものは防げません。効果は補助的なものです。</p>
     <div class="cn-wsc-warn">
       <p><strong>⚠️ 稼働中のサイトでの変更は推奨しません。</strong><br>
       データベース接頭辞の変更は、設定ファイルとデータベースの両方を正確に書き換える必要があり、手順を誤るとサイトが完全に壊れる可能性があります。<strong>新しくサイトを構築する場合</strong>のみ、インストール時に <code>wp_</code> 以外の接頭辞（例: <code>mysite_</code>）を指定してください。稼働中のサイトの場合は、他の項目を優先してください。</p>
@@ -963,7 +990,7 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
           </tr>
           <tr>
             <td class="cn-wsc-attention">🟡 改善推奨</td>
-            <td>XML-RPCが有効（<code>xmlrpc.php</code> が利用可能）</td>
+            <td>WordPressの設定上、XML-RPCが有効</td>
             <td>使っていなければ無効化を検討</td>
           </tr>
         </tbody>
@@ -971,20 +998,22 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
     </div>
     <p>XML-RPCはブルートフォース攻撃の入り口として悪用されることがあります。ただし、<strong>Jetpackプラグイン・WordPressスマートフォンアプリ・外部からWordPressを操作するツール</strong>を使っている場合は無効化すると動かなくなります。使っていない場合に限り、無効化を検討してください。</p>
     <p><strong>方法1：プラグインで無効化する（かんたん）</strong><br>
-    「Disable XML-RPC」などのプラグインをインストールして有効化するだけで無効化できます。</p>
+    XML-RPCを無効化するプラグインをインストールして有効化します。</p>
     <p><strong>方法2：<code>.htaccess</code> に追記する（上級者向け）</strong><br>
-    WordPressのルートにある <code>.htaccess</code> ファイルに以下を追加します。</p>
+    Apache 2.4 のサーバーであれば、WordPressのルートにある <code>.htaccess</code> ファイルに以下を追加します（編集前に <code>.htaccess</code> のバックアップを取ってください）。</p>
     <div class="cn-wsc-code"><pre><code>&lt;Files xmlrpc.php&gt;
-  Order deny,allow
-  Deny from all
+  Require all denied
 &lt;/Files&gt;</code></pre></div>
+    <div class="cn-wsc-note">
+      <p>この診断はWordPressの設定を読み取って判定します。方法2のように <code>.htaccess</code> やサーバー側で遮断している場合、その設定は検出できないため「改善推奨」のまま表示されます。遮断済みであれば、対応は不要です。</p>
+    </div>
     <p>参考：<a href="https://developer.wordpress.org/apis/xml-rpc/" target="_blank" rel="noopener noreferrer">WordPress公式：XML-RPCについて（英語）</a></p>
 
     <hr class="cn-wsc-divider">
 
     <!-- B7 -->
     <h3 class="cn-wsc-item-title">B7. REST APIユーザー名列挙</h3>
-    <p>WordPressのREST APIを通じて、<strong>ログインユーザー名が外部から取得できる状態</strong>になっていないかを確認します。具体的には <code>/wp-json/wp/v2/users</code> というURLに、ログインなしでアクセスしたときにユーザー情報が返ってくるかを診断します。</p>
+    <p>WordPressのREST APIを通じて、<strong>ユーザー名が外部から取得できる状態</strong>になっていないかを確認します。具体的には <code>/wp-json/wp/v2/users</code> というURLに、ログインなしでアクセスしたときにユーザー情報が返ってくるかを診断します。</p>
     <div class="cn-wsc-table-wrap">
       <table class="cn-wsc-table">
         <thead>
@@ -1003,22 +1032,18 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
           <tr>
             <td class="cn-wsc-attention">🟡 改善推奨</td>
             <td>匿名で <code>/wp/v2/users</code> からユーザー情報が取得できる</td>
-            <td>functions.phpにコードを追加して制限する</td>
+            <td>セキュリティプラグインやコードで制限する</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p>ログインに使うユーザー名が外部から丸見えになっていると、あとはパスワードを総当たりするだけになります（B3の問題と組み合わさると特に危険です）。</p>
-    <p><strong>対処方法</strong>：<code>functions.php</code>（使用中のテーマフォルダにある設定ファイル）または子テーマの <code>functions.php</code> に以下を追加します。</p>
+    <p>ここで取得できるのはユーザーのURL用の名前ですが、多くの場合ログイン名と同じです。ログイン名が外部から分かると、あとはパスワードを総当たりするだけになります（B3の問題と組み合わさると特に危険です）。</p>
+    <p>セキュリティプラグインなどでREST APIへの匿名アクセスを制限している場合、その制限を反映して判定します（WordPress標準の認証フィルターを使う方法に限ります）。</p>
+    <p><strong>対処方法</strong>：セキュリティプラグイン（例：SiteGuard WP Plugin、Wordfence）の設定で制限するのが手軽です。コードで対応する場合は、子テーマの <code>functions.php</code> に以下を追加します（ログインしていない人に対して、ユーザー一覧のURLを無効にします）。</p>
     <div class="cn-wsc-code"><pre><code>add_filter( 'rest_endpoints', function( $endpoints ) {
-    if ( isset( $endpoints['/wp/v2/users'] ) ) {
-        foreach ( $endpoints['/wp/v2/users'] as $key =&gt; $endpoint ) {
-            if ( empty( $endpoint['permission_callback'] ) ) {
-                $endpoints['/wp/v2/users'][ $key ]['permission_callback'] = function() {
-                    return current_user_can( 'list_users' );
-                };
-            }
-        }
+    if ( ! is_user_logged_in() ) {
+        unset( $endpoints['/wp/v2/users'] );
+        unset( $endpoints['/wp/v2/users/(?P&lt;id&gt;[\d]+)'] );
     }
     return $endpoints;
 } );</code></pre></div>
@@ -1026,6 +1051,97 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
       <p>テーマの <code>functions.php</code> を直接編集するのが不安な場合は、「Code Snippets」などのプラグインを使ってコードを追加する方法もあります。</p>
     </div>
     <p>参考：<a href="https://developer.wordpress.org/rest-api/reference/users/" target="_blank" rel="noopener noreferrer">WordPress公式：REST API ユーザーエンドポイント（英語）</a></p>
+  </section>
+
+  <!-- カテゴリC -->
+  <section class="cn-wsc-section" id="category-c">
+    <h2>カテゴリC：衛生状態</h2>
+    <p class="cn-wsc-section-lead">使っていないものが放置されていないか、ログインを守る基本設定が整っているかを確認します。すぐに危険というより、「いざというときに被害を広げないための備え」にあたる2項目です。</p>
+
+    <!-- C1 -->
+    <h3 class="cn-wsc-item-title">C1. セキュリティキー（秘密の文字列）</h3>
+    <p><code>wp-config.php</code> に設定する8つの <strong>認証用ユニークキー</strong>（<code>AUTH_KEY</code> から <code>NONCE_SALT</code> まで）の状態を確認します。この値は、ログイン状態を保存するcookieの改ざん防止に使われます。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td>8つすべてが、十分な長さの固有の値で設定されている</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-attention">🟡 改善推奨</td>
+            <td>未設定・初期値（<code>put your unique phrase here</code>）・他のキーと同じ値のものがある</td>
+            <td>キーを生成して設定する</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-recommended">🔴 要対応</td>
+            <td>短すぎる値がそのまま使われている</td>
+            <td>すぐにキーを再生成する</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cn-wsc-note">
+      <p><strong>未設定や初期値なのに「要対応」ではない理由</strong><br>
+      キーが未設定や初期値のとき、WordPressはその値を使わず、自動生成したランダムな値をデータベースに保存して代わりに使います。そのため、すぐにログインを乗っ取られる状態ではありません。ただし、秘密の値がデータベースに入っているため、データベースやバックアップが漏れたときにログイン状態を偽装される余地が残ります。一方、短すぎる値はそのまま使われ、推測されやすいため「要対応」としています。</p>
+      <p>キーの値そのものは、診断画面に表示したり外部に送ったりすることはありません。</p>
+    </div>
+    <p><strong>対処方法</strong></p>
+    <ol>
+      <li><a href="https://api.wordpress.org/secret-key/1.1/salt/" target="_blank" rel="noopener noreferrer">WordPress公式の秘密鍵生成サービス</a>を開くと、8行のコードが表示されます</li>
+      <li><code>wp-config.php</code> を開き、<code>AUTH_KEY</code> から <code>NONCE_SALT</code> までの8行を、表示されたコードにまるごと置き換えて保存します</li>
+      <li>置き換えると、ログイン中の人は一度ログアウトされます（再ログインすれば問題ありません）</li>
+    </ol>
+    <div class="cn-wsc-warn">
+      <p><strong>⚠️ 注意：</strong> <code>wp-config.php</code> を編集する前に、必ずファイルのバックアップを取ってください。生成されたキーは他人に見せないでください。</p>
+    </div>
+
+    <hr class="cn-wsc-divider">
+
+    <!-- C2 -->
+    <h3 class="cn-wsc-item-title">C2. 未使用のプラグイン・テーマ</h3>
+    <p>停止中のプラグインや、使っていないテーマが残っていないかを確認します。診断結果には、該当するプラグイン・テーマの名前が表示されます。</p>
+    <div class="cn-wsc-table-wrap">
+      <table class="cn-wsc-table">
+        <thead>
+          <tr>
+            <th>ステータス</th>
+            <th>判定条件</th>
+            <th>対処の目安</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cn-wsc-good">✅ 問題なし</td>
+            <td>停止中のプラグインがなく、使っていないテーマも1つ以内</td>
+            <td>対応不要</td>
+          </tr>
+          <tr>
+            <td class="cn-wsc-attention">🟡 改善推奨</td>
+            <td>停止中のプラグインがある、または使っていないテーマが2つ以上ある</td>
+            <td>不要なものを確認して削除</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>停止中（無効化）のプラグインやテーマでも、ファイルはサーバーに残っています。そのファイルに脆弱性があると、有効・無効に関係なく直接狙われて侵入経路になることがあります。ただし、停止中のものがあること自体が脆弱性というわけではありません。</p>
+    <p><strong>対処方法</strong></p>
+    <ol>
+      <li>診断結果に表示された名前を確認し、本当に使っていないかを確かめます</li>
+      <li>プラグインは <strong>「プラグイン」→「インストール済みプラグイン」</strong> で、停止中のものの「削除」をクリックします</li>
+      <li>テーマは <strong>「外観」→「テーマ」</strong> で使っていないテーマを選び、「削除」をクリックします</li>
+    </ol>
+    <div class="cn-wsc-note">
+      <p>テーマは、万一の切り替え用に1つ残しておくのは問題ありません（WordPress標準のテーマがおすすめです）。子テーマを使っている場合、その親テーマは「使用中」として扱います。</p>
+    </div>
   </section>
 
   <!-- FAQ -->
@@ -1036,13 +1152,13 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
       <details>
         <summary>無料で使えますか？</summary>
         <div class="cn-wsc-faq-body">
-          <p>はい、無料でお使いいただけます。現在公開している全10項目の診断機能はすべて無料です。将来的にプラグインやテーマの脆弱性（CVE）を日本語でお知らせするPro版を予定していますが、現在の診断機能は無料のまま提供し続けます。</p>
+          <p>はい、無料でお使いいただけます。全12項目の診断機能はすべて無料です。プラグインやテーマを既知の脆弱性（CVE）情報と照合する機能は、このプラグインには含まれておらず、別の有料サービスとして提供を予定しています。現在の診断機能は無料のまま提供し続けます。</p>
         </div>
       </details>
       <details>
         <summary>WordPressのバージョンはいくつから使えますか？</summary>
         <div class="cn-wsc-faq-body">
-          <p>WordPress 5.9 以上、PHP 7.4 以上が必要です。WordPress 6.x 系をお使いの方は問題なくご利用いただけます。</p>
+          <p>WordPress 5.9 以上、PHP 7.4 以上が必要です。ただし、PHPはサポート中の新しい系列のご利用をおすすめします（A2を参照）。</p>
         </div>
       </details>
       <details>
@@ -1054,7 +1170,7 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
       <details>
         <summary>マルチサイト環境でも使えますか？</summary>
         <div class="cn-wsc-faq-body">
-          <p>現時点では単一サイト向けの設計です。マルチサイト環境での動作は確認していません。</p>
+          <p>現時点では単一サイト向けの設計です。マルチサイト環境での動作は十分に確認できていません。</p>
         </div>
       </details>
       <details>
@@ -1096,19 +1212,19 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
       <details>
         <summary>外部のサーバーにデータを送っていますか？</summary>
         <div class="cn-wsc-faq-body">
-          <p>一切送っていません。すべての診断はあなたのサーバー内だけで完結します。プラグインが外部のサーバーへ通信することはありません（APIキーも不要です）。</p>
+          <p>一切送っていません。すべての診断はあなたのサーバー内だけで完結します。プラグインが外部のサーバーへ通信することはありません（APIキーも不要です）。WordPressの更新状況は、WordPress本体が定期的に取得している情報を読み取って判定しています。</p>
         </div>
       </details>
       <details>
         <summary>このプラグインはサイトの設定を自動で変更しますか？</summary>
         <div class="cn-wsc-faq-body">
-          <p>しません。Site Security Checker は診断と情報提供に特化しています。設定の変更や更新の実行は、すべて利用者ご自身に委ねています。</p>
+          <p>しません。CyberNote Security Checker は診断と情報提供に特化しています。設定の変更や更新の実行は、すべて利用者ご自身に委ねています。</p>
         </div>
       </details>
       <details>
         <summary>プラグインを削除するとサイトに何か残りますか？</summary>
         <div class="cn-wsc-faq-body">
-          <p>プラグインを削除（アンインストール）すると、<code>wp_options</code> テーブルに保存されていたキャッシュデータは自動的に削除されます。</p>
+          <p>このプラグインは診断結果や設定をデータベースに保存しないため、削除（アンインストール）してもサイトには何も残りません。</p>
         </div>
       </details>
     </div>
@@ -1117,7 +1233,7 @@ define( 'WP_DEBUG_DISPLAY', true );</code></pre></div>
   <!-- 末尾注意書き -->
   <div class="cn-wsc-note">
     <p><strong>このプラグインについて</strong></p>
-    <p>Site Security Checker は <strong>診断と案内に特化した</strong> プラグインです。サイトの設定やファイルを自動で書き換えることは一切ありません。診断結果をもとに、変更するかどうかの判断はすべて利用者ご自身に委ねています。安心してお使いください。</p>
+    <p>CyberNote Security Checker は <strong>診断と案内に特化した</strong> プラグインです。サイトの設定やファイルを自動で書き換えることは一切ありません。診断結果をもとに、変更するかどうかの判断はすべて利用者ご自身に委ねています。安心してお使いください。</p>
   </div>
 
 </div>

@@ -47,20 +47,30 @@ class CNSC_Category_A {
 		}
 
 		$current = $wp_version;
-		$updates = get_core_updates();
+		// 「非表示」にされた更新も含めて判定する（非表示＝適用済みではないため）。
+		$updates = get_core_updates( array( 'dismissed' => true ) );
 
-		// 更新情報が取得できない、または最新の場合は good。
-		if (
-			empty( $updates ) ||
-			( isset( $updates[0]->response ) && 'latest' === $updates[0]->response )
-		) {
+		// WordPressの更新確認が一度も成功していない場合、最新かどうかは分からない。
+		// 「問題なし」とは表示せず、確認できなかったことをそのまま伝える。
+		if ( empty( $updates ) ) {
+			return array(
+				'id'      => 'a1',
+				'label'   => __( 'WordPress本体', 'cybernote-security-checker' ),
+				'status'  => 'attention',
+				'message' => __( 'WordPressの更新情報をまだ取得できていないため、最新かどうかを確認できませんでした。「ダッシュボード → 更新」を開くと更新確認が行われます。それでも表示されない場合は、サーバーから WordPress.org への通信が制限されていないかご確認ください', 'cybernote-security-checker' ),
+				/* translators: %s: current WordPress version */
+				'detail'  => sprintf( __( '現在のバージョン: %s（更新情報は未取得）', 'cybernote-security-checker' ), $current ),
+			);
+		}
+
+		if ( isset( $updates[0]->response ) && 'latest' === $updates[0]->response ) {
 			return array(
 				'id'      => 'a1',
 				'label'   => __( 'WordPress本体', 'cybernote-security-checker' ),
 				'status'  => 'good',
 				'message' => '',
 				/* translators: %s: current WordPress version */
-				'detail'  => sprintf( __( '現在のバージョン: %s（最新）', 'cybernote-security-checker' ), esc_html( $current ) ),
+				'detail'  => sprintf( __( '現在のバージョン: %s（最新）', 'cybernote-security-checker' ), $current ),
 			);
 		}
 
@@ -117,40 +127,95 @@ class CNSC_Category_A {
 			'status'  => $status,
 			'message' => $message,
 			/* translators: 1: current WP version, 2: latest WP version */
-			'detail'  => sprintf( __( '現在: %1$s / 最新: %2$s', 'cybernote-security-checker' ), esc_html( $current ), esc_html( $latest_version ) ),
+			'detail'  => sprintf( __( '現在: %1$s / 最新: %2$s', 'cybernote-security-checker' ), $current, $latest_version ),
 		);
+	}
+
+	/**
+	 * PHP公式のサポート期限（https://www.php.net/supported-versions.php）。
+	 *
+	 * 系列 => array( 通常サポート終了日, セキュリティサポート終了日 )。
+	 * 日付で判定するため、プラグインを更新しなくても期限を過ぎた系列は自動的に
+	 * 判定が厳しくなる（固定のしきい値のように判定が古くならない）。
+	 * 新しい系列が出たら行を追加する。表にない新しい系列は「サポート中」として扱う。
+	 *
+	 * @return array
+	 */
+	private static function php_support_schedule() {
+		return array(
+			'7.4' => array( '2021-11-28', '2022-11-28' ),
+			'8.0' => array( '2022-11-26', '2023-11-26' ),
+			'8.1' => array( '2023-11-25', '2025-12-31' ),
+			'8.2' => array( '2024-12-31', '2026-12-31' ),
+			'8.3' => array( '2025-12-31', '2027-12-31' ),
+			'8.4' => array( '2026-12-31', '2028-12-31' ),
+			'8.5' => array( '2027-12-31', '2029-12-31' ),
+		);
+	}
+
+	/**
+	 * PHP系列のサポート段階を判定する。
+	 *
+	 * @param string $branch PHP系列（例: 8.3）。
+	 * @param string $today  判定日（Y-m-d）。
+	 * @return array array( 'active'|'security'|'eol', セキュリティサポート終了日 or '' )
+	 */
+	public static function php_support_phase( $branch, $today ) {
+		$schedule = self::php_support_schedule();
+
+		if ( ! isset( $schedule[ $branch ] ) ) {
+			$oldest = array_keys( $schedule )[0];
+			return array( version_compare( $branch, $oldest, '<' ) ? 'eol' : 'active', '' );
+		}
+
+		list( $active_end, $eol_date ) = $schedule[ $branch ];
+		if ( $today > $eol_date ) {
+			return array( 'eol', $eol_date );
+		}
+		if ( $today > $active_end ) {
+			return array( 'security', $eol_date );
+		}
+		return array( 'active', $eol_date );
 	}
 
 	/**
 	 * A-2: PHPバージョンがサポート対象か
 	 *
-	 * しきい値は日付の直書きを避け、メジャー番号ベースの緩い基準にする
-	 * （プラグイン更新時に見直す前提）。2026年6月時点の公式サポート状況に基づく:
-	 * 8.4/8.5以上 = good, 8.2/8.3 = attention, 8.1以下 = recommended。
+	 * good: 通常サポート中 / attention: セキュリティ修正のみの期間 / recommended: サポート終了。
 	 *
 	 * @return array Check result.
 	 */
 	private function check_php_version() {
 		$current = PHP_VERSION;
+		list( $phase, $eol_date ) = self::php_support_phase( PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION, gmdate( 'Y-m-d' ) );
 
-		if ( version_compare( $current, '8.4', '>=' ) ) {
+		if ( 'active' === $phase ) {
 			$status  = 'good';
 			$message = '';
-		} elseif ( version_compare( $current, '8.2', '>=' ) ) {
+		} elseif ( 'security' === $phase ) {
 			$status  = 'attention';
-			$message = __( 'セキュリティ修正のみ、または間もなく終了する系列です。サーバーの管理画面からPHPのバージョンアップを検討してください（変更前にバックアップ推奨）', 'cybernote-security-checker' );
+			$message = sprintf(
+				/* translators: %s: security support end date */
+				__( 'セキュリティ修正だけが提供される期間に入っている系列です（%s にサポート終了）。期限までに、サーバーの管理画面から新しいPHPへの切り替えを計画してください（変更前にバックアップ推奨）', 'cybernote-security-checker' ),
+				$eol_date
+			);
 		} else {
 			$status  = 'recommended';
 			$message = __( 'サポートが終了した系列です。新しい脆弱性が見つかっても修正されません。サーバーの管理画面からPHPのバージョンを上げてください（変更前にバックアップ推奨）', 'cybernote-security-checker' );
 		}
+
+		$detail = $eol_date
+			/* translators: 1: current PHP version, 2: security support end date */
+			? sprintf( __( '現在のバージョン: %1$s（サポート終了日: %2$s）', 'cybernote-security-checker' ), $current, $eol_date )
+			/* translators: %s: current PHP version string */
+			: sprintf( __( '現在のバージョン: %s', 'cybernote-security-checker' ), $current );
 
 		return array(
 			'id'      => 'a2',
 			'label'   => __( 'PHPバージョン', 'cybernote-security-checker' ),
 			'status'  => $status,
 			'message' => $message,
-			/* translators: %s: current PHP version string */
-			'detail'  => sprintf( __( '現在のバージョン: %s', 'cybernote-security-checker' ), esc_html( $current ) ),
+			'detail'  => $detail,
 		);
 	}
 
@@ -195,7 +260,14 @@ class CNSC_Category_A {
 
 		$count = count( $names );
 
-		if ( 0 === $count ) {
+		// 更新確認が一度も成功していない場合、「更新待ち0件」とは言えない。
+		$checked = is_object( $plugin_updates ) && ! empty( $plugin_updates->last_checked )
+			&& is_object( $theme_updates ) && ! empty( $theme_updates->last_checked );
+
+		if ( ! $checked ) {
+			$status  = 'attention';
+			$message = __( 'プラグイン・テーマの更新情報をまだ取得できていないため、更新待ちがあるか確認できませんでした。「ダッシュボード → 更新」を開くと更新確認が行われます', 'cybernote-security-checker' );
+		} elseif ( 0 === $count ) {
 			$status  = 'good';
 			$message = '';
 		} else {
@@ -207,7 +279,9 @@ class CNSC_Category_A {
 		$detail = '';
 		if ( ! empty( $names ) ) {
 			/* translators: %s: comma-separated list of plugin/theme names */
-			$detail = sprintf( __( '対象: %s', 'cybernote-security-checker' ), implode( '、', array_map( 'esc_html', $names ) ) );
+			$detail = sprintf( __( '対象: %s', 'cybernote-security-checker' ), implode( '、', $names ) );
+		} elseif ( ! $checked ) {
+			$detail = __( '更新情報: 未取得', 'cybernote-security-checker' );
 		}
 
 		return array(

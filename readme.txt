@@ -2,8 +2,8 @@
 Contributors: teeeda1129
 Tags: security, hardening, diagnostic, audit, maintenance
 Requires at least: 5.9
-Tested up to: 7.0
-Stable tag: 1.1.0
+Tested up to: 7.1
+Stable tag: 1.1.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -22,21 +22,21 @@ A widget appears on the WordPress dashboard showing results in three levels: goo
 
 = Category A: Version Freshness (3 checks) =
 
-* **WordPress core** — Detects whether security-only maintenance releases are unapplied. Distinguishes urgency between security patches and feature updates.
-* **PHP version** — Evaluated against official PHP support status. End-of-life versions flagged as "priority action"; security-only branches as "attention".
-* **Plugin and theme updates** — Displays the count and names of pending updates. A direct link opens the standard WordPress update screen; the plugin never performs updates itself.
+* **WordPress core** — Detects whether maintenance releases (mainly security and bug fixes) are unapplied, and distinguishes them from feature updates. If WordPress has not yet retrieved update information, the result says so instead of reporting "no problem".
+* **PHP version** — Evaluated against the official PHP support schedule by date, so a branch is flagged automatically once its support ends. End-of-life versions flagged as "priority action"; security-only branches as "attention" with the end date shown.
+* **Plugin and theme updates** — Displays the count and names of pending updates. A direct link opens the standard WordPress update screen; the plugin never performs updates itself. If update information has not been retrieved yet, the result says so.
 
-= Category B: Hardening Settings (9 checks) =
+= Category B: Hardening Settings (7 checks) and Category C: Hygiene (2 checks) =
 
-* **Debug display** — WP_DEBUG with screen output on a production site is flagged as "priority action"; log-only mode as "attention".
-* **File editing** — If the theme and plugin code editor is enabled in the admin panel, flagged as "priority action".
-* **Admin username** — If a user named admin or administrator exists, flagged as "attention" (changing it carries migration risk, so no urgent push).
-* **HTTPS** — Sites running on plain HTTP are flagged as "priority action".
+* **Debug display** — WP_DEBUG with screen output on a production site is flagged as "priority action". Debug mode without screen output, a debug log in the publicly reachable default location, or PHP's display_errors enabled on the server are flagged as "attention".
+* **File editing** — If the theme and plugin code editor is enabled in the admin panel, flagged as "priority action". DISALLOW_FILE_EDIT or DISALLOW_FILE_MODS both count as disabled.
+* **Admin username** — If an administrator account named admin or administrator exists, flagged as "attention" (changing it carries migration risk, so no urgent push).
+* **HTTPS** — Judged from the Site Address and WordPress Address settings (works correctly behind reverse proxies and load balancers). Sites configured for plain HTTP are flagged as "priority action".
 * **Database table prefix** — Default wp_ prefix flagged as "attention" (live-site changes carry risk, so no urgent push).
 * **XML-RPC** — Enabled XML-RPC is flagged as "attention"; use-case guidance included before recommending disablement.
-* **REST API user enumeration** — If anonymous requests to /wp/v2/users return user data, flagged as "attention".
-* **Security keys (salts)** — Checks whether the wp-config.php authentication unique keys and salts are set and not left at the default placeholder. Missing or default keys are flagged as "priority action" (login cookies could be forged). Key values are never read out or displayed.
-* **Unused plugins and themes** — Inactive plugins and unused themes still ship files on the server that can be exploited if vulnerable. Their presence is flagged as "attention" with removal guidance (keeping one fallback theme is fine).
+* **REST API user enumeration** — If anonymous requests to /wp/v2/users return user data, flagged as "attention". REST API restrictions applied through the standard authentication filter are taken into account.
+* **Security keys (salts)** (Category C) — Checks the eight wp-config.php authentication keys and salts. Keys that are too short are flagged as "priority action". Keys that are missing, left at the placeholder or duplicated are flagged as "attention": WordPress then substitutes random values stored in the database, which is safer than it sounds but still leaves a risk if the database leaks. Key values are never displayed.
+* **Unused plugins and themes** (Category C) — Inactive plugins and unused themes still ship files on the server that can be exploited if vulnerable. Their presence is flagged as "attention" and their names are listed, with removal guidance (keeping one fallback theme is fine).
 
 = Design Principles =
 
@@ -84,7 +84,7 @@ Click the "Re-diagnose" button inside the widget or admin page to refresh result
 
 = PHP 8.1 is detected. Do I need to upgrade immediately? =
 
-PHP 8.1 reached end-of-life in late 2025, so the plugin flags it as "priority action". However, upgrading PHP can break some plugins or themes. Take a backup, test in a staging environment if possible, then upgrade.
+PHP 8.1 reached end-of-life on 31 December 2025, so the plugin flags it as "priority action". However, upgrading PHP can break some plugins or themes. Take a backup, test in a staging environment if possible, then upgrade.
 
 = Is it safe to leave XML-RPC enabled? =
 
@@ -92,12 +92,28 @@ If you use Jetpack or a mobile app that relies on XML-RPC, leaving it enabled is
 
 == Screenshots ==
 
-1. Dedicated admin page — all 10 diagnostic results in one view. Priority items and hardening settings displayed in a two-column layout.
+1. Dedicated admin page — all 12 diagnostic results in one view: summary, priority items, and the three categories.
 2. Dashboard widget — compact summary on the standard WordPress dashboard showing issue count and top-priority items.
 
 == Changelog ==
 
+= 1.1.1 =
+* Fixed: WordPress core and plugin/theme update checks no longer report "no problem" when WordPress has not retrieved update information yet
+* Fixed: HTTPS check now uses the Site Address / WordPress Address settings, avoiding false warnings behind reverse proxies and load balancers
+* Fixed: REST API user enumeration check now respects restrictions applied via the rest_authentication_errors filter
+* Fixed: File editing check recognizes DISALLOW_FILE_MODS
+* Fixed: Admin username check only flags accounts with administrator privileges
+* Fixed: Database prefix check uses the base prefix on multisite
+* Fixed: Plugin and theme names containing "&" or quotes were displayed double-escaped
+* Fixed: The re-diagnose button no longer gets stuck when the request fails
+* Improved: PHP version check follows the official support schedule by date
+* Improved: Security keys check reflects how WordPress handles missing or default keys (too short = priority action; missing/placeholder/duplicate = attention)
+* Improved: Debug check detects a publicly reachable debug.log and display_errors enabled on the server
+* Improved: Unused plugins and themes are listed by name
+* Improved: Clearer, consistent guidance text for PHP, debug, database prefix, XML-RPC and security keys
+
 = 1.1.0 =
+* (Not released separately on WordPress.org; these changes ship in 1.1.1.)
 * Refreshed the admin UI with a cleaner, SaaS-style dashboard (summary gauge, priority card, category cards)
 * Reorganized the results display into three categories: A. Version freshness / B. Hardening / C. Hygiene (diagnostic logic unchanged)
 * Added a "Hygiene" sub-page and redesigned the vulnerability-alert page as a clearer external-service (CyberNote) information page — still no bundled scanning or license code
@@ -112,6 +128,9 @@ If you use Jetpack or a mobile app that relies on XML-RPC, leaving it enabled is
 * Full Japanese language support
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+Fixes several false results (HTTPS behind proxies, REST API restrictions, unknown update status) and improves accuracy. Recommended for all users.
 
 = 1.1.0 =
 UI refresh and clearer category organization. No change to what is diagnosed.

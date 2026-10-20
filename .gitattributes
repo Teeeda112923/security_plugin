@@ -1,0 +1,14 @@
+# Keep "Download ZIP" / git archive output equal to the WordPress.org package.
+# The Pro connector and the cybernote.click backend make external requests and
+# must never ship inside the free plugin (see .distignore for the SVN deploy).
+/.github          export-ignore
+/.wordpress-org   export-ignore
+/backend          export-ignore
+/docs             export-ignore
+/pro-plugin       export-ignore
+/tests            export-ignore
+/.distignore      export-ignore
+/.gitattributes   export-ignore
+/.gitignore       export-ignore
+/CLAUDE.md        export-ignore
+/DESIGN.md        export-ignore

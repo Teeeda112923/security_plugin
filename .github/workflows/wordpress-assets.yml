@@ -2,29 +2,53 @@ name: Update WordPress.org assets
 
 # Syncs readme.txt and marketing images (.wordpress-org/) to the WordPress.org
 # listing WITHOUT cutting a new release. Runs when those files change on the
-# default branch — so an auto-bumped "Tested up to" goes live without a tag.
+# default branch, and after the weekly "Update Tested up to" job (a push made
+# with GITHUB_TOKEN does not trigger other workflows by itself).
+#
+# Safety: if readme.txt's "Stable tag" points to a version that has not been
+# released yet (no matching v<version> git tag), the sync is skipped. Otherwise
+# WordPress.org would advertise a version whose code is not in SVN.
 on:
   push:
     branches:
       - main
-      - master
     paths:
       - 'readme.txt'
       - '.wordpress-org/**'
+  workflow_run:
+    workflows: ["Update Tested up to"]
+    types: [completed]
   workflow_dispatch:
 
 jobs:
   assets:
     name: Update readme and assets
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-tags: true
+          fetch-depth: 0
+
+      - name: Check that Stable tag is already released
+        id: guard
+        run: |
+          stable=$(grep -m1 "^Stable tag:" readme.txt | awk '{print $NF}')
+          if git rev-parse -q --verify "refs/tags/v${stable}" >/dev/null; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Stable tag ${stable} has no git tag v${stable} yet. Skipping asset sync (release it with the Deploy workflow first)."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Update WordPress.org page
+        if: steps.guard.outputs.ok == 'true'
         uses: 10up/action-wordpress-plugin-asset-update@stable
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-          SLUG: site-security-checker
+          SLUG: cybernote-security-checker
           ASSETS_DIR: .wordpress-org
