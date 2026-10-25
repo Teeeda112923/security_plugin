@@ -63,8 +63,14 @@ class CNAPI_Rest {
 		$vulnerabilities = $matcher->scan( $env );
 		$stats           = $matcher->get_stats();
 
-		// 一部でも脆弱性DBへ到達できなかった／打ち切った場合は「不完全」を明示する。
-		$incomplete = ( $stats['failed'] > 0 || $stats['aborted'] );
+		// 照合失敗・時間切れ・対象情報不足・応答形式不正は「不完全」として扱う。
+		// 未照合項目が残る場合、結果0件でも「脆弱性なし」と表示してはいけない。
+		$incomplete = (
+			$stats['failed'] > 0 ||
+			$stats['aborted'] ||
+			$stats['skipped'] > 0 ||
+			$stats['parse_failed'] > 0
+		);
 
 		return new WP_REST_Response(
 			array(
