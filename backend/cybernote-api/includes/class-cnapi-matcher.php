@@ -72,15 +72,23 @@ class CNAPI_Matcher {
 			);
 		}
 
-		$code  = (int) wp_remote_retrieve_response_code( $response );
-		$body  = json_decode( wp_remote_retrieve_body( $response ), true );
-		$vulns = is_array( $body ) ? ( $body['data']['vulnerability'] ?? array() ) : array();
+		$code = (int) wp_remote_retrieve_response_code( $response );
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		// HTTP 200だけでは接続成功とみなさず、期待する応答形式まで検証する。
+		$valid_schema = is_array( $body )
+			&& isset( $body['data'] )
+			&& is_array( $body['data'] )
+			&& array_key_exists( 'vulnerability', $body['data'] )
+			&& is_array( $body['data']['vulnerability'] );
+		$vulns        = $valid_schema ? $body['data']['vulnerability'] : array();
+		$ok           = ( 200 === $code && $valid_schema );
 
 		return array(
-			'ok'         => ( 200 === $code && is_array( $vulns ) ),
+			'ok'         => $ok,
 			'http'       => $code,
-			'error'      => ( 200 === $code ) ? '' : 'HTTP ' . $code,
-			'vuln_count' => is_array( $vulns ) ? count( $vulns ) : 0,
+			'error'      => $ok ? '' : ( 200 === $code ? '応答形式が不正です（JSONまたはvulnerability項目を確認してください）。' : 'HTTP ' . $code ),
+			'vuln_count' => count( $vulns ),
 		);
 	}
 
