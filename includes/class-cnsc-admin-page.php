@@ -44,7 +44,7 @@ class CNSC_Admin_Page {
 	public function register_menu() {
 		$hook = add_menu_page(
 			__( 'CyberNote Security Checker', 'cybernote-security-checker' ),
-			__( 'セキュリティ診断', 'cybernote-security-checker' ),
+			__( 'Security Checker', 'cybernote-security-checker' ),
 			'manage_options',
 			self::MENU_SLUG,
 			array( $this, 'render_dashboard' ),
@@ -56,8 +56,8 @@ class CNSC_Admin_Page {
 		// ダッシュボード（トップと同一URLだが表示名を上書き）。
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( 'ダッシュボード', 'cybernote-security-checker' ),
-			__( 'ダッシュボード', 'cybernote-security-checker' ),
+			__( 'Dashboard', 'cybernote-security-checker' ),
+			__( 'Dashboard', 'cybernote-security-checker' ),
 			'manage_options',
 			self::MENU_SLUG,
 			array( $this, 'render_dashboard' )
@@ -66,8 +66,8 @@ class CNSC_Admin_Page {
 
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( '診断結果', 'cybernote-security-checker' ),
-			__( '診断結果', 'cybernote-security-checker' ),
+			__( 'Diagnostic results', 'cybernote-security-checker' ),
+			__( 'Diagnostic results', 'cybernote-security-checker' ),
 			'manage_options',
 			self::SLUG_RESULTS,
 			array( $this, 'render_results' )
@@ -76,8 +76,8 @@ class CNSC_Admin_Page {
 
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( 'バージョン鮮度', 'cybernote-security-checker' ),
-			__( 'バージョン鮮度', 'cybernote-security-checker' ),
+			__( 'Version freshness', 'cybernote-security-checker' ),
+			__( 'Version freshness', 'cybernote-security-checker' ),
 			'manage_options',
 			self::SLUG_VERSION,
 			array( $this, 'render_version' )
@@ -86,8 +86,8 @@ class CNSC_Admin_Page {
 
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( 'ハードニング設定', 'cybernote-security-checker' ),
-			__( 'ハードニング設定', 'cybernote-security-checker' ),
+			__( 'Hardening settings', 'cybernote-security-checker' ),
+			__( 'Hardening settings', 'cybernote-security-checker' ),
 			'manage_options',
 			self::SLUG_HARDENING,
 			array( $this, 'render_hardening' )
@@ -96,8 +96,8 @@ class CNSC_Admin_Page {
 
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( '衛生状態', 'cybernote-security-checker' ),
-			__( '衛生状態', 'cybernote-security-checker' ),
+			__( 'Site hygiene', 'cybernote-security-checker' ),
+			__( 'Site hygiene', 'cybernote-security-checker' ),
 			'manage_options',
 			self::SLUG_HYGIENE,
 			array( $this, 'render_hygiene' )
@@ -107,8 +107,8 @@ class CNSC_Admin_Page {
 		// 脆弱性アラートは外部サービス（CyberNote）で提供する機能の案内ページ。
 		$h = add_submenu_page(
 			self::MENU_SLUG,
-			__( '脆弱性アラート Pro', 'cybernote-security-checker' ),
-			__( '脆弱性アラート Pro', 'cybernote-security-checker' ),
+			__( 'Vulnerability Alerts Pro', 'cybernote-security-checker' ),
+			__( 'Vulnerability Alerts Pro', 'cybernote-security-checker' ),
 			'manage_options',
 			self::SLUG_CVE,
 			array( $this, 'render_cve' )
@@ -178,7 +178,7 @@ class CNSC_Admin_Page {
 			'cnscAdminData',
 			array(
 				'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
-				'refreshingText' => __( '診断中...', 'cybernote-security-checker' ),
+				'refreshingText' => __( 'Checking...', 'cybernote-security-checker' ),
 			)
 		);
 	}
@@ -207,8 +207,8 @@ class CNSC_Admin_Page {
 		}
 		$results = ( new CNSC_Diagnostics() )->run();
 		$this->page_wrap(
-			__( 'ダッシュボード', 'cybernote-security-checker' ),
-			__( 'サイト内の設定とバージョン状態を診断します。外部への通信は行わず、設定の自動変更もしません。', 'cybernote-security-checker' ),
+			__( 'Dashboard', 'cybernote-security-checker' ),
+			__( 'Check your site settings and version status without sending data externally or changing settings automatically.', 'cybernote-security-checker' ),
 			function () use ( $results ) {
 				$this->render_body( $results );
 			}
@@ -223,27 +223,27 @@ class CNSC_Admin_Page {
 		$results = ( new CNSC_Diagnostics() )->run();
 		list( $hardening, $hygiene ) = $this->split_hardening_hygiene( $results );
 		$this->page_wrap(
-			__( '診断結果', 'cybernote-security-checker' ),
-			__( '全診断項目の結果をまとめて表示します。', 'cybernote-security-checker' ),
+			__( 'Diagnostic results', 'cybernote-security-checker' ),
+			__( 'View the results for all diagnostic checks in one place.', 'cybernote-security-checker' ),
 			function () use ( $results, $hardening, $hygiene ) {
 				$counts = CNSC_Renderer::severity_counts( $results );
 				?>
 				<div class="wsc-admin-body">
 					<?php $this->render_summary_bar( $results, $counts ); ?>
 					<div class="wsc-card wsc-category-card" style="padding:20px">
-						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'A. バージョン鮮度', 'cybernote-security-checker' ); ?></h2>
+						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'A. Version freshness', 'cybernote-security-checker' ); ?></h2>
 						<div class="wsc-item-list" style="margin-bottom:24px">
 							<?php foreach ( $results['a'] as $item ) : ?>
 								<?php CNSC_Renderer::render_item( $item ); ?>
 							<?php endforeach; ?>
 						</div>
-						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'B. ハードニング設定', 'cybernote-security-checker' ); ?></h2>
+						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'B. Hardening settings', 'cybernote-security-checker' ); ?></h2>
 						<div class="wsc-item-list" style="margin-bottom:24px">
 							<?php foreach ( $hardening as $item ) : ?>
 								<?php CNSC_Renderer::render_item( $item ); ?>
 							<?php endforeach; ?>
 						</div>
-						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'C. 衛生状態', 'cybernote-security-checker' ); ?></h2>
+						<h2 class="wsc-card-title" style="margin-bottom:8px"><?php esc_html_e( 'C. Site hygiene', 'cybernote-security-checker' ); ?></h2>
 						<div class="wsc-item-list">
 							<?php foreach ( $hygiene as $item ) : ?>
 								<?php CNSC_Renderer::render_item( $item ); ?>
@@ -264,8 +264,8 @@ class CNSC_Admin_Page {
 		}
 		$results = ( new CNSC_Diagnostics() )->run();
 		$this->page_wrap(
-			__( 'バージョン鮮度', 'cybernote-security-checker' ),
-			__( 'WordPress本体・PHP・プラグイン／テーマの更新状況を確認します。', 'cybernote-security-checker' ),
+			__( 'Version freshness', 'cybernote-security-checker' ),
+			__( 'Check update status for WordPress core, PHP, plugins, and themes.', 'cybernote-security-checker' ),
 			function () use ( $results ) {
 				?>
 				<div class="wsc-admin-body">
@@ -291,8 +291,8 @@ class CNSC_Admin_Page {
 		$results = ( new CNSC_Diagnostics() )->run();
 		list( $hardening ) = $this->split_hardening_hygiene( $results );
 		$this->page_wrap(
-			__( 'ハードニング設定', 'cybernote-security-checker' ),
-			__( 'サイトを攻撃に強くするための基本設定を確認します。', 'cybernote-security-checker' ),
+			__( 'Hardening settings', 'cybernote-security-checker' ),
+			__( 'Check basic settings that help protect your site against attacks.', 'cybernote-security-checker' ),
 			function () use ( $hardening ) {
 				?>
 				<div class="wsc-admin-body">
@@ -318,8 +318,8 @@ class CNSC_Admin_Page {
 		$results = ( new CNSC_Diagnostics() )->run();
 		list( , $hygiene ) = $this->split_hardening_hygiene( $results );
 		$this->page_wrap(
-			__( '衛生状態', 'cybernote-security-checker' ),
-			__( '使っていないプラグイン・テーマや、認証まわりの基本設定を確認します。', 'cybernote-security-checker' ),
+			__( 'Site hygiene', 'cybernote-security-checker' ),
+			__( 'Check unused plugins and themes and the basic settings that protect authentication.', 'cybernote-security-checker' ),
 			function () use ( $hygiene ) {
 				?>
 				<div class="wsc-admin-body">
@@ -340,8 +340,8 @@ class CNSC_Admin_Page {
 	/** 脆弱性アラート Pro — 外部サービス CyberNote の案内ページ（ロック解除ではない） */
 	public function render_cve() {
 		$this->page_wrap(
-			__( '脆弱性アラート Pro', 'cybernote-security-checker' ),
-			__( '使用中のプラグイン・テーマを既知の脆弱性情報と照合する機能の案内です。', 'cybernote-security-checker' ),
+			__( 'Vulnerability Alerts Pro', 'cybernote-security-checker' ),
+			__( 'Learn about the service that checks your installed plugins and themes against known vulnerability information.', 'cybernote-security-checker' ),
 			array( $this, 'render_cve_info_body' )
 		);
 	}
@@ -356,22 +356,22 @@ class CNSC_Admin_Page {
 		// 静的な表示例（架空名）。実データではない。
 		$samples = array(
 			array(
-				'name'  => __( 'フォームプラグインA', 'cybernote-security-checker' ),
+				'name'  => __( 'Form plugin A', 'cybernote-security-checker' ),
 				'level' => 'high',
-				'sev'   => __( '深刻度：高', 'cybernote-security-checker' ),
-				'hint'  => __( '対応目安：早めの更新を推奨', 'cybernote-security-checker' ),
+				'sev'   => __( 'Severity: High', 'cybernote-security-checker' ),
+				'hint'  => __( 'Suggested action: Update soon', 'cybernote-security-checker' ),
 			),
 			array(
-				'name'  => __( 'SEO補助プラグインB', 'cybernote-security-checker' ),
+				'name'  => __( 'SEO helper plugin B', 'cybernote-security-checker' ),
 				'level' => 'mid',
-				'sev'   => __( '深刻度：中', 'cybernote-security-checker' ),
-				'hint'  => __( '対応目安：更新内容を確認', 'cybernote-security-checker' ),
+				'sev'   => __( 'Severity: Medium', 'cybernote-security-checker' ),
+				'hint'  => __( 'Suggested action: Review the update', 'cybernote-security-checker' ),
 			),
 			array(
-				'name'  => __( '予約管理プラグインC', 'cybernote-security-checker' ),
+				'name'  => __( 'Booking plugin C', 'cybernote-security-checker' ),
 				'level' => 'low',
-				'sev'   => __( '深刻度：低', 'cybernote-security-checker' ),
-				'hint'  => __( '対応目安：次回メンテナンス時に確認', 'cybernote-security-checker' ),
+				'sev'   => __( 'Severity: Low', 'cybernote-security-checker' ),
+				'hint'  => __( 'Suggested action: Review at the next maintenance window', 'cybernote-security-checker' ),
 			),
 		);
 		?>
@@ -388,21 +388,21 @@ class CNSC_Admin_Page {
 						</div>
 					<?php endforeach; ?>
 				</div>
-				<p class="wsc-cve-note"><?php esc_html_e( '※これは表示例です。実際の診断結果ではありません。', 'cybernote-security-checker' ); ?></p>
+			<p class="wsc-cve-note"><?php esc_html_e( 'This is a visual example, not an actual diagnostic result.', 'cybernote-security-checker' ); ?></p>
 			</div>
 
 			<!-- 外部サービスの案内カード -->
 			<div class="wsc-card wsc-pro-card">
 				<div class="wsc-pro-badge"><?php esc_html_e( 'CyberNote Pro', 'cybernote-security-checker' ); ?></div>
-				<h2 class="wsc-pro-title"><?php esc_html_e( '更新の「緊急度」まで知りたい方へ', 'cybernote-security-checker' ); ?></h2>
+				<h2 class="wsc-pro-title"><?php esc_html_e( 'Want to know how urgent each update is?', 'cybernote-security-checker' ); ?></h2>
 				<p class="wsc-pro-desc">
-					<?php esc_html_e( '無料版では、WordPress・PHP・プラグインの状態を診断できます。Proではさらに、使用中のプラグイン・テーマを既知の脆弱性情報と照合し、どれを優先して対応すべきかを日本語で確認できます。', 'cybernote-security-checker' ); ?>
+					<?php esc_html_e( 'The free version checks the status of WordPress, PHP, and your plugins. Pro also checks installed plugins and themes against known vulnerability information so you can see which items to address first.', 'cybernote-security-checker' ); ?>
 				</p>
 				<p class="wsc-pro-sub">
-					<?php esc_html_e( 'この機能は外部サービスとして提供されます。無料版のプラグイン内には、CVE照合機能やライセンス解除機能は含まれていません。', 'cybernote-security-checker' ); ?>
+					<?php esc_html_e( 'This feature is provided as an external service. The free plugin does not include CVE matching or license-unlocking code.', 'cybernote-security-checker' ); ?>
 				</p>
 				<a href="<?php echo esc_url( 'https://www.cybernote.click/wp-security-checker-guide/' ); ?>" class="button button-primary wsc-pro-cta" target="_blank" rel="noopener noreferrer">
-					<?php esc_html_e( 'CVEアラートを見る', 'cybernote-security-checker' ); ?> ↗
+					<?php esc_html_e( 'View vulnerability alerts', 'cybernote-security-checker' ); ?> ↗
 				</a>
 			</div>
 		</div>
@@ -467,7 +467,7 @@ class CNSC_Admin_Page {
 					<?php
 					printf(
 						/* translators: %s: current date and time */
-						esc_html__( '最終診断: %s', 'cybernote-security-checker' ),
+						esc_html__( 'Last checked: %s', 'cybernote-security-checker' ),
 						esc_html( current_time( 'Y-m-d H:i' ) )
 					);
 					?>
@@ -479,7 +479,7 @@ class CNSC_Admin_Page {
 					data-nonce="<?php echo esc_attr( wp_create_nonce( 'cnsc_admin_refresh_nonce' ) ); ?>"
 				>
 					<span class="dashicons dashicons-update" aria-hidden="true"></span>
-					<?php esc_html_e( '再診断する', 'cybernote-security-checker' ); ?>
+					<?php esc_html_e( 'Run diagnostics again', 'cybernote-security-checker' ); ?>
 				</button>
 			</div>
 
@@ -488,41 +488,41 @@ class CNSC_Admin_Page {
 				<div class="wsc-hero-status" aria-hidden="true">
 					<div class="wsc-hero-ring" style="background:conic-gradient(var(--wsc-blue) 0 <?php echo (int) $issue_deg; ?>deg, var(--wsc-border) <?php echo (int) $issue_deg; ?>deg 360deg)">
 						<div class="wsc-ring-inner">
-							<span class="wsc-ring-label"><?php esc_html_e( '確認が必要な項目', 'cybernote-security-checker' ); ?></span>
+							<span class="wsc-ring-label"><?php esc_html_e( 'Items needing attention', 'cybernote-security-checker' ); ?></span>
 							<span class="wsc-ring-value"><?php echo (int) $issues; ?><small>/ <?php echo (int) $total; ?></small></span>
-							<span class="wsc-ring-unit"><?php esc_html_e( '項目', 'cybernote-security-checker' ); ?></span>
+							<span class="wsc-ring-unit"><?php esc_html_e( 'items', 'cybernote-security-checker' ); ?></span>
 						</div>
 					</div>
 				</div>
 
 				<div class="wsc-hero-copy">
-					<h2><?php esc_html_e( 'サイトのセキュリティ状態', 'cybernote-security-checker' ); ?></h2>
+					<h2><?php esc_html_e( 'Site security status', 'cybernote-security-checker' ); ?></h2>
 					<p>
 						<?php
 						if ( 0 === $issues ) {
-							esc_html_e( '現在の基本設定は良好です。定期的に再診断してください。', 'cybernote-security-checker' );
+							esc_html_e( 'Your basic settings look good. Run the checks regularly.', 'cybernote-security-checker' );
 						} else {
-							esc_html_e( '確認が必要な項目があります。まずは「要対応」から確認しましょう。', 'cybernote-security-checker' );
+							esc_html_e( 'Some items need attention. Start with the items marked Action required.', 'cybernote-security-checker' );
 						}
 						?>
 					</p>
 				</div>
 
-				<div class="wsc-hero-counts" aria-label="<?php esc_attr_e( '診断結果の内訳', 'cybernote-security-checker' ); ?>">
+				<div class="wsc-hero-counts" aria-label="<?php esc_attr_e( 'Diagnostic result breakdown', 'cybernote-security-checker' ); ?>">
 					<div class="wsc-count-card wsc-count-recommended">
 						<span class="wsc-count-icon">!</span>
-						<span class="wsc-count-label"><?php esc_html_e( '要対応', 'cybernote-security-checker' ); ?></span>
-						<strong><?php echo esc_html( $counts['recommended'] ); ?><?php esc_html_e( '件', 'cybernote-security-checker' ); ?></strong>
+						<span class="wsc-count-label"><?php esc_html_e( 'Action required', 'cybernote-security-checker' ); ?></span>
+						<strong><?php echo esc_html( $counts['recommended'] ); ?> <?php esc_html_e( 'items', 'cybernote-security-checker' ); ?></strong>
 					</div>
 					<div class="wsc-count-card wsc-count-attention">
 						<span class="wsc-count-icon">△</span>
-						<span class="wsc-count-label"><?php esc_html_e( '改善推奨', 'cybernote-security-checker' ); ?></span>
-						<strong><?php echo esc_html( $counts['attention'] ); ?><?php esc_html_e( '件', 'cybernote-security-checker' ); ?></strong>
+						<span class="wsc-count-label"><?php esc_html_e( 'Recommended improvement', 'cybernote-security-checker' ); ?></span>
+						<strong><?php echo esc_html( $counts['attention'] ); ?> <?php esc_html_e( 'items', 'cybernote-security-checker' ); ?></strong>
 					</div>
 					<div class="wsc-count-card wsc-count-good">
 						<span class="wsc-count-icon">✓</span>
-						<span class="wsc-count-label"><?php esc_html_e( '問題なし', 'cybernote-security-checker' ); ?></span>
-						<strong><?php echo esc_html( $counts['good'] ); ?><?php esc_html_e( '件', 'cybernote-security-checker' ); ?></strong>
+						<span class="wsc-count-label"><?php esc_html_e( 'No issues', 'cybernote-security-checker' ); ?></span>
+						<strong><?php echo esc_html( $counts['good'] ); ?> <?php esc_html_e( 'items', 'cybernote-security-checker' ); ?></strong>
 					</div>
 				</div>
 			</section>
@@ -533,19 +533,19 @@ class CNSC_Admin_Page {
 					<div>
 						<h2 class="wsc-card-title">
 							<span class="wsc-section-icon wsc-section-icon-alert" aria-hidden="true">!</span>
-							<?php esc_html_e( '優先対応が必要な項目', 'cybernote-security-checker' ); ?>
+							<?php esc_html_e( 'Items requiring priority action', 'cybernote-security-checker' ); ?>
 						</h2>
-						<p class="wsc-card-desc"><?php esc_html_e( '放置するとリスクが高まります。できるだけ早く確認してください。', 'cybernote-security-checker' ); ?></p>
+						<p class="wsc-card-desc"><?php esc_html_e( 'Leaving these unresolved increases risk. Review them as soon as possible.', 'cybernote-security-checker' ); ?></p>
 					</div>
 					<?php if ( $issues > 0 ) : ?>
-						<span class="wsc-mini-count"><?php echo esc_html( $issues ); ?><?php esc_html_e( '件', 'cybernote-security-checker' ); ?></span>
+						<span class="wsc-mini-count"><?php echo esc_html( $issues ); ?> <?php esc_html_e( 'items', 'cybernote-security-checker' ); ?></span>
 					<?php endif; ?>
 				</div>
 
 				<?php if ( empty( $priority_items ) ) : ?>
 					<div class="wsc-empty-state">
 						<span class="wsc-empty-icon" aria-hidden="true">✓</span>
-						<p><?php esc_html_e( 'すぐに対応が必要な項目はありません。', 'cybernote-security-checker' ); ?></p>
+						<p><?php esc_html_e( 'No items require immediate action.', 'cybernote-security-checker' ); ?></p>
 					</div>
 				<?php else : ?>
 					<div class="wsc-priority-list">
@@ -563,11 +563,11 @@ class CNSC_Admin_Page {
 					<div class="wsc-cat-head">
 						<h2 class="wsc-card-title">
 							<span class="wsc-section-icon wsc-section-icon-blue" aria-hidden="true">A</span>
-							<?php esc_html_e( 'A. バージョン鮮度', 'cybernote-security-checker' ); ?>
+							<?php esc_html_e( 'A. Version freshness', 'cybernote-security-checker' ); ?>
 						</h2>
-						<span class="wsc-cat-count"><?php echo (int) count( $results['a'] ); ?><?php esc_html_e( '項目', 'cybernote-security-checker' ); ?></span>
+						<span class="wsc-cat-count"><?php echo (int) count( $results['a'] ); ?> <?php esc_html_e( 'items', 'cybernote-security-checker' ); ?></span>
 					</div>
-					<p class="wsc-card-desc"><?php esc_html_e( 'WordPress本体・PHP・プラグイン／テーマの更新状況', 'cybernote-security-checker' ); ?></p>
+					<p class="wsc-card-desc"><?php esc_html_e( 'Update status for WordPress core, PHP, plugins, and themes', 'cybernote-security-checker' ); ?></p>
 					<div class="wsc-item-list">
 						<?php foreach ( $results['a'] as $item ) : ?>
 							<?php CNSC_Renderer::render_item( $item ); ?>
@@ -575,7 +575,7 @@ class CNSC_Admin_Page {
 					</div>
 					<div class="wsc-card-more">
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::SLUG_VERSION ) ); ?>" class="wsc-detail-link">
-							<?php esc_html_e( 'すべての項目を確認する', 'cybernote-security-checker' ); ?> →
+							<?php esc_html_e( 'Review all items', 'cybernote-security-checker' ); ?> →
 						</a>
 					</div>
 				</section>
@@ -584,11 +584,11 @@ class CNSC_Admin_Page {
 					<div class="wsc-cat-head">
 						<h2 class="wsc-card-title">
 							<span class="wsc-section-icon wsc-section-icon-blue" aria-hidden="true">B</span>
-							<?php esc_html_e( 'B. ハードニング設定', 'cybernote-security-checker' ); ?>
+							<?php esc_html_e( 'B. Hardening settings', 'cybernote-security-checker' ); ?>
 						</h2>
-						<span class="wsc-cat-count"><?php echo (int) count( $hardening ); ?><?php esc_html_e( '項目', 'cybernote-security-checker' ); ?></span>
+						<span class="wsc-cat-count"><?php echo (int) count( $hardening ); ?> <?php esc_html_e( 'items', 'cybernote-security-checker' ); ?></span>
 					</div>
-					<p class="wsc-card-desc"><?php esc_html_e( '不正アクセスや情報漏えいを防ぐ設定の診断', 'cybernote-security-checker' ); ?></p>
+					<p class="wsc-card-desc"><?php esc_html_e( 'Checks for settings that help prevent unauthorized access and data exposure', 'cybernote-security-checker' ); ?></p>
 					<div class="wsc-item-list">
 						<?php foreach ( $hardening as $item ) : ?>
 							<?php CNSC_Renderer::render_item( $item ); ?>
@@ -596,7 +596,7 @@ class CNSC_Admin_Page {
 					</div>
 					<div class="wsc-card-more">
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::SLUG_HARDENING ) ); ?>" class="wsc-detail-link">
-							<?php esc_html_e( 'すべての項目を確認する', 'cybernote-security-checker' ); ?> →
+							<?php esc_html_e( 'Review all items', 'cybernote-security-checker' ); ?> →
 						</a>
 					</div>
 				</section>
@@ -605,11 +605,11 @@ class CNSC_Admin_Page {
 					<div class="wsc-cat-head">
 						<h2 class="wsc-card-title">
 							<span class="wsc-section-icon wsc-section-icon-blue" aria-hidden="true">C</span>
-							<?php esc_html_e( 'C. 衛生状態', 'cybernote-security-checker' ); ?>
+							<?php esc_html_e( 'C. Site hygiene', 'cybernote-security-checker' ); ?>
 						</h2>
-						<span class="wsc-cat-count"><?php echo (int) count( $hygiene ); ?><?php esc_html_e( '項目', 'cybernote-security-checker' ); ?></span>
+						<span class="wsc-cat-count"><?php echo (int) count( $hygiene ); ?> <?php esc_html_e( 'items', 'cybernote-security-checker' ); ?></span>
 					</div>
-					<p class="wsc-card-desc"><?php esc_html_e( '不要な拡張の放置や、対策の状況を確認します。', 'cybernote-security-checker' ); ?></p>
+					<p class="wsc-card-desc"><?php esc_html_e( 'Review unused extensions and the status of basic protections.', 'cybernote-security-checker' ); ?></p>
 					<div class="wsc-item-list">
 						<?php foreach ( $hygiene as $item ) : ?>
 							<?php CNSC_Renderer::render_item( $item ); ?>
@@ -617,7 +617,7 @@ class CNSC_Admin_Page {
 					</div>
 					<div class="wsc-card-more">
 						<a href="<?php echo esc_url( admin_url( 'admin.php?page=' . self::SLUG_HYGIENE ) ); ?>" class="wsc-detail-link">
-							<?php esc_html_e( 'すべての項目を確認する', 'cybernote-security-checker' ); ?> →
+							<?php esc_html_e( 'Review all items', 'cybernote-security-checker' ); ?> →
 						</a>
 					</div>
 				</section>
@@ -641,24 +641,24 @@ class CNSC_Admin_Page {
 			<strong style="font-size:15px;color:var(--wsc-navy)">
 				<?php
 				if ( 0 === $issues ) {
-					esc_html_e( '全項目で問題なし', 'cybernote-security-checker' );
+					esc_html_e( 'No issues found', 'cybernote-security-checker' );
 				} else {
 					printf(
 						/* translators: %d: number of issue items */
-						esc_html__( '確認が必要: %d件', 'cybernote-security-checker' ),
+						esc_html__( '%d item(s) need attention', 'cybernote-security-checker' ),
 						$issues
 					);
 				}
 				?>
 			</strong>
 			<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--wsc-recommended);background:var(--wsc-recommended-bg);border:1px solid var(--wsc-recommended-border)">
-				<?php printf( esc_html__( '要対応 %d件', 'cybernote-security-checker' ), (int) $counts['recommended'] ); ?>
+				<?php printf( esc_html__( 'Action required: %d', 'cybernote-security-checker' ), (int) $counts['recommended'] ); ?>
 			</span>
 			<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--wsc-attention);background:var(--wsc-attention-bg);border:1px solid var(--wsc-attention-border)">
-				<?php printf( esc_html__( '改善推奨 %d件', 'cybernote-security-checker' ), (int) $counts['attention'] ); ?>
+				<?php printf( esc_html__( 'Recommended improvement: %d', 'cybernote-security-checker' ), (int) $counts['attention'] ); ?>
 			</span>
 			<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--wsc-good);background:var(--wsc-good-bg);border:1px solid var(--wsc-good-border)">
-				<?php printf( esc_html__( '問題なし %d件', 'cybernote-security-checker' ), (int) $counts['good'] ); ?>
+				<?php printf( esc_html__( 'No issues: %d', 'cybernote-security-checker' ), (int) $counts['good'] ); ?>
 			</span>
 		</div>
 		<?php
@@ -669,8 +669,8 @@ class CNSC_Admin_Page {
 		?>
 		<p class="wsc-admin-note">
 			<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>
-			<?php esc_html_e( 'このプラグインは診断と情報提供に特化しています。設定の変更や更新の実行は行いません。', 'cybernote-security-checker' ); ?>
-			<a href="<?php echo esc_url( 'https://www.cybernote.click/wp-security-checker-guide/' ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( '使い方ガイドを見る ↗', 'cybernote-security-checker' ); ?></a>
+			<?php esc_html_e( 'This plugin provides diagnostics and information only. It does not change settings or perform updates.', 'cybernote-security-checker' ); ?>
+			<a href="<?php echo esc_url( 'https://www.cybernote.click/wp-security-checker-guide/' ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'View the usage guide ↗', 'cybernote-security-checker' ); ?></a>
 		</p>
 		<?php
 	}

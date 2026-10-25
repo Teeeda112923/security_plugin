@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: CyberNote Security Checker
- * Description: Diagnoses WordPress security settings and version status, presenting improvement steps in plain Japanese. No external requests. Lightweight design.
- * Version: 1.1.0
+ * Description: Diagnoses WordPress security settings and version status, presenting clear improvement steps. No external requests. Lightweight design.
+ * Version: 1.2.0
  * Author: teeeda1129
  * Author URI: https://www.cybernote.click/wp-security-checker-guide/
  * Text Domain: cybernote-security-checker
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-define( 'CNSC_VERSION', '1.1.0' );
+define( 'CNSC_VERSION', '1.2.0' );
 define( 'CNSC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CNSC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -30,6 +30,18 @@ require_once CNSC_PLUGIN_DIR . 'includes/class-cnsc-diagnostics.php';
 require_once CNSC_PLUGIN_DIR . 'includes/class-cnsc-renderer.php';
 require_once CNSC_PLUGIN_DIR . 'includes/class-cnsc-dashboard-widget.php';
 require_once CNSC_PLUGIN_DIR . 'includes/class-cnsc-admin-page.php';
+
+// Load translations from the plugin's languages directory.
+add_action(
+	'init',
+	function () {
+		load_plugin_textdomain(
+			'cybernote-security-checker',
+			false,
+			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		);
+	}
+);
 
 // Bootstrap the dashboard widget and admin page.
 add_action(
