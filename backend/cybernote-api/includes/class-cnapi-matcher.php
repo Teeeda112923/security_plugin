@@ -408,6 +408,11 @@ class CNAPI_Matcher {
 		$cached    = get_transient( $cache_key );
 		if ( false !== $cached ) {
 			if ( is_array( $cached ) && isset( $cached['__cnapi_error'] ) ) {
+				// A cached failure is still a failed lookup for this scan; never turn it into "clean".
+				++$this->failed;
+				if ( 'invalid_response_schema' === $cached['__cnapi_error'] ) {
+					++$this->parse_failed;
+				}
 				return null;
 			}
 			return is_array( $cached ) ? $cached : null;
