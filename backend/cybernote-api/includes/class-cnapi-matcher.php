@@ -144,6 +144,7 @@ class CNAPI_Matcher {
 		// 時間予算を超えたら以降の外部問い合わせは打ち切る（接続側のタイムアウト回避）。
 		if ( time() > $this->deadline ) {
 			$this->aborted = true;
+			++$this->skipped;
 			return array();
 		}
 
