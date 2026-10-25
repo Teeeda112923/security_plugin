@@ -34,7 +34,7 @@ class CNAPI_Matcher {
 	/**
 	 * 直近スキャンの実行統計。照合が本当に効いたかの判断に使う。
 	 *
-	 * @return array { checked, failed, aborted }
+	 * @return array { checked, failed, aborted, skipped, parse_failed }
 	 */
 	public function get_stats() {
 		return array(
@@ -184,6 +184,8 @@ class CNAPI_Matcher {
 		$results = array();
 		foreach ( $vulns as $vuln ) {
 			if ( ! is_array( $vuln ) ) {
+				// 応答内の個別レコードが不正なら、照合完了とは扱わない。
+				++$this->parse_failed;
 				continue;
 			}
 			// coreエンドポイントはバージョン指定で問い合わせるため常に該当扱い。
