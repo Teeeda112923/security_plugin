@@ -160,8 +160,8 @@ class CNSCP_Admin {
 						<div class="cnscp-allclear">
 							<span class="dashicons dashicons-yes-alt"></span>
 							<div>
-								<strong>既知の脆弱性は見つかりませんでした。</strong>
-								<p>このまま毎日自動でチェックを続けます。新しく見つかった場合はここに表示されます。</p>
+								<strong>照合が完了しました。既知の脆弱性情報は見つかりませんでした。</strong>
+								<p>照合対象について既知の脆弱性情報は確認されませんでした。ただし、データベースに登録されていない脆弱性が存在する可能性があります。</p>
 							</div>
 						</div>
 					<?php endif; ?>

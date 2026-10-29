@@ -1,0 +1,50 @@
+{
+  "complete_no_findings": {
+    "status": "ok",
+    "incomplete": false,
+    "vulnerabilities": [],
+    "stats": {
+      "checked": 20,
+      "failed": 0,
+      "aborted": false,
+      "skipped": 0,
+      "parse_failed": 0
+    }
+  },
+  "failed_lookups": {
+    "status": "ok",
+    "incomplete": true,
+    "vulnerabilities": [],
+    "stats": {
+      "checked": 20,
+      "failed": 3,
+      "aborted": false,
+      "skipped": 0,
+      "parse_failed": 0
+    }
+  },
+  "invalid_identity": {
+    "status": "ok",
+    "incomplete": true,
+    "vulnerabilities": [],
+    "stats": {
+      "checked": 20,
+      "failed": 0,
+      "aborted": false,
+      "skipped": 2,
+      "parse_failed": 0
+    }
+  },
+  "invalid_response_schema": {
+    "status": "ok",
+    "incomplete": true,
+    "vulnerabilities": [],
+    "stats": {
+      "checked": 20,
+      "failed": 1,
+      "aborted": false,
+      "skipped": 0,
+      "parse_failed": 1
+    }
+  }
+}

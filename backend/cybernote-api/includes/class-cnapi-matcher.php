@@ -24,19 +24,25 @@ class CNAPI_Matcher {
 	protected $failed = 0;
 	/** @var bool 時間予算切れで一部の照合を打ち切ったか。 */
 	protected $aborted = false;
+	/** @var int Items skipped due to missing identity/version or time budget. */
+	protected $skipped = 0;
+	/** @var int Responses with invalid JSON/schema. */
+	protected $parse_failed = 0;
 	/** @var int 予算の締め切り時刻（Unix秒）。 */
 	protected $deadline = 0;
 
 	/**
 	 * 直近スキャンの実行統計。照合が本当に効いたかの判断に使う。
 	 *
-	 * @return array { checked, failed, aborted }
+	 * @return array { checked, failed, aborted, skipped, parse_failed }
 	 */
 	public function get_stats() {
 		return array(
 			'checked' => $this->checked,
 			'failed'  => $this->failed,
 			'aborted' => $this->aborted,
+			'skipped' => $this->skipped,
+			'parse_failed' => $this->parse_failed,
 		);
 	}
 
@@ -66,15 +72,23 @@ class CNAPI_Matcher {
 			);
 		}
 
-		$code  = (int) wp_remote_retrieve_response_code( $response );
-		$body  = json_decode( wp_remote_retrieve_body( $response ), true );
-		$vulns = is_array( $body ) ? ( $body['data']['vulnerability'] ?? array() ) : array();
+		$code = (int) wp_remote_retrieve_response_code( $response );
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		// HTTP 200だけでは接続成功とみなさず、期待する応答形式まで検証する。
+		$valid_schema = is_array( $body )
+			&& isset( $body['data'] )
+			&& is_array( $body['data'] )
+			&& array_key_exists( 'vulnerability', $body['data'] )
+			&& is_array( $body['data']['vulnerability'] );
+		$vulns        = $valid_schema ? $body['data']['vulnerability'] : array();
+		$ok           = ( 200 === $code && $valid_schema );
 
 		return array(
-			'ok'         => ( 200 === $code && is_array( $vulns ) ),
+			'ok'         => $ok,
 			'http'       => $code,
-			'error'      => ( 200 === $code ) ? '' : 'HTTP ' . $code,
-			'vuln_count' => is_array( $vulns ) ? count( $vulns ) : 0,
+			'error'      => $ok ? '' : ( 200 === $code ? '応答形式が不正です（JSONまたはvulnerability項目を確認してください）。' : 'HTTP ' . $code ),
+			'vuln_count' => count( $vulns ),
 		);
 	}
 
@@ -88,6 +102,8 @@ class CNAPI_Matcher {
 		$this->checked  = 0;
 		$this->failed   = 0;
 		$this->aborted  = false;
+		$this->skipped  = 0;
+		$this->parse_failed = 0;
 		$this->deadline = time() + self::TIME_BUDGET;
 
 		$found = array();
@@ -138,12 +154,14 @@ class CNAPI_Matcher {
 		$name    = trim( (string) ( $item['name'] ?? $slug ) );
 
 		if ( '' === $slug || '' === $version ) {
+			++$this->skipped;
 			return array();
 		}
 
 		// 時間予算を超えたら以降の外部問い合わせは打ち切る（接続側のタイムアウト回避）。
 		if ( time() > $this->deadline ) {
 			$this->aborted = true;
+			++$this->skipped;
 			return array();
 		}
 
@@ -152,18 +170,22 @@ class CNAPI_Matcher {
 		} else {
 			$data = $this->fetch_json( '/' . $type . '/' . rawurlencode( $slug ) . '/' );
 		}
-		if ( empty( $data ) || ! is_array( $data ) ) {
+		if ( null === $data || ! is_array( $data ) ) {
 			return array();
 		}
 
-		$vulns = $data['data']['vulnerability'] ?? array();
-		if ( ! is_array( $vulns ) ) {
+		// A valid JSON response without the expected schema is not a clean scan.
+		if ( ! isset( $data['data'] ) || ! is_array( $data['data'] ) || ! array_key_exists( 'vulnerability', $data['data'] ) || ! is_array( $data['data']['vulnerability'] ) ) {
+			++$this->parse_failed;
 			return array();
 		}
+		$vulns = $data['data']['vulnerability'];
 
 		$results = array();
 		foreach ( $vulns as $vuln ) {
 			if ( ! is_array( $vuln ) ) {
+				// 応答内の個別レコードが不正なら、照合完了とは扱わない。
+				++$this->parse_failed;
 				continue;
 			}
 			// coreエンドポイントはバージョン指定で問い合わせるため常に該当扱い。
@@ -395,6 +417,14 @@ class CNAPI_Matcher {
 		$cache_key = 'cnapi_vdb_' . md5( $path );
 		$cached    = get_transient( $cache_key );
 		if ( false !== $cached ) {
+			if ( is_array( $cached ) && isset( $cached['__cnapi_error'] ) ) {
+				// A cached failure is still a failed lookup for this scan; never turn it into "clean".
+				++$this->failed;
+				if ( 'invalid_response_schema' === $cached['__cnapi_error'] ) {
+					++$this->parse_failed;
+				}
+				return null;
+			}
 			return is_array( $cached ) ? $cached : null;
 		}
 
@@ -410,13 +440,15 @@ class CNAPI_Matcher {
 		if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
 			// 到達不可・エラー。失敗として記録し、短時間だけキャッシュして連打を防ぐ。
 			++$this->failed;
-			set_transient( $cache_key, array(), 5 * MINUTE_IN_SECONDS );
+			set_transient( $cache_key, array( '__cnapi_error' => 'http_error' ), 5 * MINUTE_IN_SECONDS );
 			return null;
 		}
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
-		if ( ! is_array( $body ) ) {
-			set_transient( $cache_key, array(), 5 * MINUTE_IN_SECONDS );
+		if ( ! is_array( $body ) || ! isset( $body['data'] ) || ! is_array( $body['data'] ) || ! array_key_exists( 'vulnerability', $body['data'] ) || ! is_array( $body['data']['vulnerability'] ) ) {
+			++$this->failed;
+			++$this->parse_failed;
+			set_transient( $cache_key, array( '__cnapi_error' => 'invalid_response_schema' ), 5 * MINUTE_IN_SECONDS );
 			return null;
 		}
 
